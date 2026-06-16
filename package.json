@@ -1,0 +1,66 @@
+{
+  "name": "@kreativekorna/justui",
+  "version": "0.1.0",
+  "description": "Shared design system for the just* app family — theme tokens, six built-in themes (GitHub, Espresso, Catppuccin Mocha, Gruvbox, Nord, Solarized), a no-flash boot script, and per-framework component adapters (Astro today; React/Vue next).",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./boot": {
+      "types": "./dist/theme-boot.d.ts",
+      "default": "./dist/theme-boot.js"
+    },
+    "./themes": {
+      "types": "./dist/theme-plugins.d.ts",
+      "default": "./dist/theme-plugins.js"
+    },
+    "./tokens.css": "./src/styles/tokens.css",
+    "./tailwind-preset": {
+      "types": "./src/tailwind-preset.d.cts",
+      "default": "./src/tailwind-preset.cjs"
+    },
+    "./astro/Button.astro": "./src/astro/Button.astro",
+    "./astro/ThemeToggle.astro": "./src/astro/ThemeToggle.astro",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src/styles",
+    "src/astro",
+    "src/tailwind-preset.cjs",
+    "src/tailwind-preset.d.cts",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "astro": "^5.0.0",
+    "tailwindcss": "^3.4.0 || ^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "astro": { "optional": true },
+    "tailwindcss": { "optional": true }
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "tailwindcss": "^3.4.17"
+  },
+  "keywords": [
+    "design-system",
+    "theme",
+    "tailwind",
+    "astro",
+    "tauri",
+    "just-ui"
+  ],
+  "homepage": "https://github.com/codellyson/justrunjs/blob/master/STYLE_GUIDE.md"
+}
