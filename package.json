@@ -1,5 +1,5 @@
 {
-  "name": "justui",
+  "name": "@codellyson/justui",
   "version": "0.1.0",
   "description": "Shared design system for the just* app family — theme tokens, six built-in themes (GitHub, Espresso, Catppuccin Mocha, Gruvbox, Nord, Solarized), a no-flash boot script, and per-framework component adapters (Astro today; React/Vue next).",
   "license": "MIT",

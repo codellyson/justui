@@ -1,4 +1,4 @@
-# justui
+# @codellyson/justui
 
 Shared design system for the `just*` app family — theme tokens, six built-in themes (GitHub, Espresso, Catppuccin Mocha, Gruvbox, Nord, Solarized), a no-flash boot script, ready-made Astro components, and a Tailwind preset.
 
@@ -7,7 +7,7 @@ See [STYLE_GUIDE.md](https://github.com/codellyson/justrunjs/blob/master/STYLE_G
 ## Install
 
 ```sh
-pnpm add justui
+pnpm add @codellyson/justui
 ```
 
 Peers your app needs separately:
@@ -22,15 +22,15 @@ pnpm add @fontsource-variable/geist @fontsource-variable/geist-mono tailwindcss
 
 ```js
 // tailwind.config.mjs
-import justuiPreset from 'justui/tailwind-preset';
+import @codellyson/justuiPreset from '@codellyson/justui/tailwind-preset';
 
 export default {
-  presets: [justuiPreset],
+  presets: [@codellyson/justuiPreset],
   content: [
     './src/**/*.{astro,html,js,ts,jsx,tsx,md,mdx}',
     // Include the package's components so Tailwind generates classes
     // used inside Button.astro / ThemeToggle.astro.
-    './node_modules/justui/src/**/*.{astro,js,ts}',
+    './node_modules/@codellyson/justui/src/**/*.{astro,js,ts}',
   ],
 };
 ```
@@ -39,7 +39,7 @@ export default {
 
 ```css
 /* src/styles/global.css */
-@import "justui/tokens.css";
+@import "@codellyson/justui/tokens.css";
 
 @tailwind base;
 @tailwind components;
@@ -60,7 +60,7 @@ import '../styles/global.css';
   <head>
     <!-- Runs before <body> renders so the right palette paints first. -->
     <script>
-      import { bootTheme } from 'justui/boot';
+      import { bootTheme } from '@codellyson/justui/boot';
       bootTheme({ keyPrefix: 'myapp' });
     </script>
   </head>
@@ -72,7 +72,7 @@ import '../styles/global.css';
 
 ```astro
 ---
-import ThemeToggle from 'justui/astro/ThemeToggle.astro';
+import ThemeToggle from '@codellyson/justui/astro/ThemeToggle.astro';
 ---
 <ThemeToggle />
 ```
@@ -83,13 +83,13 @@ The floating button at bottom-right opens a panel with a mode toggle (light/dark
 
 | Export | Purpose |
 |---|---|
-| `justui` | `BUILT_IN_THEMES`, `DEFAULT_THEME_ID`, `VAR_MAP`, `bootTheme` |
-| `justui/boot` | Just `bootTheme` — small import if you only want this |
-| `justui/themes` | Just the theme catalog |
-| `justui/tokens.css` | `:root` fallback (Espresso dark) |
-| `justui/tailwind-preset` | Tailwind config preset |
-| `justui/astro/Button.astro` | Primary / secondary button |
-| `justui/astro/ThemeToggle.astro` | Floating theme picker |
+| `@codellyson/justui` | `BUILT_IN_THEMES`, `DEFAULT_THEME_ID`, `VAR_MAP`, `bootTheme` |
+| `@codellyson/justui/boot` | Just `bootTheme` — small import if you only want this |
+| `@codellyson/justui/themes` | Just the theme catalog |
+| `@codellyson/justui/tokens.css` | `:root` fallback (Espresso dark) |
+| `@codellyson/justui/tailwind-preset` | Tailwind config preset |
+| `@codellyson/justui/astro/Button.astro` | Primary / secondary button |
+| `@codellyson/justui/astro/ThemeToggle.astro` | Floating theme picker |
 
 ## Per-app prefix
 
