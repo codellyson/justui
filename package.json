@@ -1,5 +1,5 @@
 {
-  "name": "@kreativekorna/justui",
+  "name": "justui",
   "version": "0.1.0",
   "description": "Shared design system for the just* app family — theme tokens, six built-in themes (GitHub, Espresso, Catppuccin Mocha, Gruvbox, Nord, Solarized), a no-flash boot script, and per-framework component adapters (Astro today; React/Vue next).",
   "license": "MIT",
@@ -63,5 +63,9 @@
     "tauri",
     "just-ui"
   ],
-  "homepage": "https://github.com/codellyson/justrunjs/blob/master/STYLE_GUIDE.md"
+  "homepage": "https://github.com/codellyson/justui#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codellyson/justui.git"
+  }
 }
