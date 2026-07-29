@@ -23,6 +23,7 @@ export interface ThemePlugin {
   id: string;
   label: string;
   description?: string;
+  category?: "dev" | "consumer";
   swatch: { light: string; dark: string };
   light: ThemeVariant;
   dark: ThemeVariant;
@@ -238,6 +239,222 @@ const SOLARIZED: ThemePlugin = {
   },
 };
 
+const SUNSET: ThemePlugin = {
+  id: "sunset",
+  label: "Sunset",
+  description: "Warm tangerine — friendly and energetic.",
+  category: "consumer",
+  swatch: { light: "#fffbf7", dark: "#1a1410" },
+  light: {
+    bg: "255 251 247",
+    bgSecondary: "255 244 236",
+    border: "240 226 214",
+    textPrimary: "41 32 26",
+    textSecondary: "92 76 64",
+    textMuted: "150 130 116",
+    accent: "234 88 12",
+    accentHover: "194 65 12",
+    accentText: "255 255 255",
+    danger: "220 38 38",
+    success: "22 163 74",
+    warning: "217 119 6",
+  },
+  dark: {
+    bg: "26 20 16",
+    bgSecondary: "38 29 23",
+    border: "60 46 37",
+    textPrimary: "245 236 228",
+    textSecondary: "200 184 172",
+    textMuted: "150 130 116",
+    accent: "251 146 60",
+    accentHover: "253 186 116",
+    accentText: "26 20 16",
+    danger: "248 113 113",
+    success: "74 222 128",
+    warning: "251 191 36",
+  },
+};
+
+const OCEAN: ThemePlugin = {
+  id: "ocean",
+  label: "Ocean",
+  description: "Fresh teal — calm and trustworthy.",
+  category: "consumer",
+  swatch: { light: "#f7fbfd", dark: "#0c161a" },
+  light: {
+    bg: "247 251 253",
+    bgSecondary: "236 246 250",
+    border: "210 230 238",
+    textPrimary: "15 34 42",
+    textSecondary: "51 78 88",
+    textMuted: "120 148 158",
+    accent: "13 148 136",
+    accentHover: "15 118 110",
+    accentText: "255 255 255",
+    danger: "220 38 38",
+    success: "22 163 74",
+    warning: "217 119 6",
+  },
+  dark: {
+    bg: "12 22 26",
+    bgSecondary: "18 32 38",
+    border: "34 54 62",
+    textPrimary: "224 240 244",
+    textSecondary: "168 196 204",
+    textMuted: "110 140 150",
+    accent: "45 212 191",
+    accentHover: "94 234 212",
+    accentText: "12 22 26",
+    danger: "248 113 113",
+    success: "74 222 128",
+    warning: "251 191 36",
+  },
+};
+
+const BLOOM: ThemePlugin = {
+  id: "bloom",
+  label: "Bloom",
+  description: "Soft rose — playful and personal.",
+  category: "consumer",
+  swatch: { light: "#fffafc", dark: "#1a1216" },
+  light: {
+    bg: "255 250 252",
+    bgSecondary: "253 242 248",
+    border: "245 218 232",
+    textPrimary: "44 26 36",
+    textSecondary: "96 66 80",
+    textMuted: "156 122 138",
+    accent: "219 39 119",
+    accentHover: "190 24 93",
+    accentText: "255 255 255",
+    danger: "220 38 38",
+    success: "22 163 74",
+    warning: "217 119 6",
+  },
+  dark: {
+    bg: "26 18 22",
+    bgSecondary: "38 26 32",
+    border: "60 40 50",
+    textPrimary: "246 230 238",
+    textSecondary: "208 178 192",
+    textMuted: "158 124 140",
+    accent: "244 114 182",
+    accentHover: "249 168 212",
+    accentText: "26 18 22",
+    danger: "248 113 113",
+    success: "74 222 128",
+    warning: "251 191 36",
+  },
+};
+
+const MEADOW: ThemePlugin = {
+  id: "meadow",
+  label: "Meadow",
+  description: "Natural green — wholesome and clean.",
+  category: "consumer",
+  swatch: { light: "#f8fcf8", dark: "#101812" },
+  light: {
+    bg: "248 252 248",
+    bgSecondary: "240 248 240",
+    border: "214 234 216",
+    textPrimary: "24 38 28",
+    textSecondary: "62 84 68",
+    textMuted: "124 150 130",
+    accent: "22 163 74",
+    accentHover: "21 128 61",
+    accentText: "255 255 255",
+    danger: "220 38 38",
+    success: "22 163 74",
+    warning: "217 119 6",
+  },
+  dark: {
+    bg: "16 24 18",
+    bgSecondary: "24 34 26",
+    border: "40 56 44",
+    textPrimary: "230 244 232",
+    textSecondary: "180 204 186",
+    textMuted: "120 148 126",
+    accent: "74 222 128",
+    accentHover: "134 239 172",
+    accentText: "16 24 18",
+    danger: "248 113 113",
+    success: "74 222 128",
+    warning: "251 191 36",
+  },
+};
+
+const GRAPE: ThemePlugin = {
+  id: "grape",
+  label: "Grape",
+  description: "Vivid violet — modern and bold.",
+  category: "consumer",
+  swatch: { light: "#faf9ff", dark: "#14121c" },
+  light: {
+    bg: "250 249 255",
+    bgSecondary: "244 242 253",
+    border: "224 219 245",
+    textPrimary: "34 28 46",
+    textSecondary: "78 70 100",
+    textMuted: "138 130 160",
+    accent: "124 58 237",
+    accentHover: "109 40 217",
+    accentText: "255 255 255",
+    danger: "220 38 38",
+    success: "22 163 74",
+    warning: "217 119 6",
+  },
+  dark: {
+    bg: "20 18 28",
+    bgSecondary: "30 26 42",
+    border: "48 42 66",
+    textPrimary: "236 232 246",
+    textSecondary: "194 186 214",
+    textMuted: "140 132 160",
+    accent: "167 139 250",
+    accentHover: "196 181 253",
+    accentText: "20 18 28",
+    danger: "248 113 113",
+    success: "74 222 128",
+    warning: "251 191 36",
+  },
+};
+
+const MONO: ThemePlugin = {
+  id: "mono",
+  label: "Mono",
+  description: "Refined monochrome — minimal and elegant.",
+  category: "consumer",
+  swatch: { light: "#ffffff", dark: "#111110" },
+  light: {
+    bg: "255 255 255",
+    bgSecondary: "246 246 245",
+    border: "226 226 224",
+    textPrimary: "24 24 23",
+    textSecondary: "82 82 80",
+    textMuted: "148 148 145",
+    accent: "24 24 23",
+    accentHover: "60 60 58",
+    accentText: "255 255 255",
+    danger: "220 38 38",
+    success: "22 163 74",
+    warning: "217 119 6",
+  },
+  dark: {
+    bg: "17 17 16",
+    bgSecondary: "28 28 27",
+    border: "48 48 46",
+    textPrimary: "245 245 244",
+    textSecondary: "190 190 188",
+    textMuted: "130 130 128",
+    accent: "245 245 244",
+    accentHover: "214 214 212",
+    accentText: "17 17 16",
+    danger: "248 113 113",
+    success: "74 222 128",
+    warning: "251 191 36",
+  },
+};
+
 export const BUILT_IN_THEMES: readonly ThemePlugin[] = [
   GITHUB,
   ESPRESSO,
@@ -246,6 +463,17 @@ export const BUILT_IN_THEMES: readonly ThemePlugin[] = [
   NORD,
   SOLARIZED,
 ];
+
+export const CONSUMER_THEMES: readonly ThemePlugin[] = [
+  SUNSET,
+  OCEAN,
+  BLOOM,
+  MEADOW,
+  GRAPE,
+  MONO,
+];
+
+export const ALL_THEMES: readonly ThemePlugin[] = [...BUILT_IN_THEMES, ...CONSUMER_THEMES];
 
 export const DEFAULT_THEME_ID = "espresso";
 

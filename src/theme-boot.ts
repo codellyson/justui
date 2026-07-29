@@ -6,10 +6,6 @@ import {
   type ThemeVariant,
 } from "./theme-plugins.js";
 
-const THEMES: Readonly<Record<string, ThemePlugin>> = Object.fromEntries(
-  BUILT_IN_THEMES.map((t) => [t.id, t]),
-);
-
 export interface BootThemeOptions {
   /**
    * localStorage key prefix. Final keys are `${keyPrefix}.theme.id` and
@@ -19,6 +15,11 @@ export interface BootThemeOptions {
    */
   keyPrefix?: string;
   defaultThemeId?: string;
+  /**
+   * Theme catalog to boot from. Pass CONSUMER_THEMES or ALL_THEMES for a
+   * consumer app; defaults to the built-in dev themes.
+   */
+  themes?: readonly ThemePlugin[];
 }
 
 export interface BootThemeResult {
@@ -61,6 +62,10 @@ export function bootTheme(options: BootThemeOptions = {}): BootThemeResult {
   const defaultThemeId = options.defaultThemeId ?? DEFAULT_THEME_ID;
   const idKey = `${keyPrefix}.theme.id`;
   const modeKey = `${keyPrefix}.theme.mode`;
+
+  const THEMES: Readonly<Record<string, ThemePlugin>> = Object.fromEntries(
+    (options.themes ?? BUILT_IN_THEMES).map((t) => [t.id, t]),
+  );
 
   if (typeof window !== "undefined") {
     window.__JUSTUI__ = { themes: THEMES, keyPrefix, idKey, modeKey };
