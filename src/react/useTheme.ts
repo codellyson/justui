@@ -32,6 +32,14 @@ function ctxKeys(): { idKey: string; modeKey: string } {
   };
 }
 
+// The catalog bootTheme() actually booted with — consumer themes in a consumer
+// app, dev themes otherwise. Falls back to the built-ins before boot runs.
+function themeCatalog(): readonly ThemePlugin[] {
+  const ctx = typeof window !== "undefined" ? window.__JUSTUI__ : undefined;
+  const booted = ctx?.themes ? Object.values(ctx.themes) : null;
+  return booted && booted.length ? booted : BUILT_IN_THEMES;
+}
+
 function readInitialState(): { themeId: string; mode: ThemeMode } {
   if (typeof document === "undefined") {
     return { themeId: DEFAULT_THEME_ID, mode: "dark" };
@@ -68,7 +76,7 @@ export function useTheme(): ThemeState {
   }, []);
 
   const setThemeId = useCallback((id: string) => {
-    const theme = BUILT_IN_THEMES.find((t) => t.id === id);
+    const theme = themeCatalog().find((t) => t.id === id);
     if (!theme) return;
     setState((s) => {
       applyVariant(s.mode === "dark" ? theme.dark : theme.light, s.mode);
@@ -85,7 +93,8 @@ export function useTheme(): ThemeState {
 
   const setMode = useCallback((mode: ThemeMode) => {
     setState((s) => {
-      const theme = BUILT_IN_THEMES.find((t) => t.id === s.themeId) ?? BUILT_IN_THEMES[0];
+      const catalog = themeCatalog();
+      const theme = catalog.find((t) => t.id === s.themeId) ?? catalog[0];
       applyVariant(mode === "dark" ? theme.dark : theme.light, mode);
       const { modeKey } = ctxKeys();
       try {
@@ -104,7 +113,7 @@ export function useTheme(): ThemeState {
   return {
     themeId: state.themeId,
     mode: state.mode,
-    themes: BUILT_IN_THEMES,
+    themes: themeCatalog(),
     setThemeId,
     setMode,
     toggleMode,
