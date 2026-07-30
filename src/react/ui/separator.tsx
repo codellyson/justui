@@ -9,6 +9,7 @@ export const Separator = forwardRef<HTMLDivElement, SeparatorProps>(
   ({ className, orientation = "horizontal", ...props }, ref) => (
     <div
       ref={ref}
+      data-justui="separator"
       role="separator"
       aria-orientation={orientation}
       className={cn(

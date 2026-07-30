@@ -5,6 +5,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelHTMLAttributes<HTMLLabelE
   ({ className, ...props }, ref) => (
     <label
       ref={ref}
+      data-justui="label"
       className={cn(
         "text-sm font-medium leading-none text-primary peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
         className,

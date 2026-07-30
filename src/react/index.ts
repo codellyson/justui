@@ -2,14 +2,6 @@ export { Button, buttonVariants, type ButtonProps } from "./ui/button.js";
 export { Input } from "./ui/input.js";
 export { Textarea } from "./ui/textarea.js";
 export { Label } from "./ui/label.js";
-export {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "./ui/card.js";
 export { Badge, badgeVariants, type BadgeProps } from "./ui/badge.js";
 export { Separator, type SeparatorProps } from "./ui/separator.js";
 export { Alert, AlertTitle, AlertDescription, alertVariants, type AlertProps } from "./ui/alert.js";

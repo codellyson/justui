@@ -13,6 +13,7 @@ export const TooltipContent = forwardRef<
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Content
       ref={ref}
+      data-justui="tooltip-content"
       sideOffset={sideOffset}
       className={cn(
         "z-50 overflow-hidden rounded-md border border-border bg-bg px-3 py-1.5 text-xs text-primary shadow-md",

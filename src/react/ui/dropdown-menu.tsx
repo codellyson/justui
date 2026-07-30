@@ -21,6 +21,7 @@ export const DropdownMenuContent = forwardRef<
   <DropdownMenuPrimitive.Portal>
     <DropdownMenuPrimitive.Content
       ref={ref}
+      data-justui="dropdown-menu-content"
       sideOffset={sideOffset}
       className={cn(
         "z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-bg p-1 text-primary shadow-md",
@@ -39,7 +40,7 @@ export const DropdownMenuItem = forwardRef<
   ElementRef<typeof DropdownMenuPrimitive.Item>,
   ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item>
 >(({ className, ...props }, ref) => (
-  <DropdownMenuPrimitive.Item ref={ref} className={cn(itemBase, className)} {...props} />
+  <DropdownMenuPrimitive.Item ref={ref} data-justui="dropdown-menu-item" className={cn(itemBase, className)} {...props} />
 ));
 DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
 
@@ -49,6 +50,7 @@ export const DropdownMenuCheckboxItem = forwardRef<
 >(({ className, children, checked, ...props }, ref) => (
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
+    data-justui="dropdown-menu-checkbox-item"
     className={cn(itemBase, "pl-8", className)}
     checked={checked}
     {...props}
@@ -67,7 +69,7 @@ export const DropdownMenuRadioItem = forwardRef<
   ElementRef<typeof DropdownMenuPrimitive.RadioItem>,
   ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem>
 >(({ className, children, ...props }, ref) => (
-  <DropdownMenuPrimitive.RadioItem ref={ref} className={cn(itemBase, "pl-8", className)} {...props}>
+  <DropdownMenuPrimitive.RadioItem ref={ref} data-justui="dropdown-menu-radio-item" className={cn(itemBase, "pl-8", className)} {...props}>
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
         <DotIcon className="h-2 w-2" />
@@ -84,6 +86,7 @@ export const DropdownMenuLabel = forwardRef<
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Label
     ref={ref}
+    data-justui="dropdown-menu-label"
     className={cn("px-2 py-1.5 text-xs font-semibold text-muted", className)}
     {...props}
   />
@@ -96,6 +99,7 @@ export const DropdownMenuSeparator = forwardRef<
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Separator
     ref={ref}
+    data-justui="dropdown-menu-separator"
     className={cn("-mx-1 my-1 h-px bg-border", className)}
     {...props}
   />
@@ -103,5 +107,5 @@ export const DropdownMenuSeparator = forwardRef<
 DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
 
 export function DropdownMenuShortcut({ className, ...props }: HTMLAttributes<HTMLSpanElement>) {
-  return <span className={cn("ml-auto text-xs tracking-widest text-muted", className)} {...props} />;
+  return <span data-justui="dropdown-menu-shortcut" className={cn("ml-auto text-xs tracking-widest text-muted", className)} {...props} />;
 }

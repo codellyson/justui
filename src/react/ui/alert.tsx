@@ -22,21 +22,21 @@ export interface AlertProps
 
 export const Alert = forwardRef<HTMLDivElement, AlertProps>(
   ({ className, variant, ...props }, ref) => (
-    <div ref={ref} role="alert" className={cn(alertVariants({ variant }), className)} {...props} />
+    <div ref={ref} data-justui="alert" role="alert" className={cn(alertVariants({ variant }), className)} {...props} />
   ),
 );
 Alert.displayName = "Alert";
 
 export const AlertTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h5 ref={ref} className={cn("mb-1 font-medium leading-none tracking-tight", className)} {...props} />
+    <h5 ref={ref} data-justui="alert-title" className={cn("mb-1 font-medium leading-none tracking-tight", className)} {...props} />
   ),
 );
 AlertTitle.displayName = "AlertTitle";
 
 export const AlertDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("text-sm opacity-90", className)} {...props} />
+    <div ref={ref} data-justui="alert-description" className={cn("text-sm opacity-90", className)} {...props} />
   ),
 );
 AlertDescription.displayName = "AlertDescription";
