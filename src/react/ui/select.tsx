@@ -32,8 +32,8 @@ const triggerSizes: Record<ControlSize, string> = {
 
 export interface SelectProps {
   options: (SelectOption | SelectGroupedOptions)[];
-  value?: string;
-  defaultValue?: string;
+  value?: string | number;
+  defaultValue?: string | number;
   onChange?: (value: string) => void;
   label?: ReactNode;
   description?: ReactNode;
@@ -64,7 +64,7 @@ function Option({
 }) {
   return (
     <SelectPrimitive.Item
-      value={option.value}
+      value={String(option.value)}
       disabled={option.disabled}
       data-justui="select-option"
       className="relative flex w-full cursor-default select-none items-center gap-2 rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-bg-secondary focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
@@ -140,8 +140,8 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
         )}
 
         <SelectPrimitive.Root
-          value={value}
-          defaultValue={defaultValue}
+          value={value == null ? undefined : String(value)}
+          defaultValue={defaultValue == null ? undefined : String(defaultValue)}
           onValueChange={onChange}
           disabled={disabled}
           name={name}

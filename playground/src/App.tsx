@@ -118,8 +118,8 @@ function ThemeBar() {
         root font size
         <Select
           value={String(rootFontSize)}
-          defaultValue={String(rootFontSize)}
           onChange={(e) => setRootFontSize(Number(e))}
+          placeholder="Select a font size"
           className="rounded-md border border-border bg-bg-secondary px-2 py-1 text-primary"
           options={[
             {
