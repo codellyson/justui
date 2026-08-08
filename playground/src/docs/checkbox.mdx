@@ -1,0 +1,87 @@
+export const title = "Checkbox & Switch";
+export const group = "Forms";
+
+# Checkbox, Switch
+
+Both take `label` and `description` as props and wire the id themselves. `onChange`
+receives the next state, not an event.
+
+## Checkbox
+
+```jsx live
+<div className="space-y-3">
+  <Checkbox label="Email me about releases" defaultChecked />
+  <Checkbox label="Email me about incidents" description="At most one message per incident." />
+  <Checkbox label="Unavailable on this plan" disabled />
+  <Checkbox label="Required" error="You must accept to continue." />
+</div>
+```
+
+### Sizes
+
+```jsx live
+<div className="flex items-center gap-6">
+  <Checkbox size="sm" label="Small" defaultChecked />
+  <Checkbox size="md" label="Medium" defaultChecked />
+  <Checkbox size="lg" label="Large" defaultChecked />
+</div>
+```
+
+### Controlled
+
+```jsx live noInline
+function Demo() {
+  const [accepted, setAccepted] = useState(false);
+  return (
+    <div className="space-y-3">
+      <Checkbox label="I accept the terms" checked={accepted} onChange={setAccepted} />
+      <Button size="xs" disabled={!accepted}>Continue</Button>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`onChange` can emit `"indeterminate"` as well as a boolean — pass
+`checked="indeterminate"` for a partially-selected parent checkbox.
+
+## Switch
+
+Use a switch for a setting that applies immediately, and a checkbox for something
+that takes effect on submit.
+
+```jsx live noInline
+function Demo() {
+  const [on, setOn] = useState(true);
+  return (
+    <div className="space-y-4">
+      <Switch label="Auto-deploy on push" description="Runs on every push to main." checked={on} onChange={setOn} />
+      <Switch label="Label on the left" labelPosition="left" defaultChecked />
+      <Switch label="Requires an upgraded plan" disabled />
+      <div className="flex items-center gap-6">
+        <Switch size="sm" label="sm" defaultChecked />
+        <Switch size="md" label="md" defaultChecked />
+        <Switch size="lg" label="lg" defaultChecked />
+      </div>
+      <p className="text-xs text-muted">Auto-deploy is {on ? 'enabled' : 'disabled'}.</p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Props
+
+| Prop | Type | Default | On |
+|---|---|---|---|
+| `label` | `ReactNode` | — | both |
+| `description` | `ReactNode` | — | both |
+| `error` | `ReactNode` | — | Checkbox |
+| `size` | `sm` `md` `lg` | `sm` / `md` | both |
+| `labelPosition` | `left` `right` | `right` | Switch |
+| `onChange` | `(checked) => void` | — | both |
+
+Omit `label` and `description` and you get the bare control with no wrapper — handy
+inside a table cell or a toolbar.

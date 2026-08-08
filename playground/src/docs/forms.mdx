@@ -1,0 +1,117 @@
+export const title = "Input & Textarea";
+export const group = "Forms";
+
+# Input, Textarea
+
+The control owns its own label, description and error — there's no separate
+wrapper component. The id is generated with `useId`, the label gets `htmlFor`,
+and `aria-describedby` / `aria-invalid` are wired for you.
+
+```jsx live
+<div className="w-full max-w-sm space-y-4">
+  <Input label="Workspace" placeholder="acme" description="Lowercase letters and dashes." />
+  <Input label="Slug" defaultValue="Acme Corp" error="Must not contain spaces." />
+  <Input label="Disabled" placeholder="Unavailable" disabled />
+</div>
+```
+
+`error` supersedes `description` — pass both and only the error shows, and the
+control picks up `aria-invalid` plus the danger border.
+
+## onChange gives you the value
+
+Not the event. Use `onChangeEvent` when you need the event itself.
+
+```jsx live noInline
+function Demo() {
+  const [slug, setSlug] = useState('acme');
+  const invalid = /\s/.test(slug);
+  return (
+    <div className="w-full max-w-sm space-y-2">
+      <Input
+        label="Slug"
+        value={slug}
+        onChange={setSlug}
+        error={invalid && 'Must not contain spaces.'}
+      />
+      <p className="text-xs text-muted">value: <code>{slug || '(empty)'}</code></p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Sizes and icons
+
+`onLeftIconClick` / `onRightIconClick` make an icon interactive — it becomes a
+real `<button>` rather than a decorative span.
+
+```jsx live noInline
+function Demo() {
+  const [shown, setShown] = useState(false);
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <Input size="sm" placeholder="Small" leftIcon={<span>⌕</span>} />
+      <Input size="md" placeholder="Medium" leftIcon={<span>⌕</span>} />
+      <Input size="lg" placeholder="Large" leftIcon={<span>⌕</span>} />
+      <Input
+        label="Password"
+        type={shown ? 'text' : 'password'}
+        defaultValue="hunter2"
+        rightIcon={<span>{shown ? '🙈' : '👁'}</span>}
+        onRightIconClick={() => setShown((v) => !v)}
+      />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Textarea
+
+Same props, same behaviour.
+
+```jsx live
+<div className="w-full max-w-sm space-y-4">
+  <Textarea label="Release notes" placeholder="What changed?" description="Markdown is supported." />
+  <Textarea label="Summary" error="Required." />
+</div>
+```
+
+## Label
+
+`Label` is the bare `<label>` if you're building a control the library doesn't
+cover — wire it yourself with `htmlFor` and a matching `id`.
+
+```jsx live
+<div className="w-full max-w-sm space-y-2">
+  <Label htmlFor="custom">Custom control</Label>
+  <input id="custom" className="h-9 w-full rounded-md border border-border bg-bg-secondary px-3 text-sm text-primary" />
+</div>
+```
+
+## Props
+
+Shared by `Input` and `Textarea`:
+
+| Prop | Type | Notes |
+|---|---|---|
+| `label` | `ReactNode` | Bound via a generated `htmlFor` |
+| `description` | `ReactNode` | Muted helper text; hidden while `error` is set |
+| `error` | `ReactNode` | Danger text; sets `aria-invalid` and the danger border |
+| `onChange` | `(value: string) => void` | The value, not the event |
+| `onChangeEvent` | `ChangeEventHandler` | The native event, if you need it |
+| `containerClassName` | `string` | On the outer wrapper |
+| `labelClassName` | `string` | On the label |
+| `className` | `string` | On the control itself |
+
+`Input` adds:
+
+| Prop | Type | Default |
+|---|---|---|
+| `size` | `xs` `sm` `md` `lg` | `md` |
+| `leftIcon` / `rightIcon` | `ReactNode` | — |
+| `onLeftIconClick` / `onRightIconClick` | `() => void` | — |
+| `iconSize` | `sm` `md` `lg` | `sm` |

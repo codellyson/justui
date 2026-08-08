@@ -1,0 +1,56 @@
+export const title = "Card";
+export const group = "Foundations";
+
+# Card
+
+A surface. `Card.Section` bleeds to the card's edges by cancelling its padding —
+which is why the root has to tell the section what that padding was.
+
+```jsx live
+<div className="w-full max-w-sm">
+  <Card withBorder>
+    <Card.Section withBorder className="px-4 pt-4">
+      <div className="text-sm font-medium text-primary">acme-production</div>
+    </Card.Section>
+    <Card.Section inheritPadding className="pt-3">
+      <p className="text-sm text-secondary">Three deploys today, all green.</p>
+    </Card.Section>
+  </Card>
+</div>
+```
+
+## Padding, radius, shadow
+
+```jsx live
+<div className="flex flex-wrap items-start gap-4">
+  {['xs', 'sm', 'md', 'lg', 'xl'].map((p) => (
+    <Card key={p} withBorder padding={p} shadow="xs">
+      <code className="font-mono text-xs text-muted">padding {p}</code>
+    </Card>
+  ))}
+</div>
+```
+
+```jsx live
+<div className="flex flex-wrap items-start gap-4">
+  {['sm', 'md', 'lg', 'xl'].map((r) => (
+    <Card key={r} withBorder radius={r} shadow="md">
+      <code className="font-mono text-xs text-muted">radius {r}</code>
+    </Card>
+  ))}
+</div>
+```
+
+`padding={0}` removes it entirely — and then sections don't bleed, because there's
+nothing to cancel.
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `withBorder` | `boolean` | `false` |
+| `padding` | `xs` `sm` `md` `lg` `xl` `0` | `md` |
+| `radius` | `sm` `md` `lg` `xl` | `lg` |
+| `shadow` | `xs` `sm` `md` `lg` `xl` | — |
+
+`Card.Section` takes `withBorder` and `inheritPadding`.

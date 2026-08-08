@@ -1,0 +1,84 @@
+export const title = "Select";
+export const group = "Forms";
+
+# Select
+
+Options come in as **data**, not children — a select's items are always a
+homogeneous list, so composing them bought nothing but ceremony. Same
+`label` / `description` / `error` props as `Input`.
+
+```jsx live
+<div className="w-full max-w-sm">
+  <Select
+    label="Region"
+    placeholder="Pick a region"
+    options={[
+      { label: 'us-east-1', subLabel: 'Virginia', value: 'iad' },
+      { label: 'us-west-1', subLabel: 'California', value: 'sfo' },
+      { label: 'eu-central-1', subLabel: 'Frankfurt', value: 'fra' },
+      { label: 'af-west-1', subLabel: 'Lagos', value: 'lag' },
+    ]}
+  />
+</div>
+```
+
+## Groups
+
+Pass a `{ group, items }` entry to get a section heading.
+
+```jsx live
+<div className="w-full max-w-sm">
+  <Select
+    label="Runtime"
+    defaultValue="node20"
+    options={[
+      { group: 'Node', items: [
+        { label: 'Node 20 LTS', value: 'node20' },
+        { label: 'Node 22 LTS', value: 'node22' },
+      ]},
+      { group: 'Bun', items: [{ label: 'Bun 1.x', value: 'bun1' }] },
+      { group: 'Deno', items: [{ label: 'Deno 2', value: 'deno2', disabled: true }] },
+    ]}
+  />
+</div>
+```
+
+## Controlled, sizes, error
+
+```jsx live noInline
+function Demo() {
+  const [level, setLevel] = useState('warn');
+  const levels = ['debug', 'info', 'warn', 'error'].map((l) => ({ label: l, value: l }));
+  return (
+    <div className="w-full max-w-sm space-y-4">
+      <Select label="Log level" value={level} onChange={setLevel} options={levels} />
+      <p className="text-xs text-muted">Selected: <code>{level}</code></p>
+      <Select size="xs" placeholder="xs" options={levels} />
+      <Select size="lg" placeholder="lg" options={levels} />
+      <Select label="Required" placeholder="Nothing picked" error="Pick a level." options={levels} />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `options` | `(SelectOption \| SelectGroupedOptions)[]` | required |
+| `value` / `defaultValue` | `string` | — |
+| `onChange` | `(value: string) => void` | — |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `placeholder` | `string` | — |
+| `size` | `xs` `sm` `md` `lg` | `md` |
+| `leftIcon` | `ReactNode` | — |
+| `position` | `popper` `item-aligned` | `popper` |
+| `renderOption` | `(option) => ReactNode` | — |
+
+`SelectOption` is `{ label, value, subLabel?, disabled?, icon? }`;
+`SelectGroupedOptions` is `{ group, items }`.
+
+The dropdown is portalled, so an `overflow: hidden` ancestor can't clip it — the
+same reason `Dialog` renders where it does.

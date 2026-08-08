@@ -1,0 +1,92 @@
+export const title = "Tabs";
+export const group = "Display";
+
+# Tabs
+
+Compound, because the tabs repeat: `Tabs.List` holds `Tabs.Tab`s, and each one
+pairs with a `Tabs.Panel` of the same `value`. Arrow keys move between tabs and
+the ARIA roles are wired for you.
+
+```jsx live
+<Tabs defaultValue="overview" className="w-full max-w-lg">
+  <Tabs.List>
+    <Tabs.Tab value="overview">Overview</Tabs.Tab>
+    <Tabs.Tab value="logs">Logs</Tabs.Tab>
+    <Tabs.Tab value="settings">Settings</Tabs.Tab>
+  </Tabs.List>
+  <Tabs.Panel value="overview">
+    <p className="text-sm text-secondary">Three deploys today, all green.</p>
+  </Tabs.Panel>
+  <Tabs.Panel value="logs">
+    <p className="text-sm text-secondary">No errors in the last hour.</p>
+  </Tabs.Panel>
+  <Tabs.Panel value="settings">
+    <Select label="Region" defaultValue="lag" options={[{ label: 'af-west-1', value: 'lag' }]} />
+  </Tabs.Panel>
+</Tabs>
+```
+
+## Sections
+
+`leftSection` / `rightSection` — same adornment slots as `Menu.Item`.
+
+```jsx live
+<Tabs defaultValue="inbox" className="w-full max-w-lg">
+  <Tabs.List>
+    <Tabs.Tab value="inbox" leftSection={<span>✉</span>} rightSection={<Badge color="red" variant="solid">12</Badge>}>
+      Inbox
+    </Tabs.Tab>
+    <Tabs.Tab value="sent" leftSection={<span>↗</span>}>Sent</Tabs.Tab>
+    <Tabs.Tab value="archive" disabled>Archive</Tabs.Tab>
+  </Tabs.List>
+  <Tabs.Panel value="inbox">
+    <p className="text-sm text-secondary">12 unread.</p>
+  </Tabs.Panel>
+  <Tabs.Panel value="sent">
+    <p className="text-sm text-secondary">Nothing pending.</p>
+  </Tabs.Panel>
+</Tabs>
+```
+
+## Controlled
+
+`onChange` receives the new value.
+
+```jsx live noInline
+function Demo() {
+  const [tab, setTab] = useState('build');
+  return (
+    <div className="w-full max-w-lg space-y-3">
+      <Tabs value={tab} onChange={setTab}>
+        <Tabs.List>
+          <Tabs.Tab value="build">Build</Tabs.Tab>
+          <Tabs.Tab value="test">Test</Tabs.Tab>
+          <Tabs.Tab value="deploy" disabled>Deploy</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panel value="build">
+          <p className="text-sm text-secondary">tsc --noEmit · 2.1s</p>
+        </Tabs.Panel>
+        <Tabs.Panel value="test">
+          <p className="text-sm text-secondary">128 passed, 0 failed</p>
+        </Tabs.Panel>
+      </Tabs>
+      <Button size="xs" variant="outline" onClick={() => setTab(tab === 'build' ? 'test' : 'build')}>
+        Toggle from outside
+      </Button>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Parts
+
+| Part | Notes |
+|---|---|
+| `Tabs` / `Tabs.Root` | `value` / `defaultValue` / `onChange` / `orientation` |
+| `Tabs.List` | The row of tabs |
+| `Tabs.Tab` | Needs a `value`. `leftSection`, `rightSection`, `disabled` |
+| `Tabs.Panel` | Body for the matching `value` |
+
+Also exported flat as `TabsList`, `Tab` and `TabsPanel`.

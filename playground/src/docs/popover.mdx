@@ -1,0 +1,89 @@
+export const title = "Popover";
+export const group = "Overlays";
+
+# Popover
+
+`Popover.Target` and `Popover.Dropdown`, same shape as [Menu](#menu). The
+difference is what goes inside: a menu holds items, a popover holds arbitrary
+content — a form, a summary, a colour picker.
+
+```jsx live
+<Popover>
+  <Popover.Target asChild>
+    <Button variant="outline">Edit quota</Button>
+  </Popover.Target>
+  <Popover.Dropdown width={280}>
+    <div className="space-y-3">
+      <Input label="Monthly cap" defaultValue="500" size="sm" />
+      <div className="flex justify-end gap-2">
+        <Popover.Close asChild>
+          <Button size="xs" variant="ghost" color="gray">Cancel</Button>
+        </Popover.Close>
+        <Popover.Close asChild>
+          <Button size="xs">Save</Button>
+        </Popover.Close>
+      </div>
+    </div>
+  </Popover.Dropdown>
+</Popover>
+```
+
+Positioning lives on the **root** (`position`, `offset`, `withinPortal`), matching
+the house style — Radix puts it on the content, so the root passes it down.
+
+## Position
+
+```jsx live
+<div className="flex flex-wrap gap-3">
+  {['top', 'right', 'bottom', 'left'].map((p) => (
+    <Popover key={p} position={p}>
+      <Popover.Target asChild>
+        <Button size="xs" variant="secondary">{p}</Button>
+      </Popover.Target>
+      <Popover.Dropdown>Opens {p}</Popover.Dropdown>
+    </Popover>
+  ))}
+</div>
+```
+
+## Controlled
+
+```jsx live noInline
+function Demo() {
+  const [opened, setOpened] = useState(false);
+  return (
+    <div className="flex items-center gap-3">
+      <Popover opened={opened} onChange={setOpened} position="right">
+        <Popover.Target asChild>
+          <Button variant="outline">Toggle</Button>
+        </Popover.Target>
+        <Popover.Dropdown>
+          <p className="text-sm text-secondary">opened is {String(opened)}.</p>
+        </Popover.Dropdown>
+      </Popover>
+      <Button size="xs" variant="ghost" color="gray" onClick={() => setOpened((v) => !v)}>
+        From outside
+      </Button>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Popover vs Menu vs Tooltip
+
+- **Tooltip** — a label. Hover only, no interactive content, never the only source
+  of the information.
+- **Popover** — arbitrary content the user interacts with. Click to open.
+- **Menu** — a list of commands. Closes on select, supports typeahead.
+
+## Parts
+
+| Part | Notes |
+|---|---|
+| `Popover` / `Popover.Root` | `opened`, `defaultOpened`, `onChange`, `position`, `offset`, `withinPortal`, `modal` |
+| `Popover.Target` | Use `asChild` to keep your own trigger |
+| `Popover.Dropdown` | `width`, plus Radix's `align` / `collisionPadding` |
+| `Popover.Close` | Closes from inside |
+| `Popover.Anchor` | Position against something other than the target |

@@ -1,0 +1,81 @@
+export const title = "Progress";
+export const group = "Foundations";
+
+# Progress, RingProgress
+
+Both take a 0–100 `value` and clamp out-of-range input rather than overflowing.
+
+```jsx live
+<div className="w-full max-w-sm space-y-4">
+  <Progress value={28} />
+  <Progress value={62} color="green" />
+  <Progress value={90} color="orange" />
+  <Progress value={100} color="red" />
+</div>
+```
+
+## Sizes and stripes
+
+```jsx live
+<div className="w-full max-w-sm space-y-3">
+  {['xs', 'sm', 'md', 'lg', 'xl'].map((s) => (
+    <Progress key={s} value={55} size={s} />
+  ))}
+  <Progress value={70} size={24} striped animated color="green" />
+</div>
+```
+
+`size` also takes a number for an exact pixel height. `striped` alone is static;
+add `animated` to make the stripes travel.
+
+## Accessible label
+
+`Progress` is a `role="progressbar"` with `aria-valuenow`. Pass `label` to name it —
+otherwise a screen reader announces a bare percentage with no context.
+
+```jsx live noInline
+function Demo() {
+  const [pct, setPct] = useState(35);
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <Progress value={pct} label="Upload progress" color="green" />
+      <Slider value={pct} onChange={setPct} label={(v) => `${v}%`} />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## RingProgress
+
+`sections` stack around the ring, so a two-part ring is two entries rather than
+two components.
+
+```jsx live
+<div className="flex flex-wrap items-center gap-8">
+  <RingProgress sections={[{ value: 62, color: 'green' }]} label="62%" />
+  <RingProgress
+    size={140}
+    thickness={16}
+    roundCaps
+    sections={[
+      { value: 40, color: 'green' },
+      { value: 25, color: 'orange' },
+      { value: 15, color: 'red' },
+    ]}
+    label={<span className="text-xs text-muted">80%<br />used</span>}
+  />
+</div>
+```
+
+## Props
+
+`Progress`: `value`, `color`, `size` (`xs`–`xl` or a number), `striped`,
+`animated`, `label`.
+
+`RingProgress`: `sections` (`{ value, color }[]`), `size` (default `120`),
+`thickness` (default `12`), `roundCaps`, `label`.
+
+`color` on both is the shared palette: `primary` `gray` `red` `blue` `green`
+`orange` `yellow`.

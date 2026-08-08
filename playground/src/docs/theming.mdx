@@ -1,0 +1,116 @@
+export const title = "Theming";
+export const group = "Getting started";
+
+# Theming
+
+## useTheme
+
+The hook reads the state `bootTheme()` established and writes through to
+localStorage plus the CSS variables on `<html>`. It also listens for `storage`, so
+changing the theme in one tab updates the others.
+
+```jsx live noInline
+function Demo() {
+  const { themeId, mode, themes, setThemeId, toggleMode } = useTheme();
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-2">
+        {themes.map((t) => (
+          <Button
+            key={t.id}
+            size="xs"
+            variant={t.id === themeId ? 'primary' : 'outline'}
+            color="gray"
+            onClick={() => setThemeId(t.id)}
+          >
+            {t.label}
+          </Button>
+        ))}
+      </div>
+      <Button size="xs" variant="secondary" onClick={toggleMode}>
+        Switch to {mode === 'dark' ? 'light' : 'dark'}
+      </Button>
+      <p className="text-xs text-muted">
+        Active: <code>{themeId}</code> · <code>{mode}</code>
+      </p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`themes` is whichever catalog `bootTheme()` booted with — this gallery boots
+`ALL_THEMES`, so all twelve show up.
+
+| Field | Type |
+|---|---|
+| `themeId` | `string` |
+| `mode` | `'light' \| 'dark'` |
+| `themes` | `readonly ThemePlugin[]` |
+| `setThemeId` | `(id: string) => void` |
+| `setMode` | `(mode: 'light' \| 'dark') => void` |
+| `toggleMode` | `() => void` |
+
+## ThemeToggle
+
+A ready-made floating picker built on the same hook — a button plus a popover with
+a light/dark switch and a swatch per theme. It's `position: fixed`, so it sits
+above your layout rather than inside it; pass `className` to move it off the
+default bottom-right corner.
+
+```jsx
+<ThemeToggle />
+<ThemeToggle className="bottom-4 left-4" />
+```
+
+It isn't previewed inline here because it would pin itself to the viewport corner —
+the swatch row in this gallery's top bar is the same thing wired by hand.
+
+## The catalogs
+
+| Export | Contents |
+|---|---|
+| `BUILT_IN_THEMES` | GitHub, Espresso, Catppuccin Mocha, Gruvbox, Nord, Solarized |
+| `CONSUMER_THEMES` | Sunset, Ocean, Bloom, Meadow, Grape, Mono |
+| `ALL_THEMES` | Both, in that order |
+
+Pick one when booting — dev tooling usually wants `BUILT_IN_THEMES`, a
+customer-facing app `CONSUMER_THEMES`:
+
+```tsx
+bootTheme({ themes: CONSUMER_THEMES, defaultThemeId: 'ocean' });
+```
+
+## A custom theme
+
+A `ThemePlugin` is a plain object: an id, a label, a swatch for the picker, and a
+`light` + `dark` variant. Each colour is a space-separated RGB triplet so
+Tailwind's `<alpha-value>` works.
+
+```tsx
+import { bootTheme, BUILT_IN_THEMES, type ThemePlugin } from '@codellyson/justui';
+
+const brand: ThemePlugin = {
+  id: 'brand',
+  label: 'Brand',
+  swatch: { light: '#ffffff', dark: '#101014' },
+  light: { bg: '255 255 255', bgSecondary: '245 245 247', /* … */ },
+  dark:  { bg: '16 16 20',   bgSecondary: '26 26 32',    /* … */ },
+};
+
+bootTheme({ themes: [...BUILT_IN_THEMES, brand], defaultThemeId: 'brand' });
+```
+
+Every key in `VAR_MAP` needs a value in both variants — see [Tokens](#tokens) for
+the full list.
+
+## Per-app storage
+
+`keyPrefix` scopes the localStorage keys so two just\* apps on the same origin
+don't fight over one setting:
+
+```tsx
+bootTheme({ keyPrefix: 'justdb', themes: ALL_THEMES });
+// writes justdb.theme.id and justdb.theme.mode
+```
