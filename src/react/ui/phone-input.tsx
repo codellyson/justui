@@ -3,6 +3,7 @@
 import { forwardRef, useId, useState, type ReactNode } from "react";
 import { cn } from "../lib/cn.js";
 import { controlHeight, controlText, type ControlSize } from "../lib/control-sizes.js";
+import { Flag } from "../lib/flag.js";
 import { ChevronDownIcon } from "../lib/icons.js";
 import { Menu } from "./menu.js";
 
@@ -48,6 +49,8 @@ export interface PhoneInputProps {
   country?: string;
   onCountryChange?: (country: PhoneCountry) => void;
   countries?: PhoneCountry[];
+  withFlags?: boolean;
+  renderFlag?: (country: string) => ReactNode;
   label?: ReactNode;
   description?: ReactNode;
   error?: ReactNode;
@@ -74,6 +77,8 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
       country,
       onCountryChange,
       countries = PHONE_COUNTRIES,
+      withFlags = true,
+      renderFlag,
       label,
       description,
       error,
@@ -97,6 +102,9 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
       const dial = active.dial.replace(/\D/g, "");
       return digits.startsWith(dial) ? digits.slice(dial.length) : digits;
     })();
+
+    const flag = (code: string) =>
+      withFlags ? (renderFlag ? renderFlag(code) : <Flag code={code} />) : null;
 
     const id = useId();
     const messageId = `${id}-message`;
@@ -145,7 +153,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                 aria-label={`Country code: ${active.name} ${active.dial}`}
                 className="flex shrink-0 items-center gap-1 border-r border-border px-2.5 font-medium text-secondary transition-colors hover:text-primary focus-visible:outline-none disabled:cursor-not-allowed"
               >
-                <span className="text-xs text-muted">{active.code}</span>
+                {flag(active.code)}
                 <span className="tabular-nums">{active.dial}</span>
                 <ChevronDownIcon className="h-3 w-3 opacity-60" />
               </button>
@@ -155,7 +163,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                 <Menu.Item
                   key={`${c.code}-${c.dial}`}
                   onSelect={() => pickCountry(c)}
-                  leftSection={<span className="w-7 text-left text-xs text-muted">{c.code}</span>}
+                  leftSection={flag(c.code) ?? <span className="w-5" />}
                   rightSection={<span className="tabular-nums">{c.dial}</span>}
                 >
                   {c.name}

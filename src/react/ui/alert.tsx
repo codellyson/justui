@@ -73,15 +73,15 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
       data-justui="alert"
       role="alert"
       className={cn(
-        "relative flex w-full gap-3 rounded-lg px-4 py-3 text-sm",
+        "relative flex w-full items-start gap-3 rounded-lg px-4 py-3 text-sm",
         colorClasses[color][variant],
         className,
       )}
       {...props}
     >
-      {icon && <span className="mt-0.5 shrink-0">{icon}</span>}
+      {icon && <span className="flex h-5 shrink-0 items-center justify-center leading-none [&_svg]:h-4 [&_svg]:w-4">{icon}</span>}
       <div className="min-w-0 flex-1">
-        {title && <div className="mb-1 font-medium leading-none tracking-tight">{title}</div>}
+        {title && <div className="mb-1 font-medium leading-5 tracking-tight">{title}</div>}
         {children && <div className="opacity-90">{children}</div>}
       </div>
       {withCloseButton && (

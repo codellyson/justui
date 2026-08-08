@@ -74,7 +74,20 @@ the picker and shows the symbol alone.
 | `size` | `xs` `sm` `md` `lg` | `md` |
 
 Codes: `USD` `NGN` `GBP` `EUR` `CAD` `AUD` `GHS` `KES` `ZAR`. `CURRENCIES` is
-exported if you need a symbol or decimal count elsewhere.
+exported if you need a symbol, decimal count or country elsewhere.
 
-The picker shows the symbol and code rather than a flag — the reference library
-renders a flag image per currency, which would mean fetching them from a CDN.
+## Flags
+
+Flags come from [flagcdn.com](https://flagcdn.com) at 20×15, with 2x and 3x in
+`srcSet`. `EUR` maps to the EU flag. They're `alt=""` — the code beside them
+already names the currency, so a screen reader shouldn't read it twice.
+
+That's a third-party CDN, which you may not want in production. Two ways out:
+
+```jsx
+<PriceInput withFlags={false} />
+<PriceInput renderFlag={(country) => <MyFlag code={country} />} />
+```
+
+`Flag` and `flagUrl` are exported if you'd rather build on them —
+`flagUrl('ng', '40x30')` gives you the URL to self-host or preload.

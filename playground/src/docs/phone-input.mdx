@@ -73,3 +73,16 @@ replace it.
 
 Digits group 3-3-rest. That's presentation only and deliberately not a claim of
 locale-correct formatting — for that you want a library with real metadata.
+
+## Flags
+
+From [flagcdn.com](https://flagcdn.com), keyed off each country's `code`. Turn
+them off with `withFlags={false}`, or swap the source with
+`renderFlag={(code) => …}` if you'd rather not depend on a third-party CDN.
+
+```jsx live
+<div className="w-full max-w-sm space-y-3">
+  <PhoneInput label="With flags" />
+  <PhoneInput label="Without" withFlags={false} />
+</div>
+```

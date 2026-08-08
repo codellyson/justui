@@ -2,8 +2,16 @@ import * as JustUI from "@codellyson/justui/react";
 import { useState } from "react";
 import * as React from "react";
 import { LiveEditor, LiveError, LivePreview, LiveProvider } from "react-live";
+import * as Icons from "./icons.js";
 
-const scope = { ...JustUI, React, useState, useEffect: React.useEffect, useRef: React.useRef };
+const scope = {
+  ...JustUI,
+  ...Icons,
+  React,
+  useState,
+  useEffect: React.useEffect,
+  useRef: React.useRef,
+};
 
 // Plain colors would fight the active theme, so every value is a token lookup —
 // prism-react-renderer applies these as inline styles, where var() resolves.

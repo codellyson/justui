@@ -39,7 +39,7 @@ function Demo() {
       <Accordion multiple value={open} onChange={setOpen}>
         {['a', 'b', 'c'].map((v) => (
           <Accordion.Item key={v} value={v}>
-            <Accordion.Control leftSection={<span>▸</span>}>Section {v.toUpperCase()}</Accordion.Control>
+            <Accordion.Control leftSection={<ChevronRightIcon />}>Section {v.toUpperCase()}</Accordion.Control>
             <Accordion.Panel>Body of section {v}.</Accordion.Panel>
           </Accordion.Item>
         ))}

@@ -3,7 +3,8 @@
 import { forwardRef, useId, useState, type ReactNode } from "react";
 import { cn } from "../lib/cn.js";
 import { controlHeight, controlText, type ControlSize } from "../lib/control-sizes.js";
-import { ChevronDownIcon } from "../lib/icons.js";
+import { Flag } from "../lib/flag.js";
+import { CheckIcon, ChevronDownIcon } from "../lib/icons.js";
 import { Menu } from "./menu.js";
 
 export type CurrencyCode =
@@ -17,16 +18,19 @@ export type CurrencyCode =
   | "KES"
   | "ZAR";
 
-export const CURRENCIES: Record<CurrencyCode, { symbol: string; label: string; decimals: number }> = {
-  USD: { symbol: "$", label: "US Dollar", decimals: 2 },
-  NGN: { symbol: "₦", label: "Nigerian Naira", decimals: 2 },
-  GBP: { symbol: "£", label: "Pound Sterling", decimals: 2 },
-  EUR: { symbol: "€", label: "Euro", decimals: 2 },
-  CAD: { symbol: "CA$", label: "Canadian Dollar", decimals: 2 },
-  AUD: { symbol: "A$", label: "Australian Dollar", decimals: 2 },
-  GHS: { symbol: "₵", label: "Ghanaian Cedi", decimals: 2 },
-  KES: { symbol: "KSh", label: "Kenyan Shilling", decimals: 2 },
-  ZAR: { symbol: "R", label: "South African Rand", decimals: 2 },
+export const CURRENCIES: Record<
+  CurrencyCode,
+  { symbol: string; label: string; decimals: number; country: string }
+> = {
+  USD: { symbol: "$", label: "US Dollar", decimals: 2, country: "us" },
+  NGN: { symbol: "₦", label: "Nigerian Naira", decimals: 2, country: "ng" },
+  GBP: { symbol: "£", label: "Pound Sterling", decimals: 2, country: "gb" },
+  EUR: { symbol: "€", label: "Euro", decimals: 2, country: "eu" },
+  CAD: { symbol: "CA$", label: "Canadian Dollar", decimals: 2, country: "ca" },
+  AUD: { symbol: "A$", label: "Australian Dollar", decimals: 2, country: "au" },
+  GHS: { symbol: "₵", label: "Ghanaian Cedi", decimals: 2, country: "gh" },
+  KES: { symbol: "KSh", label: "Kenyan Shilling", decimals: 2, country: "ke" },
+  ZAR: { symbol: "R", label: "South African Rand", decimals: 2, country: "za" },
 };
 
 const controlSizes: Record<ControlSize, string> = {
@@ -44,6 +48,8 @@ export interface PriceInputProps {
   onCurrencyChange?: (currency: CurrencyCode) => void;
   currencies?: CurrencyCode[];
   withCurrencySelect?: boolean;
+  withFlags?: boolean;
+  renderFlag?: (country: string) => ReactNode;
   label?: ReactNode;
   description?: ReactNode;
   error?: ReactNode;
@@ -77,6 +83,8 @@ export const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
       onCurrencyChange,
       currencies,
       withCurrencySelect = true,
+      withFlags = true,
+      renderFlag,
       label,
       description,
       error,
@@ -93,6 +101,8 @@ export const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
     ref,
   ) => {
     const meta = CURRENCIES[currency];
+    const flag = (country: string) =>
+      withFlags ? (renderFlag ? renderFlag(country) : <Flag code={country} />) : null;
     const offered = currencies ?? (Object.keys(CURRENCIES) as CurrencyCode[]);
     const id = useId();
     const messageId = `${id}-message`;
@@ -145,7 +155,7 @@ export const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
                   aria-label={`Currency: ${meta.label}`}
                   className="flex shrink-0 items-center gap-1 border-r border-border px-2.5 font-medium text-secondary transition-colors hover:text-primary focus-visible:outline-none disabled:cursor-not-allowed"
                 >
-                  <span>{meta.symbol}</span>
+                  {flag(meta.country)}
                   <span className="text-xs text-muted">{currency}</span>
                   <ChevronDownIcon className="h-3 w-3 opacity-60" />
                 </button>
@@ -155,8 +165,13 @@ export const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
                   <Menu.Item
                     key={code}
                     onSelect={() => onCurrencyChange?.(code)}
-                    leftSection={<span className="w-6 text-left">{CURRENCIES[code].symbol}</span>}
-                    rightSection={code === currency ? "✓" : undefined}
+                    leftSection={flag(CURRENCIES[code].country) ?? <span className="w-5" />}
+                    rightSection={
+                      <span className="flex items-center gap-2 text-muted">
+                        {CURRENCIES[code].symbol}
+                        {code === currency && <CheckIcon className="h-3 w-3 text-accent" />}
+                      </span>
+                    }
                   >
                     {CURRENCIES[code].label}
                   </Menu.Item>
@@ -164,7 +179,8 @@ export const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
               </Menu.Dropdown>
             </Menu>
           ) : (
-            <span className="flex shrink-0 items-center border-r border-border px-2.5 font-medium text-secondary">
+            <span className="flex shrink-0 items-center gap-1.5 border-r border-border px-2.5 font-medium text-secondary">
+              {flag(meta.country)}
               {meta.symbol}
             </span>
           )}

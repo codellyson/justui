@@ -33,10 +33,10 @@ the ARIA roles are wired for you.
 ```jsx live
 <Tabs defaultValue="inbox" className="w-full max-w-lg">
   <Tabs.List>
-    <Tabs.Tab value="inbox" leftSection={<span>✉</span>} rightSection={<Badge color="red" variant="solid">12</Badge>}>
+    <Tabs.Tab value="inbox" leftSection={<EnvelopeIcon />} rightSection={<Badge color="red" variant="solid">12</Badge>}>
       Inbox
     </Tabs.Tab>
-    <Tabs.Tab value="sent" leftSection={<span>↗</span>}>Sent</Tabs.Tab>
+    <Tabs.Tab value="sent" leftSection={<ArrowUpRightIcon />}>Sent</Tabs.Tab>
     <Tabs.Tab value="archive" disabled>Archive</Tabs.Tab>
   </Tabs.List>
   <Tabs.Panel value="inbox">

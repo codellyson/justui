@@ -40,7 +40,7 @@ function Demo() {
   return (
     <div className="w-full space-y-3">
       {shown ? (
-        <Alert title="Dismissible" color="blue" icon={<span>ℹ</span>} withCloseButton onClose={() => setShown(false)}>
+        <Alert title="Dismissible" color="blue" icon={<InformationCircleIcon />} withCloseButton onClose={() => setShown(false)}>
           Close me.
         </Alert>
       ) : (

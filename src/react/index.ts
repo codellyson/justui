@@ -127,6 +127,7 @@ export {
 } from "./ui/timeline.js";
 export { WithBadge, type WithBadgeProps } from "./ui/with-badge.js";
 
+export { Flag, flagUrl, type FlagProps } from "./lib/flag.js";
 export { cn } from "./lib/cn.js";
 
 export { Modal, type ModalProps } from "./Modal.js";

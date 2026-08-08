@@ -6,9 +6,9 @@ export const group = "Foundations";
 ```jsx live
 <div className="w-full max-w-lg space-y-4">
   <Blockquote>A plain pull quote.</Blockquote>
-  <Blockquote variant="info" icon={<span>ℹ</span>}>Deploys are immutable.</Blockquote>
-  <Blockquote variant="warning">This will drop the column.</Blockquote>
-  <Blockquote variant="success" cite="Release notes 4.2">
+  <Blockquote variant="info" icon={<InformationCircleIcon />}>Deploys are immutable.</Blockquote>
+  <Blockquote variant="warning" icon={<ExclamationTriangleIcon />}>This will drop the column.</Blockquote>
+  <Blockquote variant="success" icon={<CheckCircleIcon />} cite="Release notes 4.2">
     Migrations now run in a transaction.
   </Blockquote>
 </div>
