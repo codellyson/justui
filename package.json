@@ -15,7 +15,9 @@
     "clean": "rm -rf dist",
     "prepack": "pnpm run clean && pnpm run build",
     "playground": "pnpm run build && vite --config playground/vite.config.ts",
-    "playground:build": "pnpm run build && vite build --config playground/vite.config.ts"
+    "playground:build": "pnpm run build && vite build --config playground/vite.config.ts",
+    "check:icons": "node scripts/check-icons.mjs",
+    "lint": "tsc --noEmit && node scripts/check-icons.mjs"
   },
   "exports": {
     ".": {
