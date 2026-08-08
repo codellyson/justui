@@ -1,6 +1,9 @@
+"use client";
+
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   forwardRef,
+  type ComponentProps,
   type ComponentPropsWithoutRef,
   type ElementRef,
   type HTMLAttributes,
@@ -8,8 +11,12 @@ import {
 import { cn } from "../lib/cn.js";
 import { XIcon } from "../lib/icons.js";
 
-export const Dialog = DialogPrimitive.Root;
-export const DialogTrigger = DialogPrimitive.Trigger;
+const DialogRoot = (props: ComponentProps<typeof DialogPrimitive.Root>) => (
+  <DialogPrimitive.Root {...props} />
+);
+DialogRoot.displayName = "Dialog";
+
+export const DialogTarget = DialogPrimitive.Trigger;
 export const DialogPortal = DialogPrimitive.Portal;
 export const DialogClose = DialogPrimitive.Close;
 
@@ -26,12 +33,18 @@ export const DialogOverlay = forwardRef<
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
+export interface DialogContentProps
+  extends ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  withCloseButton?: boolean;
+  overlayClassName?: string;
+}
+
 export const DialogContent = forwardRef<
   ElementRef<typeof DialogPrimitive.Content>,
-  ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  DialogContentProps
+>(({ className, children, withCloseButton = true, overlayClassName, ...props }, ref) => (
   <DialogPortal>
-    <DialogOverlay />
+    <DialogOverlay className={overlayClassName} />
     <DialogPrimitive.Content
       ref={ref}
       data-justui="dialog-content"
@@ -42,10 +55,12 @@ export const DialogContent = forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm text-muted opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent">
-        <XIcon className="h-4 w-4" />
-        <span className="sr-only">Close</span>
-      </DialogPrimitive.Close>
+      {withCloseButton && (
+        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm text-muted opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+          <XIcon className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </DialogPrimitive.Close>
+      )}
     </DialogPrimitive.Content>
   </DialogPortal>
 ));
@@ -85,3 +100,16 @@ export const DialogDescription = forwardRef<
   <DialogPrimitive.Description ref={ref} data-justui="dialog-description" className={cn("text-sm text-muted", className)} {...props} />
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
+
+export const Dialog = Object.assign(DialogRoot, {
+  Root: DialogRoot,
+  Target: DialogTarget,
+  Portal: DialogPortal,
+  Close: DialogClose,
+  Overlay: DialogOverlay,
+  Content: DialogContent,
+  Header: DialogHeader,
+  Footer: DialogFooter,
+  Title: DialogTitle,
+  Description: DialogDescription,
+});

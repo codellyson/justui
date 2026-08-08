@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import type { ThemePlugin, ThemeVariant } from "../theme-plugins.js";
 import { BUILT_IN_THEMES, DEFAULT_THEME_ID, VAR_MAP } from "../theme-plugins.js";
