@@ -7,6 +7,8 @@ export {
   ChevronDownIcon,
   ChevronRightIcon,
   ChevronUpIcon,
+  EyeIcon,
+  EyeSlashIcon,
   XMarkIcon as XIcon,
 } from "@heroicons/react/16/solid";
 

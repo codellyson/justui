@@ -1,5 +1,23 @@
 export { Button, buttonVariants, type ButtonColor, type ButtonProps } from "./ui/button.js";
-export { Input, type InputProps } from "./ui/input.js";
+export {
+  Input,
+  type InputProps,
+  type NumberInputProps,
+  type TextInputProps,
+} from "./ui/input.js";
+export { PinInput, type PinInputProps } from "./ui/pin-input.js";
+export {
+  CURRENCIES,
+  PriceInput,
+  type CurrencyCode,
+  type PriceInputProps,
+} from "./ui/price-input.js";
+export {
+  PHONE_COUNTRIES,
+  PhoneInput,
+  type PhoneCountry,
+  type PhoneInputProps,
+} from "./ui/phone-input.js";
 export { Textarea, type TextareaProps } from "./ui/textarea.js";
 export { Label } from "./ui/label.js";
 export { Badge, type BadgeColor, type BadgeProps } from "./ui/badge.js";

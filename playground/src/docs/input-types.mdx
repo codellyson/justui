@@ -1,0 +1,192 @@
+export const title = "Input types";
+export const group = "Forms";
+
+# Number, password, price, phone, pin
+
+`Input` is one component whose behaviour narrows on `type`. The specialised
+ones — money, phone numbers, one-time codes — are separate components, because
+each needs its own parsing and its own keyboard.
+
+## type="number"
+
+Steppers by default, and Chrome's native spinners are suppressed so there aren't
+two sets. `onChange` gives you a **number** here, not a string.
+
+```jsx live noInline
+function Demo() {
+  const [qty, setQty] = useState(3);
+  return (
+    <div className="w-full max-w-sm space-y-4">
+      <Input label="Quantity" type="number" value={qty} onChange={setQty} min={0} max={10} />
+      <Input label="Step of 5" type="number" value={qty} onChange={setQty} step={5} />
+      <Input label="No steppers" type="number" value={qty} onChange={setQty} showNumberControls={false} />
+      <p className="text-xs text-muted">value: <code>{String(qty)}</code> ({typeof qty})</p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+The steppers clamp to `min`/`max`. An empty field reports `NaN` — guard if that
+matters to you.
+
+## type="password"
+
+The reveal toggle is built in. It's `tabIndex={-1}`, so tabbing goes from the
+field to the next control rather than into the eye.
+
+```jsx live
+<div className="w-full max-w-sm space-y-4">
+  <Input label="Password" type="password" defaultValue="hunter2" />
+  <Input label="Without the toggle" type="password" defaultValue="hunter2" withPasswordToggle={false} />
+</div>
+```
+
+## PriceInput
+
+A currency picker and an amount. Thousands separators appear as you type, the
+fraction is capped at the currency's decimals, and `onChange` gives you the
+parsed number — `null` while the field is empty, so you can tell "zero" from
+"nothing entered".
+
+```jsx live noInline
+function Demo() {
+  const [amount, setAmount] = useState(1500);
+  const [currency, setCurrency] = useState('NGN');
+  return (
+    <div className="w-full max-w-sm space-y-4">
+      <PriceInput
+        label="Price"
+        value={amount}
+        onChange={setAmount}
+        currency={currency}
+        onCurrencyChange={setCurrency}
+      />
+      <PriceInput label="Fixed currency" currency="USD" withCurrencySelect={false} />
+      <p className="text-xs text-muted">
+        {currency} · <code>{amount === null ? 'null' : String(amount)}</code>
+      </p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Restrict the picker with `currencies`, and clamp with `min`/`max`:
+
+```jsx live
+<div className="w-full max-w-sm">
+  <PriceInput label="Payout" currency="GBP" currencies={['GBP', 'EUR', 'USD']} min={0} max={10000} />
+</div>
+```
+
+`CURRENCIES` is exported if you need the symbol or decimals elsewhere. Nine codes
+ship; the reference library uses a flag image per currency, this shows the symbol
+and code instead so there's no image dependency.
+
+## PhoneInput
+
+A dial-code picker and the national number. `value` and `onChange` are **E.164**
+(`+2348012345678`) — one canonical string to store, with the display formatting
+handled for you.
+
+```jsx live noInline
+function Demo() {
+  const [phone, setPhone] = useState('+2348012345678');
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <PhoneInput label="Phone" value={phone} onChange={setPhone} />
+      <p className="text-xs text-muted">stored: <code>{phone || '(empty)'}</code></p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Switching country re-emits the same national digits under the new dial code. The
+built-in list is a starting set of 17, not exhaustive — pass `countries` to
+replace it:
+
+```jsx live
+<div className="w-full max-w-sm">
+  <PhoneInput
+    label="West Africa only"
+    countries={[
+      { code: 'NG', name: 'Nigeria', dial: '+234', nationalLength: 10 },
+      { code: 'GH', name: 'Ghana', dial: '+233', nationalLength: 9 },
+      { code: 'SN', name: 'Senegal', dial: '+221', nationalLength: 9 },
+    ]}
+  />
+</div>
+```
+
+Digits group 3-3-rest. That reads well and is deliberately not a claim of
+locale-correct formatting — for that you want a library with real metadata.
+
+## PinInput
+
+One box per character, with paste, arrow keys and backspace-to-previous. The
+first box carries `autocomplete="one-time-code"`, so iOS and Android offer the
+SMS code.
+
+```jsx live noInline
+function Demo() {
+  const [code, setCode] = useState('');
+  const [done, setDone] = useState(null);
+  return (
+    <div className="space-y-3">
+      <PinInput length={6} value={code} onChange={setCode} onComplete={setDone} />
+      <p className="text-xs text-muted">
+        {code || '(empty)'}{done && ` · completed: ${done}`}
+      </p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Paste a whole code into any box and it fills from there.
+
+```jsx live noInline
+function Demo() {
+  const [a, setA] = useState('');
+  const [b, setB] = useState('');
+  return (
+    <div className="space-y-5">
+      <PinInput length={4} value={a} onChange={setA} mask size="lg" label="Masked, 4 digits" />
+      <PinInput length={5} value={b} onChange={setB} alphanumeric size="sm"
+        label="Alphanumeric" description="Letters are upper-cased." />
+      <PinInput length={4} value="12" onChange={() => {}} error="That code has expired." />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Props
+
+`Input` narrows on `type`:
+
+| | text family | `type="number"` |
+|---|---|---|
+| `value` | `string` | `number \| string` |
+| `onChange` | `(value: string) => void` | `(value: number) => void` |
+| extras | `withPasswordToggle` | `step`, `showNumberControls` |
+
+Both share `label`, `description`, `error`, `size`, `leftIcon`, `rightIcon`,
+`onLeftIconClick`, `onRightIconClick`, `iconSize`, `containerClassName`,
+`labelClassName` and `onChangeEvent`.
+
+`PriceInput`: `value`, `onChange(number | null)`, `currency`, `onCurrencyChange`,
+`currencies`, `withCurrencySelect`, `min`, `max`, plus the shared label/error set.
+
+`PhoneInput`: `value` (E.164), `onChange`, `country`, `onCountryChange`,
+`countries`, plus the shared set.
+
+`PinInput`: `length` (6), `value`, `onChange`, `onComplete`, `mask`,
+`alphanumeric`, `size`, `autoFocus`, `disabled`, plus label/description/error.
