@@ -3,13 +3,17 @@
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { forwardRef, useId, type ReactNode } from "react";
 import { cn } from "../lib/cn.js";
-import { controlHeight, controlText, type ControlSize } from "../lib/control-sizes.js";
+import {
+  controlHeight,
+  controlText,
+  type ControlSize,
+} from "../lib/control-sizes.js";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "../lib/icons.js";
 
 export interface SelectOption {
   label: string;
   subLabel?: string;
-  value: string;
+  value: string | number;
   disabled?: boolean;
   icon?: ReactNode;
 }
@@ -47,8 +51,9 @@ export interface SelectProps {
   renderOption?: (option: SelectOption) => ReactNode;
 }
 
-const isGroup = (o: SelectOption | SelectGroupedOptions): o is SelectGroupedOptions =>
-  "group" in o;
+const isGroup = (
+  o: SelectOption | SelectGroupedOptions,
+): o is SelectGroupedOptions => "group" in o;
 
 function Option({
   option,
@@ -71,12 +76,16 @@ function Option({
       </span>
       {option.icon && <span className="shrink-0">{option.icon}</span>}
       {renderOption ? (
-        <SelectPrimitive.ItemText>{renderOption(option)}</SelectPrimitive.ItemText>
+        <SelectPrimitive.ItemText>
+          {renderOption(option)}
+        </SelectPrimitive.ItemText>
       ) : (
         <SelectPrimitive.ItemText>
           <span className="flex flex-col">
             <span>{option.label}</span>
-            {option.subLabel && <span className="text-xs text-muted">{option.subLabel}</span>}
+            {option.subLabel && (
+              <span className="text-xs text-muted">{option.subLabel}</span>
+            )}
           </span>
         </SelectPrimitive.ItemText>
       )}
@@ -114,11 +123,17 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
     const message = hasError ? error : description;
 
     return (
-      <div data-justui="select-wrapper" className={cn("flex flex-col gap-1.5", containerClassName)}>
+      <div
+        data-justui="select-wrapper"
+        className={cn("flex flex-col gap-1.5", containerClassName)}
+      >
         {label && (
           <label
             htmlFor={id}
-            className={cn("text-xs font-medium uppercase tracking-wider text-muted", labelClassName)}
+            className={cn(
+              "text-xs font-medium uppercase tracking-wider text-muted",
+              labelClassName,
+            )}
           >
             {label}
           </label>
@@ -140,12 +155,16 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
             className={cn(
               "flex w-full items-center justify-between gap-2 rounded-md border bg-bg-secondary px-3 py-2 text-primary focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
               triggerSizes[size],
-              hasError ? "border-danger focus-visible:ring-danger" : "border-border focus-visible:ring-accent",
+              hasError
+                ? "border-danger focus-visible:ring-danger"
+                : "border-border focus-visible:ring-accent",
               className,
             )}
           >
             <span className="flex min-w-0 items-center gap-2">
-              {leftIcon && <span className="shrink-0 text-muted">{leftIcon}</span>}
+              {leftIcon && (
+                <span className="shrink-0 text-muted">{leftIcon}</span>
+              )}
               <SelectPrimitive.Value placeholder={placeholder} />
             </span>
             <SelectPrimitive.Icon asChild>
@@ -170,7 +189,8 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
               <SelectPrimitive.Viewport
                 className={cn(
                   "p-1",
-                  position === "popper" && "w-full min-w-[var(--radix-select-trigger-width)]",
+                  position === "popper" &&
+                    "w-full min-w-[var(--radix-select-trigger-width)]",
                 )}
               >
                 {options.map((entry) =>
@@ -180,11 +200,19 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
                         {entry.group}
                       </SelectPrimitive.Label>
                       {entry.items.map((o) => (
-                        <Option key={o.value} option={o} renderOption={renderOption} />
+                        <Option
+                          key={o.value}
+                          option={o}
+                          renderOption={renderOption}
+                        />
                       ))}
                     </SelectPrimitive.Group>
                   ) : (
-                    <Option key={entry.value} option={entry} renderOption={renderOption} />
+                    <Option
+                      key={entry.value}
+                      option={entry}
+                      renderOption={renderOption}
+                    />
                   ),
                 )}
               </SelectPrimitive.Viewport>
@@ -196,7 +224,10 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
         </SelectPrimitive.Root>
 
         {message && (
-          <p id={messageId} className={cn("text-xs", hasError ? "text-danger" : "text-muted")}>
+          <p
+            id={messageId}
+            className={cn("text-xs", hasError ? "text-danger" : "text-muted")}
+          >
             {message}
           </p>
         )}

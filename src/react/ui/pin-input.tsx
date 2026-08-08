@@ -19,9 +19,7 @@ export interface PinInputProps {
   description?: ReactNode;
   error?: ReactNode;
   size?: keyof typeof boxSizes;
-  /** Render the digits as dots. */
   mask?: boolean;
-  /** Accept letters as well as digits. */
   alphanumeric?: boolean;
   autoFocus?: boolean;
   disabled?: boolean;
@@ -66,7 +64,6 @@ export function PinInput({
     const digits = clean(raw);
     if (!digits) return;
 
-    // A multi-character value means a paste or an autofilled one-time code.
     const chars = value.padEnd(length, " ").split("");
     digits.split("").forEach((d, i) => {
       if (index + i < length) chars[index + i] = d;

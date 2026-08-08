@@ -19,15 +19,14 @@ const controlSizes: Record<ControlSize, string> = {
 };
 
 const iconSizes = {
-  sm: "h-4 w-4",
-  md: "h-5 w-5",
-  lg: "h-6 w-6",
+  sm: "text-sm [&_svg]:h-4 [&_svg]:w-4",
+  md: "text-base [&_svg]:h-5 [&_svg]:w-5",
+  lg: "text-lg [&_svg]:h-6 [&_svg]:w-6",
 } as const;
 
 interface InputBaseProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange" | "type" | "value"> {
   label?: ReactNode;
-  /** Helper text under the control. Hidden while `error` is set. */
   description?: ReactNode;
   error?: ReactNode;
   size?: ControlSize;
@@ -46,7 +45,6 @@ export interface TextInputProps extends InputBaseProps {
   value?: string;
   /** Receives the value, not the event — use `onChangeEvent` for the event. */
   onChange?: (value: string) => void;
-  /** The reveal toggle on a password field. */
   withPasswordToggle?: boolean;
 }
 
@@ -60,6 +58,31 @@ export interface NumberInputProps extends InputBaseProps {
 }
 
 export type InputProps = TextInputProps | NumberInputProps;
+
+function Adornment({
+  side,
+  icon,
+  size,
+  onClick,
+}: {
+  side: "left" | "right";
+  icon: ReactNode;
+  size: keyof typeof iconSizes;
+  onClick?: () => void;
+}) {
+  const classes = cn(
+    "absolute top-1/2 flex -translate-y-1/2 items-center justify-center leading-none text-muted",
+    side === "left" ? "left-3" : "right-3",
+    iconSizes[size],
+  );
+  return onClick ? (
+    <button type="button" tabIndex={-1} onClick={onClick} className={cn(classes, "hover:text-primary")}>
+      {icon}
+    </button>
+  ) : (
+    <span className={cn(classes, "pointer-events-none")}>{icon}</span>
+  );
+}
 
 const isNumberInput = (p: InputProps): p is NumberInputProps => p.type === "number";
 
@@ -95,11 +118,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const hasError = error != null && error !== false;
   const message = hasError ? error : description;
 
-  // Component props, not DOM attributes — React warns if they reach the input.
   const domProps = { ...rest } as Record<string, unknown>;
   delete domProps.showNumberControls;
   delete domProps.withPasswordToggle;
   delete domProps.step;
+  delete domProps.type;
+  delete domProps.value;
+  delete domProps.onChange;
 
   const inputType = numeric ? "number" : revealed ? "text" : (props.type ?? "text");
 
@@ -114,29 +139,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
 
   const trailing = showNumberControls || withPasswordToggle || rightIcon;
 
-  const Adornment = ({
-    side,
-    icon,
-    onClick,
-  }: {
-    side: "left" | "right";
-    icon: ReactNode;
-    onClick?: () => void;
-  }) => {
-    const classes = cn(
-      "absolute top-1/2 -translate-y-1/2 text-muted [&>*]:block",
-      side === "left" ? "left-3" : "right-3",
-      iconSizes[iconSize],
-    );
-    return onClick ? (
-      <button type="button" tabIndex={-1} onClick={onClick} className={cn(classes, "hover:text-primary")}>
-        {icon}
-      </button>
-    ) : (
-      <span className={cn(classes, "pointer-events-none")}>{icon}</span>
-    );
-  };
-
   return (
     <div data-justui="input-wrapper" className={cn("flex flex-col gap-1.5", containerClassName)}>
       {label && (
@@ -149,8 +151,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
       )}
 
       <div className="relative">
-        {leftIcon && <Adornment side="left" icon={leftIcon} onClick={onLeftIconClick} />}
+        {leftIcon && <Adornment side="left" icon={leftIcon} size={iconSize} onClick={onLeftIconClick} />}
         <input
+          {...domProps}
           ref={ref}
           id={inputId}
           data-justui="input"
@@ -176,7 +179,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
             trailing && "pr-9",
             className,
           )}
-          {...domProps}
         />
 
         {showNumberControls && (
@@ -205,12 +207,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           <Adornment
             side="right"
             icon={revealed ? <EyeSlashIcon /> : <EyeIcon />}
+            size={iconSize}
             onClick={() => setRevealed((v) => !v)}
           />
         )}
 
         {!showNumberControls && !withPasswordToggle && rightIcon && (
-          <Adornment side="right" icon={rightIcon} onClick={onRightIconClick} />
+          <Adornment side="right" icon={rightIcon} size={iconSize} onClick={onRightIconClick} />
         )}
       </div>
 

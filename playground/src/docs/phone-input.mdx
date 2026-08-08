@@ -1,0 +1,75 @@
+export const title = "PhoneInput";
+export const group = "Forms";
+
+# PhoneInput
+
+A dial-code picker and the national number. `value` and `onChange` are **E.164**
+(`+2348012345678`) — one canonical string to store, with the display formatting
+handled for you.
+
+```jsx live noInline
+function Demo() {
+  const [phone, setPhone] = useState('+2348012345678');
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <PhoneInput label="Phone" value={phone} onChange={setPhone} />
+      <p className="text-xs text-muted">stored: <code>{phone || '(empty)'}</code></p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Switching country re-emits the same national digits under the new dial code, so
+picking the wrong country first doesn't cost you the number.
+
+## Your own country list
+
+The built-in set is 17 countries, not exhaustive. `countries` replaces it
+entirely.
+
+```jsx live
+<div className="w-full max-w-sm space-y-4">
+  <PhoneInput
+    label="West Africa"
+    countries={[
+      { code: 'NG', name: 'Nigeria', dial: '+234', nationalLength: 10 },
+      { code: 'GH', name: 'Ghana', dial: '+233', nationalLength: 9 },
+      { code: 'SN', name: 'Senegal', dial: '+221', nationalLength: 9 },
+    ]}
+  />
+  <PhoneInput label="Error state" error="Enter a valid number." />
+</div>
+```
+
+`nationalLength` caps how many digits the field accepts after the dial code.
+`PHONE_COUNTRIES` is exported if you want to extend the default rather than
+replace it.
+
+## Sizes
+
+```jsx live
+<div className="w-full max-w-sm space-y-3">
+  <PhoneInput size="sm" />
+  <PhoneInput size="md" />
+  <PhoneInput size="lg" />
+</div>
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | `string` (E.164) | — |
+| `onChange` | `(value: string) => void` | — |
+| `country` | `string` (ISO alpha-2) | first in the list |
+| `onCountryChange` | `(country: PhoneCountry) => void` | — |
+| `countries` | `PhoneCountry[]` | `PHONE_COUNTRIES` |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `xs` `sm` `md` `lg` | `md` |
+
+`PhoneCountry` is `{ code, name, dial, nationalLength? }`.
+
+Digits group 3-3-rest. That's presentation only and deliberately not a claim of
+locale-correct formatting — for that you want a library with real metadata.

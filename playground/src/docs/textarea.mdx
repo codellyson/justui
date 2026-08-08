@@ -1,0 +1,52 @@
+export const title = "Textarea";
+export const group = "Forms";
+
+# Textarea
+
+Same label / description / error props as [Input](#input), and the same
+value-not-event `onChange`.
+
+```jsx live
+<div className="w-full max-w-sm space-y-4">
+  <Textarea label="Release notes" placeholder="What changed?" description="Markdown is supported." />
+  <Textarea label="Summary" error="Required." />
+  <Textarea label="Disabled" placeholder="Read-only" disabled />
+</div>
+```
+
+## Controlled
+
+```jsx live noInline
+function Demo() {
+  const [notes, setNotes] = useState('');
+  const tooLong = notes.length > 80;
+  return (
+    <div className="w-full max-w-sm space-y-2">
+      <Textarea
+        label="Notes"
+        value={notes}
+        onChange={setNotes}
+        rows={4}
+        error={tooLong && 'Keep it under 80 characters.'}
+        description={`${notes.length}/80`}
+      />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`rows` and every other native `<textarea>` attribute pass through. Minimum height
+is 80px; grow it with `className="min-h-[…]"` or let `rows` do the work.
+
+## Props
+
+| Prop | Type | Notes |
+|---|---|---|
+| `label` / `description` / `error` | `ReactNode` | `error` supersedes `description` |
+| `onChange` | `(value: string) => void` | The value, not the event |
+| `onChangeEvent` | `ChangeEventHandler` | The native event |
+| `containerClassName` / `labelClassName` / `className` | `string` | Wrapper / label / control |
+
+Forwards a ref to the `<textarea>`.

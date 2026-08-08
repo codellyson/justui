@@ -1,0 +1,37 @@
+export const title = "Collapsible";
+export const group = "Display";
+
+# Collapsible
+
+One titled disclosure, prop-driven. Reach for this when there's no group — an
+`Accordion` of one is just ceremony.
+
+```jsx live
+<div className="w-full max-w-lg space-y-3">
+  <Collapsible title="Advanced settings" badge={<Badge size="sm">3</Badge>}>
+    <p>Build command, output directory, install command.</p>
+  </Collapsible>
+  <Collapsible title="Bordered" variant="bordered" icon={<span>⚙</span>} defaultOpened>
+    <p>Opens by default.</p>
+  </Collapsible>
+  <Collapsible title="Minimal, large" variant="minimal" size="lg">
+    <p>No surface, just the control and the body.</p>
+  </Collapsible>
+  <Collapsible title="Disabled" disabled>
+    <p>Unreachable.</p>
+  </Collapsible>
+</div>
+```
+
+| Prop | Type | Default |
+|---|---|---|
+| `title` | `ReactNode` | required |
+| `opened` / `defaultOpened` | `boolean` | `false` |
+| `onChange` | `(opened: boolean) => void` | — |
+| `variant` | `default` `bordered` `minimal` | `default` |
+| `size` | `sm` `md` `lg` | `md` |
+| `icon` / `badge` | `ReactNode` | — |
+| `disabled` | `boolean` | `false` |
+
+Both animate height using the measured value Radix publishes as a CSS variable —
+the only way to transition to `auto`.

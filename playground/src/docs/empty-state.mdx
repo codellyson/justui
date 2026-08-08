@@ -1,0 +1,40 @@
+export const title = "EmptyState";
+export const group = "Foundations";
+
+# EmptyState
+
+Actions are data, not children — the layout of the button row is the component's
+business, not the caller's.
+
+```jsx live
+<EmptyState
+  icon={<span className="text-3xl">📦</span>}
+  title="No projects yet"
+  description="Create one to get a deploy URL, logs and a preview branch."
+  primaryAction={{ label: 'Create project', onClick: () => {} }}
+  secondaryAction={{ label: 'Import from Git', onClick: () => {} }}
+/>
+```
+
+## Inside a surface
+
+```jsx live
+<Card withBorder className="w-full">
+  <EmptyState title="No results" description="Try a different search term." />
+</Card>
+```
+
+Title alone is fine — drop the description and the actions when the state is
+self-explanatory.
+
+## Props
+
+| Prop | Type |
+|---|---|
+| `title` | `ReactNode` |
+| `description` | `ReactNode` |
+| `icon` | `ReactNode` |
+| `primaryAction` / `secondaryAction` | `{ label, onClick, variant?, leftIcon? }` |
+
+Children render between the description and the buttons, if you need something the
+props don't cover.

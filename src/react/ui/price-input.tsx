@@ -42,9 +42,7 @@ export interface PriceInputProps {
   onChange?: (value: number | null) => void;
   currency?: CurrencyCode;
   onCurrencyChange?: (currency: CurrencyCode) => void;
-  /** Which codes the picker offers. Defaults to all of them. */
   currencies?: CurrencyCode[];
-  /** Hide the picker and show the symbol alone. */
   withCurrencySelect?: boolean;
   label?: ReactNode;
   description?: ReactNode;
@@ -62,7 +60,6 @@ export interface PriceInputProps {
 
 const group = (digits: string) => digits.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-/** Digits and at most one decimal point, thousands-grouped as you type. */
 function format(raw: string, decimals: number): string {
   const cleaned = raw.replace(/[^\d.]/g, "");
   const [whole = "", ...rest] = cleaned.split(".");
@@ -102,7 +99,6 @@ export const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
     const hasError = error != null && error !== false;
     const message = hasError ? error : description;
 
-    // The field holds the grouped text; the number only leaves via onChange.
     const [text, setText] = useState(() =>
       value == null || value === "" ? "" : format(String(value), meta.decimals),
     );

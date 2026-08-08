@@ -1,12 +1,10 @@
-export const title = "Checkbox & Switch";
+export const title = "Checkbox";
 export const group = "Forms";
 
-# Checkbox, Switch
+# Checkbox
 
-Both take `label` and `description` as props and wire the id themselves. `onChange`
+Takes `label` and `description` as props and wires the id itself. `onChange`
 receives the next state, not an event.
-
-## Checkbox
 
 ```jsx live
 <div className="space-y-3">
@@ -17,7 +15,10 @@ receives the next state, not an event.
 </div>
 ```
 
-### Sizes
+The box centres against a single-line label, and only top-aligns once there's a
+description below it — where the label can wrap.
+
+## Sizes
 
 ```jsx live
 <div className="flex items-center gap-6">
@@ -27,15 +28,33 @@ receives the next state, not an event.
 </div>
 ```
 
-### Controlled
+## Controlled and indeterminate
+
+`onChange` can emit `"indeterminate"` as well as a boolean — pass
+`checked="indeterminate"` for a partially-selected parent.
 
 ```jsx live noInline
 function Demo() {
-  const [accepted, setAccepted] = useState(false);
+  const [items, setItems] = useState([true, false, false]);
+  const all = items.every(Boolean);
+  const some = items.some(Boolean) && !all;
   return (
     <div className="space-y-3">
-      <Checkbox label="I accept the terms" checked={accepted} onChange={setAccepted} />
-      <Button size="xs" disabled={!accepted}>Continue</Button>
+      <Checkbox
+        label="Select all"
+        checked={all ? true : some ? 'indeterminate' : false}
+        onChange={() => setItems(items.map(() => !all))}
+      />
+      <div className="ml-6 space-y-2">
+        {items.map((checked, i) => (
+          <Checkbox
+            key={i}
+            label={`Item ${i + 1}`}
+            checked={checked}
+            onChange={(next) => setItems(items.map((v, j) => (j === i ? next === true : v)))}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -43,45 +62,23 @@ function Demo() {
 render(<Demo />);
 ```
 
-`onChange` can emit `"indeterminate"` as well as a boolean — pass
-`checked="indeterminate"` for a partially-selected parent checkbox.
+## Bare control
 
-## Switch
+Omit `label` and `description` for the box alone, with no wrapper.
 
-Use a switch for a setting that applies immediately, and a checkbox for something
-that takes effect on submit.
-
-```jsx live noInline
-function Demo() {
-  const [on, setOn] = useState(true);
-  return (
-    <div className="space-y-4">
-      <Switch label="Auto-deploy on push" description="Runs on every push to main." checked={on} onChange={setOn} />
-      <Switch label="Label on the left" labelPosition="left" defaultChecked />
-      <Switch label="Requires an upgraded plan" disabled />
-      <div className="flex items-center gap-6">
-        <Switch size="sm" label="sm" defaultChecked />
-        <Switch size="md" label="md" defaultChecked />
-        <Switch size="lg" label="lg" defaultChecked />
-      </div>
-      <p className="text-xs text-muted">Auto-deploy is {on ? 'enabled' : 'disabled'}.</p>
-    </div>
-  );
-}
-
-render(<Demo />);
+```jsx live
+<div className="flex items-center gap-3">
+  <Checkbox defaultChecked aria-label="Select row" />
+  <span className="text-sm text-secondary">Row with its own label elsewhere</span>
+</div>
 ```
 
 ## Props
 
-| Prop | Type | Default | On |
-|---|---|---|---|
-| `label` | `ReactNode` | — | both |
-| `description` | `ReactNode` | — | both |
-| `error` | `ReactNode` | — | Checkbox |
-| `size` | `sm` `md` `lg` | `sm` / `md` | both |
-| `labelPosition` | `left` `right` | `right` | Switch |
-| `onChange` | `(checked) => void` | — | both |
-
-Omit `label` and `description` and you get the bare control with no wrapper — handy
-inside a table cell or a toolbar.
+| Prop | Type | Default |
+|---|---|---|
+| `checked` / `defaultChecked` | `boolean \| "indeterminate"` | — |
+| `onChange` | `(checked: boolean \| "indeterminate") => void` | — |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `sm` `md` `lg` | `sm` |
+| `disabled` | `boolean` | `false` |

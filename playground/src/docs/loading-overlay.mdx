@@ -1,0 +1,46 @@
+export const title = "LoadingOverlay";
+export const group = "Foundations";
+
+# LoadingOverlay
+
+Covers its nearest positioned ancestor, so the parent needs `relative`. It blocks
+pointer events while visible — that's the point: it stops clicks landing on
+controls that are mid-request.
+
+```jsx live noInline
+function Demo() {
+  const [busy, setBusy] = useState(false);
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <Button size="xs" variant="outline" onClick={() => setBusy((v) => !v)}>
+        {busy ? 'Stop' : 'Start'}
+      </Button>
+      <div className="relative rounded-lg border border-border p-4">
+        <LoadingOverlay visible={busy} loaderProps={{ size: 'sm' }} />
+        <div className="space-y-2">
+          <p className="text-sm text-primary">acme-production</p>
+          <p className="text-sm text-secondary">Try clicking the button below while loading.</p>
+          <Button size="xs">Can't click me</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+It renders nothing at all when `visible` is false, rather than sitting there
+transparent — so it can't intercept clicks by accident.
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `visible` | `boolean` | required |
+| `zIndex` | `number` | `40` |
+| `loaderProps` | `{ size?, color?, label? }` | — |
+| `overlayClassName` | `string` | — |
+
+Carries `aria-busy="true"`. The backdrop is a blurred wash of the `bg` token, so it
+follows the active theme.

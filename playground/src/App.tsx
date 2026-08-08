@@ -1,5 +1,5 @@
 import { ALL_THEMES } from "@codellyson/justui";
-import { useTheme } from "@codellyson/justui/react";
+import { Button, Select, useTheme } from "@codellyson/justui/react";
 import { MDXProvider } from "@mdx-js/react";
 import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
@@ -18,7 +18,13 @@ const modules = import.meta.glob<{
   group?: string;
 }>("./docs/*.mdx", { eager: true });
 
-const GROUP_ORDER = ["Getting started", "Foundations", "Forms", "Overlays", "Display"];
+const GROUP_ORDER = [
+  "Getting started",
+  "Foundations",
+  "Forms",
+  "Overlays",
+  "Display",
+];
 
 const pages: Page[] = Object.entries(modules)
   .map(([path, mod]) => {
@@ -35,13 +41,17 @@ const pages: Page[] = Object.entries(modules)
     return g !== 0 ? g : a.title.localeCompare(b.title);
   });
 
-const groups = GROUP_ORDER.filter((g) => pages.some((p) => p.group === g)).map((g) => ({
-  name: g,
-  items: pages.filter((p) => p.group === g),
-}));
+const groups = GROUP_ORDER.filter((g) => pages.some((p) => p.group === g)).map(
+  (g) => ({
+    name: g,
+    items: pages.filter((p) => p.group === g),
+  }),
+);
 
 function useHashRoute(): string {
-  const [hash, setHash] = useState(() => window.location.hash.slice(1) || pages[0]?.slug || "");
+  const [hash, setHash] = useState(
+    () => window.location.hash.slice(1) || pages[0]?.slug || "",
+  );
   useEffect(() => {
     const onHash = () => {
       setHash(window.location.hash.slice(1) || pages[0]?.slug || "");
@@ -67,10 +77,12 @@ function ThemeBar() {
   return (
     <header className="sticky top-0 z-30 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-border bg-bg/90 px-6 py-3 backdrop-blur">
       <div className="flex items-center gap-2">
-        <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">theme</span>
+        <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
+          theme
+        </span>
         <div className="flex flex-wrap gap-1">
           {ALL_THEMES.map((t) => (
-            <button
+            <Button
               key={t.id}
               type="button"
               title={`${t.label}${t.description ? ` — ${t.description}` : ""}`}
@@ -80,34 +92,50 @@ function ThemeBar() {
                 "h-6 w-6 rounded-full border-2 transition-transform hover:scale-110 " +
                 (t.id === themeId ? "border-accent" : "border-border")
               }
-              style={{ background: mode === "dark" ? t.swatch.dark : t.swatch.light }}
+              style={{
+                background: mode === "dark" ? t.swatch.dark : t.swatch.light,
+              }}
             >
               <span className="sr-only">{t.label}</span>
-            </button>
+            </Button>
           ))}
         </div>
-        <span className="min-w-[7rem] text-xs text-secondary">{active?.label}</span>
+        <span className="min-w-[7rem] text-xs text-secondary">
+          {active?.label}
+        </span>
       </div>
 
-      <button
+      <Button
         type="button"
+        variant="ghost"
         onClick={toggleMode}
         className="rounded-md border border-border px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.08em] text-secondary hover:border-accent hover:text-primary"
       >
         {mode === "dark" ? "◐ dark" : "◑ light"}
-      </button>
+      </Button>
 
       <label className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
         root font size
-        <select
-          value={rootFontSize}
-          onChange={(e) => setRootFontSize(Number(e.target.value))}
+        <Select
+          value={String(rootFontSize)}
+          defaultValue={String(rootFontSize)}
+          onChange={(e) => setRootFontSize(Number(e))}
           className="rounded-md border border-border bg-bg-secondary px-2 py-1 text-primary"
-        >
-          <option value={16}>16px</option>
-          <option value={15}>15px</option>
-          <option value={18}>18px</option>
-        </select>
+          options={[
+            {
+              label: "16px",
+              value: 16,
+            },
+            {
+              label: "15px",
+              value: 15,
+            },
+            {
+              label: "18px",
+              value: 18,
+            },
+          ]}
+        />
       </label>
     </header>
   );
@@ -120,7 +148,9 @@ export function App() {
   // Name the browser tab after the page, so several gallery tabs stay tellable
   // apart. Leading with the component name because tab titles truncate.
   useEffect(() => {
-    document.title = page ? `${page.title} — JustUI` : "JustUI — component gallery";
+    document.title = page
+      ? `${page.title} — JustUI`
+      : "JustUI — component gallery";
   }, [page]);
 
   return (
@@ -156,7 +186,9 @@ export function App() {
         </nav>
 
         <main className="min-w-0 flex-1 py-8 pb-32">
-          <MDXProvider components={mdxComponents}>{page && <page.Content />}</MDXProvider>
+          <MDXProvider components={mdxComponents}>
+            {page && <page.Content />}
+          </MDXProvider>
         </main>
       </div>
     </div>

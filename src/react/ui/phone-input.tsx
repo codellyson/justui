@@ -7,12 +7,9 @@ import { ChevronDownIcon } from "../lib/icons.js";
 import { Menu } from "./menu.js";
 
 export interface PhoneCountry {
-  /** ISO 3166-1 alpha-2. */
   code: string;
   name: string;
-  /** Including the leading plus. */
   dial: string;
-  /** Digits after the dial code, used only to cap input length. */
   nationalLength?: number;
 }
 
@@ -47,7 +44,6 @@ const controlSizes: Record<ControlSize, string> = {
 export interface PhoneInputProps {
   /** E.164, e.g. `+2348012345678`. */
   value?: string;
-  /** Receives E.164, or `""` once the national part is cleared. */
   onChange?: (value: string) => void;
   country?: string;
   onCountryChange?: (country: PhoneCountry) => void;
@@ -64,7 +60,6 @@ export interface PhoneInputProps {
   labelClassName?: string;
 }
 
-/** 3-3-rest, so a 10-digit number reads 801 234 5678 rather than leaving an orphan. */
 function groupDigits(digits: string): string {
   if (digits.length <= 3) return digits;
   if (digits.length <= 7) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
@@ -96,7 +91,6 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
     const active =
       countries.find((c) => c.code === (country ?? fallbackCode)) ?? countries[0] ?? PHONE_COUNTRIES[0]!;
 
-    // Derive the national part from the incoming E.164 so the field stays controlled.
     const national = (() => {
       if (!value) return "";
       const digits = value.replace(/\D/g, "");

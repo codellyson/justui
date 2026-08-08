@@ -1,0 +1,80 @@
+export const title = "PriceInput";
+export const group = "Forms";
+
+# PriceInput
+
+A currency picker and an amount. Thousands separators appear as you type, the
+fraction is capped at the currency's decimals, and `onChange` gives you the parsed
+number — `null` while the field is empty, so you can tell "zero" from "nothing
+entered".
+
+```jsx live noInline
+function Demo() {
+  const [amount, setAmount] = useState(1500);
+  const [currency, setCurrency] = useState('NGN');
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <PriceInput
+        label="Price"
+        value={amount}
+        onChange={setAmount}
+        currency={currency}
+        onCurrencyChange={setCurrency}
+      />
+      <p className="text-xs text-muted">
+        {currency} · <code>{amount === null ? 'null' : String(amount)}</code>
+      </p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Switching currency keeps the amount — only the symbol and the decimal cap change.
+
+## Fixed currency
+
+```jsx live
+<div className="w-full max-w-sm space-y-4">
+  <PriceInput label="USD only" currency="USD" withCurrencySelect={false} />
+  <PriceInput label="Payout" currency="GBP" currencies={['GBP', 'EUR', 'USD']} />
+</div>
+```
+
+`currencies` restricts what the picker offers; `withCurrencySelect={false}` drops
+the picker and shows the symbol alone.
+
+## Sizes and clamping
+
+```jsx live
+<div className="w-full max-w-sm space-y-3">
+  <PriceInput size="xs" currency="USD" />
+  <PriceInput size="sm" currency="USD" />
+  <PriceInput size="md" currency="USD" />
+  <PriceInput size="lg" currency="USD" />
+  <PriceInput label="Between 0 and 100" currency="USD" min={0} max={100} error="Out of range." />
+</div>
+```
+
+`min` / `max` clamp the emitted number as you type.
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | `number \| string` | — |
+| `onChange` | `(value: number \| null) => void` | — |
+| `currency` | `CurrencyCode` | `"USD"` |
+| `onCurrencyChange` | `(currency: CurrencyCode) => void` | — |
+| `currencies` | `CurrencyCode[]` | all nine |
+| `withCurrencySelect` | `boolean` | `true` |
+| `min` / `max` | `number` | — |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `xs` `sm` `md` `lg` | `md` |
+
+Codes: `USD` `NGN` `GBP` `EUR` `CAD` `AUD` `GHS` `KES` `ZAR`. `CURRENCIES` is
+exported if you need a symbol or decimal count elsewhere.
+
+The picker shows the symbol and code rather than a flag — the reference library
+renders a flag image per currency, which would mean fetching them from a CDN.
