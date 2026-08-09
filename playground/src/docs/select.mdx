@@ -63,6 +63,84 @@ function Demo() {
 render(<Demo />);
 ```
 
+## Searchable
+
+Past a couple of dozen options, scrolling stops working. `searchable` adds a
+filter and matches [MultiSelect](#multiselect), so the two behave the same.
+
+```jsx live noInline
+const REGIONS = [
+  { group: 'Americas', items: [
+    { label: 'us-east-1', value: 'us-east-1', subLabel: 'N. Virginia' },
+    { label: 'us-west-2', value: 'us-west-2', subLabel: 'Oregon' },
+    { label: 'sa-east-1', value: 'sa-east-1', subLabel: 'Sao Paulo' },
+  ]},
+  { group: 'Europe', items: [
+    { label: 'eu-west-1', value: 'eu-west-1', subLabel: 'Ireland' },
+    { label: 'eu-west-2', value: 'eu-west-2', subLabel: 'London' },
+    { label: 'eu-central-1', value: 'eu-central-1', subLabel: 'Frankfurt' },
+  ]},
+  { group: 'Asia Pacific', items: [
+    { label: 'ap-south-1', value: 'ap-south-1', subLabel: 'Mumbai' },
+    { label: 'ap-northeast-1', value: 'ap-northeast-1', subLabel: 'Tokyo' },
+    { label: 'ap-southeast-2', value: 'ap-southeast-2', subLabel: 'Sydney', disabled: true },
+  ]},
+];
+
+function Demo() {
+  const [region, setRegion] = useState('eu-west-2');
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <Select
+        searchable
+        label="Region"
+        placeholder="Pick a region"
+        value={region}
+        onChange={setRegion}
+        options={REGIONS}
+      />
+      <p className="text-xs text-muted">value: <code>{region || '(none)'}</code></p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+The filter matches `label` and `subLabel`, keeps group headings for the groups
+that still have hits, and empties to `emptyMessage`. Picking closes the dropdown
+and clears the query.
+
+```jsx live
+<div className="w-full max-w-sm space-y-4">
+  <Select
+    searchable
+    label="Custom strings"
+    searchPlaceholder="Filter regions…"
+    emptyMessage="No region matches"
+    placeholder="Pick one"
+    options={[
+      { label: 'us-east-1', value: 'a' },
+      { label: 'eu-west-2', value: 'b' },
+    ]}
+  />
+  <Select searchable size="sm" placeholder="Small" options={[{ label: 'One', value: '1' }]} />
+  <Select
+    searchable
+    label="Invalid"
+    error="Pick a region."
+    placeholder="Pick one"
+    options={[{ label: 'One', value: '1' }]}
+  />
+</div>
+```
+
+Note the trade-off: `searchable` swaps the underlying Radix Select for a Popover
+listbox, because Radix Select owns typeahead and item focus and fights an input
+inside its content. Everything else — `value`, `onChange`, `options`, groups,
+`renderOption`, sizes, `error` — stays identical, and `name` still submits through
+a hidden input.
+
 ## Props
 
 | Prop | Type | Default |
@@ -74,6 +152,8 @@ render(<Demo />);
 | `placeholder` | `string` | — |
 | `size` | `xs` `sm` `md` `lg` | `md` |
 | `leftIcon` | `ReactNode` | — |
+| `searchable` | `boolean` | `false` |
+| `searchPlaceholder` / `emptyMessage` | `string` | `"Search…"` / `"Nothing found"` |
 | `position` | `popper` `item-aligned` | `popper` |
 | `renderOption` | `(option) => ReactNode` | — |
 

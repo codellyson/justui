@@ -22,6 +22,13 @@ export { Textarea, type TextareaProps } from "./ui/textarea.js";
 export { Label } from "./ui/label.js";
 export { Badge, type BadgeColor, type BadgeProps } from "./ui/badge.js";
 export { Divider, type DividerProps } from "./ui/divider.js";
+export {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  type BreadcrumbItemProps,
+  type BreadcrumbProps,
+} from "./ui/breadcrumb.js";
 export { Alert, type AlertColor, type AlertProps } from "./ui/alert.js";
 export { Loader, type LoaderProps } from "./ui/loader.js";
 export { Skeleton } from "./ui/skeleton.js";
