@@ -174,7 +174,21 @@ export {
   type AssetUploaderProps,
   type FileRejection,
 } from "./ui/asset-uploader.js";
-export { Table, type ColumnDef, type TableProps } from "./ui/table.js";
+export {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRoot,
+  TableRow,
+  type ColumnDef,
+  type TableBordered,
+  type TableProps,
+  type TableRootProps,
+} from "./ui/table.js";
 export {
   Pagination,
   buildPageList,

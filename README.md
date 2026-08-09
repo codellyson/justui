@@ -185,8 +185,8 @@ you need the event itself:
 `mobileBreakpoint` (768px), and the sheet can be dragged down to dismiss. Pass
 `centered` to keep it centred at every width.
 
-**Compound only where children repeat.** `Menu`, `Tabs` and `Dialog` expose parts;
-everything else is prop-driven. Parts are also exported flat (`MenuItem`,
+**Compound only where children repeat.** `Menu`, `Tabs`, `Dialog`, `Table` and
+`AssetUploader` expose parts; everything else is prop-driven. Parts are also exported flat (`MenuItem`,
 `TabsList`, …) if you need per-part tree-shaking.
 
 ```tsx
@@ -241,6 +241,11 @@ const rows = all.slice((page - 1) * perPage, page * perPage);
 ```
 
 Server-side paging is the same code with a request in place of `slice`.
+
+For a hand-written table — a totals row, a `colSpan` group heading, an expandable
+detail row — `Table.Root` / `.Header` / `.Body` / `.Footer` / `.Row` / `.Head` /
+`.Cell` / `.Caption` are the same styled elements `Table` is built from, so both
+forms render identically. `bordered` sits on `Root` and reaches rows via context.
 
 `Dialog` is the one exception that keeps Radix's `open` / `onOpenChange` — it *is*
 the Radix layer. `Modal` is where the `opened` / `onClose` house style lives, as a

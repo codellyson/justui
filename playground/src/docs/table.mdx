@@ -193,6 +193,119 @@ const data = [
 render(<Table columns={columns} data={data} />);
 ```
 
+## Writing the markup yourself
+
+`columns` and `data` suit real tabular data. For a short static table, a totals
+row, or a group heading spanning the width, the parts are the same styled
+elements `Table` is built from — so an authored table matches a data-driven one
+exactly.
+
+```jsx live
+<Table.Root bordered={{}}>
+  <Table.Caption>Spend by region, last 30 days</Table.Caption>
+  <Table.Header>
+    <Table.Row>
+      <Table.Head>Region</Table.Head>
+      <Table.Head className="text-right">Requests</Table.Head>
+      <Table.Head className="text-right">Cost</Table.Head>
+    </Table.Row>
+  </Table.Header>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell className="font-medium">us-east-1</Table.Cell>
+      <Table.Cell className="text-right font-mono">128,400</Table.Cell>
+      <Table.Cell className="text-right font-mono">$412.10</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell className="font-medium">eu-west-2</Table.Cell>
+      <Table.Cell className="text-right font-mono">9,120</Table.Cell>
+      <Table.Cell className="text-right font-mono">$38.44</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+  <Table.Footer>
+    <Table.Row>
+      <Table.Cell>Total</Table.Cell>
+      <Table.Cell className="text-right font-mono">137,520</Table.Cell>
+      <Table.Cell className="text-right font-mono">$450.54</Table.Cell>
+    </Table.Row>
+  </Table.Footer>
+</Table.Root>
+```
+
+`Table` renders data; `Table.Root` and friends are the primitives underneath.
+`bordered` goes on `Root` and reaches the rows through context, so column
+dividers work the same in both forms.
+
+### Rows that aren't data rows
+
+A `colSpan` group heading, a subtotal, an expanded detail row — none of these fit
+a `ColumnDef`, and all of them are ordinary markup here.
+
+```jsx live noInline
+function Demo() {
+  const [open, setOpen] = useState('api-gateway');
+  const groups = [
+    {
+      region: 'us-east-1',
+      services: [
+        { name: 'api-gateway', p99: '48ms', detail: 'Cached at the edge for 60s.' },
+        { name: 'image-resizer', p99: '1.4s', detail: 'Cold starts dominate the tail.' },
+      ],
+    },
+    {
+      region: 'eu-west-2',
+      services: [{ name: 'billing-worker', p99: '210ms', detail: 'Waits on the ledger write.' }],
+    },
+  ];
+
+  return (
+    <Table.Root bordered={{ column: true }}>
+      <Table.Header>
+        <Table.Row>
+          <Table.Head>Service</Table.Head>
+          <Table.Head className="text-right">p99</Table.Head>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {groups.map((group) => (
+          <React.Fragment key={group.region}>
+            <Table.Row className="bg-bg-secondary">
+              <Table.Cell colSpan={2} className="py-1.5 text-xs uppercase tracking-wider text-muted">
+                {group.region}
+              </Table.Cell>
+            </Table.Row>
+            {group.services.map((service) => (
+              <React.Fragment key={service.name}>
+                <Table.Row
+                  onClick={() => setOpen(open === service.name ? null : service.name)}
+                  className="cursor-pointer hover:bg-bg-secondary"
+                >
+                  <Table.Cell className="font-medium">{service.name}</Table.Cell>
+                  <Table.Cell className="text-right font-mono">{service.p99}</Table.Cell>
+                </Table.Row>
+                {open === service.name && (
+                  <Table.Row>
+                    <Table.Cell colSpan={2} className="bg-bg-secondary text-xs text-secondary">
+                      {service.detail}
+                    </Table.Cell>
+                  </Table.Row>
+                )}
+              </React.Fragment>
+            ))}
+          </React.Fragment>
+        ))}
+      </Table.Body>
+    </Table.Root>
+  );
+}
+
+render(<Demo />);
+```
+
+Click a service to expand it. Every part forwards its native attributes, so
+`colSpan`, `scope`, `onClick` and `style` all work as they would on the raw
+element.
+
 ## Props
 
 | Prop | Type | Default |
@@ -206,6 +319,16 @@ render(<Table columns={columns} data={data} />);
 | `hideHeader` | `boolean` | `false` |
 | `onRowClick` | `(row: T) => void` | — |
 | `className` / `tableClassName` / `headerRowClassName` | `string` | — |
+
+### Parts
+
+`Table.Root` · `Table.Caption` · `Table.Header` · `Table.Body` · `Table.Footer` ·
+`Table.Row` · `Table.Head` · `Table.Cell`
+
+Each takes its element's native props plus `className`. `Root` also takes
+`bordered` and `wrapperClassName`, since `className` there lands on the `<table>`
+while the border and scrolling live on the wrapper around it. All are exported
+flat too (`TableRoot`, `TableCell`, …).
 
 `ColumnDef` is re-exported, so the common case needs no direct
 `@tanstack/react-table` import. Keep `columns` and `data` referentially stable —
