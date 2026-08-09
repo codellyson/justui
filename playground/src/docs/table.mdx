@@ -1,0 +1,245 @@
+export const title = "Table";
+export const group = "Display";
+
+# Table
+
+A thin layer over [TanStack Table](https://tanstack.com/table) v8 — columns are
+`ColumnDef`s, so anything TanStack can express (custom cells, sizes, grouped
+headers) works here unchanged.
+
+```jsx live noInline
+const rows = [
+  { name: 'api-gateway', region: 'us-east-1', status: 'live', requests: 128400 },
+  { name: 'billing-worker', region: 'eu-west-2', status: 'live', requests: 9120 },
+  { name: 'image-resizer', region: 'us-east-1', status: 'draft', requests: 0 },
+  { name: 'search-index', region: 'ap-south-1', status: 'paused', requests: 431 },
+];
+
+const columns = [
+  { accessorKey: 'name', header: 'Service', cell: (c) => <span className="font-medium">{c.getValue()}</span> },
+  { accessorKey: 'region', header: 'Region' },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: (c) => (
+      <Badge variant="light" color={{ live: 'green', draft: 'gray', paused: 'yellow' }[c.getValue()]}>
+        {c.getValue()}
+      </Badge>
+    ),
+  },
+  {
+    accessorKey: 'requests',
+    header: 'Requests',
+    cell: (c) => <span className="font-mono">{c.getValue().toLocaleString()}</span>,
+  },
+];
+
+render(<Table columns={columns} data={rows} />);
+```
+
+`header` and `cell` are TanStack render slots, so a cell can return any node — a
+`Badge`, a `Button`, a nested component. `columns` is data like `Select`'s
+options, not children.
+
+## Client pagination
+
+Pass `pageSize` and the table paginates in the browser, with the page list and
+row range wired up for you.
+
+```jsx live noInline
+const data = Array.from({ length: 47 }, (_, i) => ({
+  id: i + 1,
+  build: `#${2100 + i}`,
+  branch: i % 3 === 0 ? 'main' : `feat/queue-${i}`,
+  duration: `${(1 + (i % 7) * 0.4).toFixed(1)}s`,
+}));
+
+const columns = [
+  { accessorKey: 'build', header: 'Build' },
+  { accessorKey: 'branch', header: 'Branch' },
+  { accessorKey: 'duration', header: 'Duration' },
+];
+
+render(<Table columns={columns} data={data} pageSize={8} />);
+```
+
+Omit `pageSize` and every row renders — useful when the list is already short or
+the page scrolls.
+
+## Server pagination
+
+When the server owns the page, hand over the page state and the total. The table
+stops slicing rows itself and only asks for the page you gave it.
+
+```jsx live noInline
+const ALL = Array.from({ length: 34 }, (_, i) => ({
+  id: i + 1,
+  email: `user${i + 1}@example.com`,
+  plan: ['Free', 'Pro', 'Team'][i % 3],
+}));
+
+const columns = [
+  { accessorKey: 'email', header: 'Email' },
+  { accessorKey: 'plan', header: 'Plan' },
+];
+
+function Demo() {
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 6 });
+  const [loading, setLoading] = useState(false);
+
+  // Stands in for a fetch keyed on the page.
+  const start = pagination.pageIndex * pagination.pageSize;
+  const page = ALL.slice(start, start + pagination.pageSize);
+
+  useEffect(() => {
+    setLoading(true);
+    const id = setTimeout(() => setLoading(false), 400);
+    return () => clearTimeout(id);
+  }, [pagination.pageIndex]);
+
+  return (
+    <div className="space-y-3">
+      <Table
+        isServerSidePagination
+        columns={columns}
+        data={page}
+        isLoading={loading}
+        queryPageIndex={pagination.pageIndex}
+        queryPageSize={pagination.pageSize}
+        setPaginationState={setPagination}
+        totalItems={ALL.length}
+      />
+      <p className="text-xs text-muted">
+        requested page: <code>{pagination.pageIndex + 1}</code>
+      </p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`setPaginationState` takes the same updater shape as a `useState` setter, so it
+can be your state setter directly.
+
+## Loading and empty
+
+```jsx live noInline
+const columns = [
+  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'role', header: 'Role' },
+  { accessorKey: 'seat', header: 'Seat' },
+];
+
+render(
+  <div className="space-y-8">
+    <Table columns={columns} data={[]} isLoading loadingRows={3} />
+    <Table columns={columns} data={[]} emptyMessage="No teammates yet — invite someone." />
+  </div>
+);
+```
+
+`isLoading` renders `loadingRows` skeleton rows against the real column count, so
+the layout doesn't jump when the data lands. An empty result gets `emptyMessage`
+rather than a bare `tbody`.
+
+## Row clicks and a hidden header
+
+```jsx live noInline
+const columns = [
+  { accessorKey: 'key', header: 'Key' },
+  { accessorKey: 'value', header: 'Value' },
+];
+
+const data = [
+  { key: 'DATABASE_URL', value: 'postgres://…' },
+  { key: 'REDIS_URL', value: 'redis://…' },
+];
+
+function Demo() {
+  const [picked, setPicked] = useState(null);
+  return (
+    <div className="space-y-3">
+      <Table columns={columns} data={data} hideHeader onRowClick={(row) => setPicked(row.key)} />
+      <p className="text-xs text-muted">clicked: <code>{picked ?? '(none)'}</code></p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`onRowClick` receives the original row object, not the TanStack wrapper. Rows
+take a pointer cursor and a hover only when it's set.
+
+## Column widths
+
+A column keeps its natural width until you give it a `size`.
+
+```jsx live noInline
+const columns = [
+  { accessorKey: 'code', header: 'Code', size: 80 },
+  { accessorKey: 'label', header: 'Label' },
+  { accessorKey: 'note', header: 'Note', size: 220 },
+];
+
+const data = [
+  { code: '200', label: 'OK', note: 'Cached for 60s at the edge.' },
+  { code: '404', label: 'Not Found', note: 'Falls through to the SPA shell.' },
+];
+
+render(<Table columns={columns} data={data} />);
+```
+
+## TablePagination on its own
+
+The page list is exported separately, for lists that aren't tables.
+
+```jsx live noInline
+function Demo() {
+  const [page, setPage] = useState(5);
+  return (
+    <div className="space-y-4">
+      <TablePagination currentPage={page} totalPages={9} onPageChange={setPage} />
+      <TablePagination currentPage={1} totalPages={3} onPageChange={() => {}} />
+      <p className="text-xs text-muted">page {page} of 9</p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+It anchors the first two and last two pages plus a window around the current
+one, collapsing the gaps — `1 2 … 4 5 6 … 8 9`. Four pages or fewer are all
+shown, and a single page renders nothing at all. `buildPageList(current, total)`
+is exported if you want the same sequence without the markup.
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `columns` | `ColumnDef<T>[]` | required |
+| `data` | `T[]` | required |
+| `pageSize` | `number` | — (no client pagination) |
+| `isLoading` | `boolean` | `false` |
+| `loadingRows` | `number` | `5` |
+| `emptyMessage` | `ReactNode` | `"No data"` |
+| `hideHeader` | `boolean` | `false` |
+| `onRowClick` | `(row: T) => void` | — |
+| `className` / `tableClassName` / `headerRowClassName` | `string` | — |
+
+With `isServerSidePagination`, these become required and `pageSize` is rejected:
+
+| Prop | Type |
+|---|---|
+| `queryPageIndex` | `number` |
+| `queryPageSize` | `number` |
+| `setPaginationState` | `Dispatch<SetStateAction<PaginationState>>` |
+| `totalItems` | `number` |
+
+`ColumnDef` is re-exported, so you don't need a direct
+`@tanstack/react-table` import for the common case.
+
+Wide tables scroll horizontally inside their own container rather than stacking
+each row into an unlabeled column list on narrow screens.

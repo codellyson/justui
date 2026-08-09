@@ -205,6 +205,24 @@ everything else is prop-driven. Parts are also exported flat (`MenuItem`,
 </Tabs>
 ```
 
+**`Table` columns are `ColumnDef`s.** It wraps [TanStack Table](https://tanstack.com/table)
+v8 — pinned to v8 because that's what `@khaime-dev/ui` uses, and v9 renamed the
+row-model API, so column definitions would stop transferring. `ColumnDef` is
+re-exported for the common case.
+
+```tsx
+<Table columns={columns} data={rows} pageSize={10} />          // client pagination
+<Table
+  isServerSidePagination
+  columns={columns}
+  data={page}
+  queryPageIndex={pagination.pageIndex}
+  queryPageSize={pagination.pageSize}
+  setPaginationState={setPagination}
+  totalItems={total}
+/>
+```
+
 `Dialog` is the one exception that keeps Radix's `open` / `onOpenChange` — it *is*
 the Radix layer. `Modal` is where the `opened` / `onClose` house style lives, as a
 preset over it.
