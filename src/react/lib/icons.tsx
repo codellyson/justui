@@ -14,6 +14,7 @@ export {
   EyeIcon,
   EyeSlashIcon,
   MagnifyingGlassIcon,
+  MinusIcon,
   PlayIcon,
   PlusIcon,
   SwatchIcon,

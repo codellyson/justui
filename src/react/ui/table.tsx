@@ -6,20 +6,18 @@ import {
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
+  type Row,
+  type RowSelectionState,
   type SortingState,
   type Updater,
 } from "@tanstack/react-table";
-import {
-  createContext,
-  useContext,
-  type ComponentPropsWithoutRef,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { cn } from "../lib/cn.js";
 import { ChevronDownIcon, ChevronUpDownIcon, ChevronUpIcon } from "../lib/icons.js";
+import { Checkbox } from "./checkbox.js";
 import { Skeleton } from "./skeleton.js";
 
-export type { ColumnDef, SortingState } from "@tanstack/react-table";
+export type { ColumnDef, Row, RowSelectionState, SortingState } from "@tanstack/react-table";
 
 export interface TableBordered {
   column?: boolean;
@@ -178,6 +176,12 @@ export interface TableProps<T> {
   sorting?: SortingState;
   onSortingChange?: (sorting: SortingState) => void;
   manualSorting?: boolean;
+  enableRowSelection?: boolean | ((row: Row<T>) => boolean);
+  rowSelection?: RowSelectionState;
+  onRowSelectionChange?: (selection: RowSelectionState) => void;
+  defaultRowSelection?: RowSelectionState;
+  getRowId?: (row: T, index: number) => string;
+  selectionLabel?: (row: T) => string;
   isLoading?: boolean;
   loadingRows?: number;
   emptyMessage?: ReactNode;
@@ -197,6 +201,12 @@ function DataTable<T>({
   sorting,
   onSortingChange,
   manualSorting = false,
+  enableRowSelection = false,
+  rowSelection,
+  onRowSelectionChange,
+  defaultRowSelection,
+  getRowId,
+  selectionLabel,
   isLoading = false,
   loadingRows = 5,
   emptyMessage = "No data",
@@ -206,25 +216,46 @@ function DataTable<T>({
   tableClassName,
   headerRowClassName,
 }: TableProps<T>) {
+  const selectable = enableRowSelection !== false;
+
+  // One merged state / initialState: two conditional spreads would each carry
+  // their own object and the later one would drop the earlier feature's slice.
+  const controlled = {
+    ...(sorting ? { sorting } : {}),
+    ...(rowSelection ? { rowSelection } : {}),
+  };
+  const initial = {
+    ...(!sorting && defaultSorting ? { sorting: defaultSorting } : {}),
+    ...(!rowSelection && defaultRowSelection ? { rowSelection: defaultRowSelection } : {}),
+  };
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getRowId,
+    ...(selectable ? { enableRowSelection } : {}),
     ...(sortable ? { getSortedRowModel: getSortedRowModel(), manualSorting } : {}),
-    // Spread conditionally: an explicit `onSortingChange: undefined` would replace
-    // TanStack's own state updater and freeze the headers.
+    ...(Object.keys(controlled).length ? { state: controlled } : {}),
+    ...(Object.keys(initial).length ? { initialState: initial } : {}),
+    // Spread the change handlers conditionally too: an explicit `undefined`
+    // replaces TanStack's own state updater and freezes the feature.
     ...(sorting
       ? {
-          state: { sorting },
           onSortingChange: (updater: Updater<SortingState>) =>
             onSortingChange?.(typeof updater === "function" ? updater(sorting) : updater),
         }
-      : defaultSorting
-        ? { initialState: { sorting: defaultSorting } }
-        : {}),
+      : {}),
+    ...(rowSelection
+      ? {
+          onRowSelectionChange: (updater: Updater<RowSelectionState>) =>
+            onRowSelectionChange?.(typeof updater === "function" ? updater(rowSelection) : updater),
+        }
+      : {}),
   });
   const rows = table.getRowModel().rows;
   const sized = (size: number) => (size === 150 ? undefined : size);
+  const columnCount = Math.max(1, columns.length) + (selectable ? 1 : 0);
 
   return (
     <TableRoot bordered={bordered} wrapperClassName={className} className={tableClassName}>
@@ -232,6 +263,21 @@ function DataTable<T>({
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className={headerRowClassName}>
+              {selectable && (
+                <TableHead className="w-0 pr-0">
+                  <Checkbox
+                    aria-label="Select all rows"
+                    checked={
+                      table.getIsAllRowsSelected()
+                        ? true
+                        : table.getIsSomeRowsSelected()
+                          ? "indeterminate"
+                          : false
+                    }
+                    onChange={(next) => table.toggleAllRowsSelected(next === true)}
+                  />
+                </TableHead>
+              )}
               {headerGroup.headers.map((header) => {
                 const canSort = sortable && header.column.getCanSort();
                 return (
@@ -257,6 +303,11 @@ function DataTable<T>({
         {isLoading ? (
           Array.from({ length: loadingRows }, (_, row) => (
             <TableRow key={`skeleton-${row}`}>
+              {selectable && (
+                <TableCell className="w-0 pr-0">
+                  <Skeleton className="h-4 w-4" />
+                </TableCell>
+              )}
               {columns.map((_, cell) => (
                 <TableCell key={`skeleton-${row}-${cell}`} className="py-3">
                   <Skeleton className="h-4 w-full" />
@@ -266,24 +317,49 @@ function DataTable<T>({
           ))
         ) : rows.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={Math.max(1, columns.length)} className="py-10 text-center text-muted">
+            <TableCell colSpan={columnCount} className="py-10 text-center text-muted">
               {emptyMessage}
             </TableCell>
           </TableRow>
         ) : (
-          rows.map((row) => (
-            <TableRow
-              key={row.id}
-              onClick={onRowClick ? () => onRowClick(row.original) : undefined}
-              className={cn(onRowClick && "cursor-pointer hover:bg-bg-secondary")}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id} style={{ width: sized(cell.column.getSize()) }}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))
+          rows.map((row) => {
+            const selected = row.getIsSelected();
+            return (
+              <TableRow
+                key={row.id}
+                data-selected={selected || undefined}
+                onClick={onRowClick ? () => onRowClick(row.original) : undefined}
+                className={cn(
+                  onRowClick && "cursor-pointer hover:bg-bg-secondary",
+                  selected && "bg-accent/10",
+                )}
+              >
+                {selectable && (
+                  <TableCell
+                    className="w-0 pr-0"
+                    // Stop a row-level onClick from firing when the box is hit.
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    <Checkbox
+                      aria-label={
+                        selectionLabel
+                          ? selectionLabel(row.original)
+                          : `Select row ${row.index + 1}`
+                      }
+                      checked={selected}
+                      disabled={!row.getCanSelect()}
+                      onChange={(next) => row.toggleSelected(next === true)}
+                    />
+                  </TableCell>
+                )}
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} style={{ width: sized(cell.column.getSize()) }}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            );
+          })
         )}
       </TableBody>
     </TableRoot>

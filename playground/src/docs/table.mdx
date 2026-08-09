@@ -339,6 +339,122 @@ function Demo() {
 render(<Demo />);
 ```
 
+## Row selection
+
+`enableRowSelection` adds a leading checkbox column with a select-all in the
+header, which goes indeterminate on a partial selection.
+
+```jsx live noInline
+const ROWS = [
+  { id: 'srv_1', service: 'api-gateway', p99: 48 },
+  { id: 'srv_2', service: 'billing-worker', p99: 210 },
+  { id: 'srv_3', service: 'image-resizer', p99: 1400 },
+  { id: 'srv_4', service: 'search-index', p99: 12 },
+];
+
+const columns = [
+  { accessorKey: 'service', header: 'Service' },
+  { accessorKey: 'p99', header: 'p99', cell: (c) => <span className="font-mono">{c.getValue()}ms</span> },
+];
+
+function Demo() {
+  const [selection, setSelection] = useState({ srv_2: true });
+  const picked = Object.keys(selection).filter((key) => selection[key]);
+
+  return (
+    <div className="space-y-3">
+      <Table
+        columns={columns}
+        data={ROWS}
+        sortable
+        enableRowSelection
+        getRowId={(row) => row.id}
+        rowSelection={selection}
+        onRowSelectionChange={setSelection}
+        selectionLabel={(row) => `Select ${row.service}`}
+      />
+      <div className="flex items-center gap-3">
+        <p className="text-xs text-muted">
+          selected: <code>{picked.length ? picked.join(', ') : '(none)'}</code>
+        </p>
+        {picked.length > 0 && (
+          <Button size="xs" variant="outline" onClick={() => setSelection({})}>
+            Clear
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+**Pass `getRowId`.** Without it TanStack keys selection by row *index*, so sorting
+the table moves your selection to whatever row now sits in that position. Try
+sorting by p99 above — the selection stays on `billing-worker`, because the key is
+its `id`.
+
+`selectionLabel` names each checkbox for screen readers; without it they read
+"Select row 1". The header box reports `indeterminate` when only some rows are
+selected, and clicking a checkbox never triggers `onRowClick`.
+
+### Uncontrolled, and rows that can't be selected
+
+Omit `rowSelection` to let the table own the state, and pass a predicate to
+`enableRowSelection` to exclude rows.
+
+```jsx live noInline
+const ROWS = [
+  { id: 'a', name: 'draft-post', status: 'draft' },
+  { id: 'b', name: 'published-post', status: 'published' },
+  { id: 'c', name: 'archived-post', status: 'archived' },
+  { id: 'd', name: 'another-draft', status: 'draft' },
+];
+
+const columns = [
+  { accessorKey: 'name', header: 'Name' },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: (c) => (
+      <Badge variant="light" color={{ draft: 'gray', published: 'green', archived: 'yellow' }[c.getValue()]}>
+        {c.getValue()}
+      </Badge>
+    ),
+  },
+];
+
+function Demo() {
+  const [opened, setOpened] = useState(null);
+  return (
+    <div className="space-y-3">
+      <Table
+        columns={columns}
+        data={ROWS}
+        getRowId={(row) => row.id}
+        enableRowSelection={(row) => row.original.status !== 'archived'}
+        defaultRowSelection={{ a: true }}
+        onRowClick={(row) => setOpened(row.name)}
+        bordered={{}}
+      />
+      <p className="text-xs text-muted">
+        row click: <code>{opened ?? '(none)'}</code>
+      </p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+The archived row's checkbox is disabled, and select-all skips it — so the header
+box reads fully checked once the three selectable rows are on.
+
+This one also has `onRowClick`. Clicking a checkbox toggles selection **without**
+firing it, so the two interactions don't fight; clicking anywhere else in the row
+does.
+
 ## Writing the markup yourself
 
 `columns` and `data` suit real tabular data. For a short static table, a totals
@@ -463,6 +579,11 @@ element.
 | `defaultSorting` | `SortingState` | — |
 | `sorting` / `onSortingChange` | controlled sort state | — |
 | `manualSorting` | `boolean` | `false` |
+| `enableRowSelection` | `boolean \| (row) => boolean` | `false` |
+| `getRowId` | `(row, index) => string` | row index |
+| `rowSelection` / `onRowSelectionChange` | controlled selection | — |
+| `defaultRowSelection` | `RowSelectionState` | — |
+| `selectionLabel` | `(row: T) => string` | `"Select row N"` |
 | `isLoading` | `boolean` | `false` |
 | `loadingRows` | `number` | `5` |
 | `emptyMessage` | `ReactNode` | `"No data"` |

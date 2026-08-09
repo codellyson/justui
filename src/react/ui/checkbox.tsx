@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { cn } from "../lib/cn.js";
-import { CheckIcon } from "../lib/icons.js";
+import { CheckIcon, MinusIcon } from "../lib/icons.js";
 
 const boxSizes = { sm: "h-4 w-4", md: "h-5 w-5", lg: "h-6 w-6" } as const;
 const tickSizes = { sm: "h-3 w-3", md: "h-3.5 w-3.5", lg: "h-4 w-4" } as const;
@@ -43,15 +43,20 @@ export const Checkbox = forwardRef<ElementRef<typeof CheckboxPrimitive.Root>, Ch
         aria-invalid={hasError || undefined}
         aria-describedby={message ? messageId : undefined}
         className={cn(
-          "peer shrink-0 rounded-sm border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-accent data-[state=checked]:bg-accent data-[state=checked]:text-bg",
+          "peer shrink-0 rounded-sm border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-accent data-[state=checked]:bg-accent data-[state=checked]:text-bg data-[state=indeterminate]:border-accent data-[state=indeterminate]:bg-accent data-[state=indeterminate]:text-bg",
           boxSizes[size],
           hasError ? "border-danger" : "border-border",
           className,
         )}
         {...props}
       >
-        <CheckboxPrimitive.Indicator className="flex items-center justify-center text-current">
-          <CheckIcon className={tickSizes[size]} />
+        <CheckboxPrimitive.Indicator className="group flex items-center justify-center text-current">
+          <CheckIcon
+            className={cn(tickSizes[size], "group-data-[state=indeterminate]:hidden")}
+          />
+          <MinusIcon
+            className={cn(tickSizes[size], "hidden group-data-[state=indeterminate]:block")}
+          />
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Root>
     );
