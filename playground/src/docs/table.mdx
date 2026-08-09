@@ -568,6 +568,73 @@ Click a service to expand it. Every part forwards its native attributes, so
 `colSpan`, `scope`, `onClick` and `style` all work as they would on the raw
 element.
 
+## Large tables
+
+`Table` renders every row it is given, and the cost is linear in row count. Some
+rough figures from this gallery's dev build — a production bundle is faster, but
+the shape holds:
+
+| Rows | One selection toggle | Sort |
+|---|---|---|
+| 50 | ~150ms | ~175ms |
+| 1000 | ~1450ms | ~1900ms |
+
+About 3ms a row. That cost is plain React reconciliation, not any one feature —
+sorting 1000 rows costs the same whether row selection is on or off — so the fix
+is always to render fewer rows, never to shave the per-row work.
+
+**Paginate first.** A 25–50 row page keeps every interaction comfortable, and
+[Pagination](#pagination) composes with `Table` without either knowing about the
+other. This covers almost every table in an application.
+
+**Virtualize when the list genuinely can't be paged** — an audit log you scroll,
+a picker over thousands of rows. Use
+[@tanstack/react-virtual](https://tanstack.com/virtual); it isn't a dependency of
+this package, so install it yourself.
+
+Note that virtualizing means driving the markup directly, since the data-driven
+`Table` has no seam for it: keep your own TanStack instance and render its rows
+through the parts shown above, which is exactly what they're for. Roughly:
+
+```jsx
+const rows = table.getRowModel().rows;
+const virtualizer = useVirtualizer({
+  count: rows.length,
+  getScrollElement: () => scrollRef.current,
+  estimateSize: () => 41,
+  overscan: 8,
+});
+const items = virtualizer.getVirtualItems();
+
+<div ref={scrollRef} className="h-96 overflow-auto">
+  <Table.Root>
+    <Table.Header>{/* … */}</Table.Header>
+    <Table.Body>
+      {items[0]?.start > 0 && (
+        <Table.Row><Table.Cell style={{ height: items[0].start, padding: 0 }} /></Table.Row>
+      )}
+      {items.map((item) => {
+        const row = rows[item.index];
+        return (
+          <Table.Row key={row.id} data-index={item.index}>
+            {row.getVisibleCells().map((cell) => (
+              <Table.Cell key={cell.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </Table.Cell>
+            ))}
+          </Table.Row>
+        );
+      })}
+    </Table.Body>
+  </Table.Root>
+</div>
+```
+
+A sketch, not a copy-paste drop-in — the spacer rows above and below the window
+are what keep the scrollbar honest, and a `<table>` needs them as rows rather than
+the absolute positioning you would use on a list of divs. Fixed row heights make
+this far easier than measured ones.
+
 ## Props
 
 | Prop | Type | Default |
