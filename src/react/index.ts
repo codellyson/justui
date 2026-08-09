@@ -127,9 +127,21 @@ export {
 } from "./ui/timeline.js";
 export { WithBadge, type WithBadgeProps } from "./ui/with-badge.js";
 
+export {
+  MultiSelect,
+  type MultiSelectOption,
+  type MultiSelectProps,
+} from "./ui/multiselect.js";
+export { TagInput, type TagInputProps } from "./ui/tag-input.js";
+export {
+  ColorInput,
+  DEFAULT_SWATCHES,
+  type ColorInputProps,
+} from "./ui/color-input.js";
+
 export { Flag, flagUrl, type FlagProps } from "./lib/flag.js";
 export { cn } from "./lib/cn.js";
 
-export { Modal, type ModalProps } from "./Modal.js";
+export { Modal, type ModalProps } from "./ui/modal.js";
 export { ThemeToggle, type ThemeToggleProps } from "./ThemeToggle.js";
 export { useTheme, type ThemeMode, type ThemeState } from "./useTheme.js";

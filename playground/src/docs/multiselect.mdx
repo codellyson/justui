@@ -1,0 +1,109 @@
+export const title = "MultiSelect";
+export const group = "Forms";
+
+# MultiSelect
+
+Options are data, like [Select](#select), but `value` is an array. The trigger
+shows the selection as chips and collapses the tail past `maxDisplayed`.
+
+```jsx live noInline
+function Demo() {
+  const [value, setValue] = useState(['live']);
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <MultiSelect
+        label="Status"
+        value={value}
+        onChange={setValue}
+        options={[
+          { label: 'Live', value: 'live' },
+          { label: 'Draft', value: 'draft' },
+          { label: 'Scheduled', value: 'scheduled' },
+          { label: 'Archived', value: 'archived' },
+          { label: 'Deleted', value: 'deleted', disabled: true },
+        ]}
+      />
+      <p className="text-xs text-muted">value: <code>{JSON.stringify(value)}</code></p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+The dropdown is searchable by default and matches the trigger's width. Type to
+filter, click to toggle — it stays open so you can pick several.
+
+## Select all, overflow, empty
+
+```jsx live noInline
+function Demo() {
+  const [a, setA] = useState([]);
+  const [b, setB] = useState(['r', 'v', 'a', 's']);
+  const frameworks = [
+    { label: 'React', value: 'r' }, { label: 'Vue', value: 'v' },
+    { label: 'Angular', value: 'a' }, { label: 'Svelte', value: 's' },
+    { label: 'Solid', value: 'so' },
+  ];
+  return (
+    <div className="w-full max-w-sm space-y-4">
+      <MultiSelect label="With select all" value={a} onChange={setA} options={frameworks} withSelectAll />
+      <MultiSelect label="Collapses past 2" value={b} onChange={setB} options={frameworks} maxDisplayed={2} />
+      <MultiSelect label="No matches" value={[]} onChange={() => {}} options={[]} emptyMessage="No frameworks yet" />
+      <MultiSelect label="Required" value={[]} onChange={() => {}} options={frameworks} error="Pick at least one." />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Custom trigger content
+
+`renderValue` replaces the chips entirely — for a count, a summary, anything.
+
+```jsx live noInline
+function Demo() {
+  const [value, setValue] = useState(['a', 'b']);
+  return (
+    <div className="w-full max-w-sm">
+      <MultiSelect
+        label="Members"
+        value={value}
+        onChange={setValue}
+        searchable={false}
+        options={[
+          { label: 'Ada', value: 'a' }, { label: 'Bo', value: 'b' },
+          { label: 'Cy', value: 'c' }, { label: 'Di', value: 'd' },
+        ]}
+        renderValue={(selected) =>
+          selected.length === 0
+            ? <span className="px-1 text-muted">Nobody</span>
+            : <span className="px-1">{selected.length} of 4 selected</span>
+        }
+      />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `options` | `MultiSelectOption[]` | required |
+| `value` | `string[]` | required |
+| `onChange` | `(value: string[]) => void` | required |
+| `searchable` | `boolean` | `true` |
+| `searchPlaceholder` | `string` | `"Search…"` |
+| `emptyMessage` | `string` | `"Nothing found"` |
+| `withSelectAll` | `boolean` | `false` |
+| `maxDisplayed` | `number` | `3` |
+| `renderValue` | `(selected) => ReactNode` | — |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `xs` `sm` `md` `lg` | `md` |
+
+`MultiSelectOption` is `{ label, value, disabled? }`. The trigger grows to fit its
+chips, so it uses `min-h` rather than the fixed control height.

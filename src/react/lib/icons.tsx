@@ -9,6 +9,7 @@ export {
   ChevronUpIcon,
   EyeIcon,
   EyeSlashIcon,
+  MagnifyingGlassIcon,
   XMarkIcon as XIcon,
 } from "@heroicons/react/16/solid";
 

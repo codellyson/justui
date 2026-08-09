@@ -24,7 +24,11 @@ Peers your app needs separately:
 
 ```sh
 pnpm add @fontsource-variable/geist @fontsource-variable/geist-mono tailwindcss
+pnpm add @heroicons/react
 ```
+
+`@heroicons/react` is a required peer — the React components import from it, and
+the `leftIcon` / `icon` props expect icon components rather than characters.
 
 ## Quick start (Astro + Tailwind)
 

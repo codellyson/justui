@@ -2,9 +2,9 @@
 
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { useCallback, useRef, useState, type PointerEvent, type ReactNode } from "react";
-import { cn } from "./lib/cn.js";
-import { XIcon } from "./lib/icons.js";
-import { useMediaQuery } from "./lib/use-media-query.js";
+import { cn } from "../lib/cn.js";
+import { XIcon } from "../lib/icons.js";
+import { useMediaQuery } from "../lib/use-media-query.js";
 
 const CLOSE_DISTANCE = 96;
 const CLOSE_VELOCITY = 0.5; // px/ms
