@@ -26,6 +26,21 @@ export { Alert, type AlertColor, type AlertProps } from "./ui/alert.js";
 export { Loader, type LoaderProps } from "./ui/loader.js";
 export { Skeleton } from "./ui/skeleton.js";
 export { Checkbox, type CheckboxProps } from "./ui/checkbox.js";
+export {
+  Radio,
+  RadioGroup,
+  type RadioGroupProps,
+  type RadioOption,
+  type RadioProps,
+  type RadioSize,
+} from "./ui/radio.js";
+export {
+  Avatar,
+  AvatarGroup,
+  type AvatarGroupProps,
+  type AvatarProps,
+  type AvatarSize,
+} from "./ui/avatar.js";
 export { Switch, type SwitchProps } from "./ui/switch.js";
 export {
   Select,

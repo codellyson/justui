@@ -1,0 +1,153 @@
+export const title = "RadioGroup";
+export const group = "Forms";
+
+# RadioGroup
+
+One choice from a visible list. Options are data, like `Select` — but every option
+stays on screen, and each can carry a description, which is what `SegmentedControl`
+can't do.
+
+```jsx live noInline
+function Demo() {
+  const [plan, setPlan] = useState('team');
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <RadioGroup
+        label="Plan"
+        value={plan}
+        onChange={setPlan}
+        options={[
+          { value: 'free', label: 'Free', description: 'One project, community support.' },
+          { value: 'team', label: 'Team', description: '$29 a month, five seats.' },
+          { value: 'scale', label: 'Scale', description: 'Usage-based, SSO and audit logs.' },
+          { value: 'legacy', label: 'Legacy', description: 'No longer offered.', disabled: true },
+        ]}
+      />
+      <p className="text-xs text-muted">value: <code>{plan}</code></p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`onChange` gives you the value. Arrow keys move between options and skip the
+disabled one, as a radio group should.
+
+## Without descriptions, and horizontal
+
+```jsx live noInline
+function Demo() {
+  const [size, setSize] = useState('md');
+  const [visibility, setVisibility] = useState('public');
+  return (
+    <div className="space-y-6">
+      <RadioGroup
+        label="Size"
+        value={size}
+        onChange={setSize}
+        options={[
+          { value: 'sm', label: 'Small' },
+          { value: 'md', label: 'Medium' },
+          { value: 'lg', label: 'Large' },
+        ]}
+      />
+      <RadioGroup
+        label="Visibility"
+        value={visibility}
+        onChange={setVisibility}
+        className="flex-row gap-6"
+        options={[
+          { value: 'public', label: 'Public' },
+          { value: 'private', label: 'Private' },
+        ]}
+      />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+The group is a flex column; `className="flex-row gap-6"` lays it out inline for
+two or three short options.
+
+## Sizes, error, uncontrolled
+
+```jsx live
+<div className="w-full max-w-sm space-y-6">
+  <RadioGroup
+    size="md"
+    label="Medium"
+    defaultValue="a"
+    options={[{ value: 'a', label: 'First' }, { value: 'b', label: 'Second' }]}
+  />
+  <RadioGroup
+    size="lg"
+    label="Large"
+    defaultValue="a"
+    options={[{ value: 'a', label: 'First' }, { value: 'b', label: 'Second' }]}
+  />
+  <RadioGroup
+    label="Delivery"
+    error="Pick a delivery speed."
+    options={[{ value: 'std', label: 'Standard' }, { value: 'exp', label: 'Express' }]}
+  />
+  <RadioGroup
+    label="Disabled"
+    defaultValue="a"
+    disabled
+    options={[{ value: 'a', label: 'First' }, { value: 'b', label: 'Second' }]}
+  />
+</div>
+```
+
+An `error` supersedes a `description` and sets `aria-invalid` on the group.
+
+## Composing options
+
+Pass children instead of `options` when an option needs more than a label and a
+description — a price, a badge, a nested control.
+
+```jsx live noInline
+function Demo() {
+  const [value, setValue] = useState('card');
+  return (
+    <RadioGroup label="Payment" value={value} onChange={setValue} className="gap-3">
+      <div className="flex items-center justify-between rounded-md border border-border p-3">
+        <RadioGroup.Item value="card" label="Card" description="Visa ending 4242" />
+        <Badge variant="light" color="green">Default</Badge>
+      </div>
+      <div className="flex items-center justify-between rounded-md border border-border p-3">
+        <RadioGroup.Item value="invoice" label="Invoice" description="Net 30, on approval" />
+        <Badge variant="light" color="gray">Business</Badge>
+      </div>
+    </RadioGroup>
+  );
+}
+
+render(<Demo />);
+```
+
+`RadioGroup.Item` is `Radio` — exported flat under both names.
+
+## Props
+
+### RadioGroup
+
+| Prop | Type | Default |
+|---|---|---|
+| `options` | `RadioOption[]` | — (use children) |
+| `value` / `defaultValue` | `string` | — |
+| `onChange` | `(value: string) => void` | — |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `sm` `md` `lg` | `sm` |
+| `disabled`, `name`, `required`, `orientation` | | |
+
+`RadioOption` is `{ value, label, description?, disabled? }`.
+
+### Radio
+
+`value`, `label`, `description`, `size`, `disabled`, plus the native item props.
+Renders bare when given neither label nor description, so you can place the
+control yourself.
