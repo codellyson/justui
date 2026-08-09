@@ -27,17 +27,25 @@ export const DEFAULT_ASSET_ACCEPT: Accept = {
   "video/quicktime": [".mov"],
 };
 
-// react-dropzone wants mime -> extensions; khaime passes a plain accept string.
-const toAccept = (accept: string | Accept): Accept =>
-  typeof accept === "string"
-    ? Object.fromEntries(
-        accept
-          .split(",")
-          .map((type) => type.trim())
-          .filter(Boolean)
-          .map((type) => [type, []]),
-      )
-    : accept;
+// react-dropzone wants mime -> extensions, and its keys must be MIME types.
+// A plain `accept` string may mix both ("image/png,.heic"), so bare extensions
+// ride along as values — the accept attribute is flattened either way.
+export const toAccept = (accept: string | Accept): Accept => {
+  if (typeof accept !== "string") return accept;
+
+  const tokens = accept
+    .split(",")
+    .map((token) => token.trim())
+    .filter(Boolean);
+  const mimeTypes = tokens.filter((token) => token.includes("/"));
+  const extensions = tokens.filter((token) => token.startsWith("."));
+
+  if (mimeTypes.length === 0) return Object.fromEntries(extensions.map((ext) => [ext, []]));
+
+  return Object.fromEntries(
+    mimeTypes.map((mime, i) => [mime, i === 0 ? extensions : []] as const),
+  );
+};
 
 const tileSizes: Record<AssetOrientation, string> = {
   portrait: "w-[136px] h-[160px]",

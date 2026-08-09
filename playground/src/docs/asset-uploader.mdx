@@ -86,8 +86,50 @@ render(<Demo />);
 ```
 
 Error codes are `file-invalid-type`, `file-too-large`, `file-too-small` and
-`too-many-files`. `accept` takes react-dropzone's mime-to-extensions object, and
-a plain `"image/png,video/mp4"` string is normalised to it for you.
+`too-many-files`.
+
+## accept
+
+`accept` takes react-dropzone's mime-to-extensions object — the native form, and
+what `DEFAULT_ASSET_ACCEPT` is:
+
+```jsx live noInline
+function Demo() {
+  const [log, setLog] = useState('Drop something.');
+  const shared = {
+    onAddFiles: (files) => setLog(`accepted ${files.map((f) => f.name).join(', ')}`),
+    onReject: (rs) => setLog(rs.map((r) => `${r.file.name} — ${r.errors[0].code}`).join(' · ')),
+    multiple: true,
+    maxItems: 9,
+  };
+  return (
+    <div className="space-y-4">
+      <AssetUploader
+        {...shared}
+        accept={{ 'image/*': [], 'application/pdf': ['.pdf'] }}
+        addLabel="Object form"
+      />
+      <AssetUploader {...shared} accept="image/png,.heic" addLabel="String form" />
+      <AssetUploader {...shared} accept=".csv,.tsv" addLabel="Extensions only" />
+      <p className="text-xs text-muted">{log}</p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+A plain string works too, for call sites coming from elsewhere. It may mix MIME
+types and bare extensions (`"image/png,.heic"`) or be extensions only
+(`".csv,.tsv"`) — extensions are folded into the value position, since
+react-dropzone requires its keys to be MIME types. `toAccept` is exported if you
+want the same conversion yourself.
+
+One trap worth knowing, inherited from react-dropzone: **giving a wildcard key
+extensions narrows it rather than widening it.** `{ 'image/*': ['.heic'] }`
+accepts `.heic` and *rejects* `image/png`, because the wildcard is dropped from
+the accept attribute that matching uses. Write `{ 'image/*': [] }` for any image,
+and list oddballs under their own key.
 
 Drops are partially accepted: with room for two more files and four dropped, the
 first two reach `onAddFiles` and the rest arrive at `onReject` as

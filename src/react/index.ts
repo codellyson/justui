@@ -165,6 +165,7 @@ export {
 export {
   AssetUploader,
   DEFAULT_ASSET_ACCEPT,
+  toAccept,
   type Accept,
   type AssetOrientation,
   type AssetUploaderAddProps,
