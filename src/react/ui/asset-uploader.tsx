@@ -47,13 +47,35 @@ export const toAccept = (accept: string | Accept): Accept => {
   );
 };
 
-const tileSizes: Record<AssetOrientation, string> = {
-  portrait: "w-[136px] h-[160px]",
-  landscape: "w-[220px] h-[136px]",
+const tileSizes: Record<AssetOrientation, { width: string; height: string }> = {
+  portrait: { width: "w-[136px]", height: "h-[160px]" },
+  landscape: { width: "w-[220px]", height: "h-[136px]" },
+};
+
+export interface TileSize {
+  width?: number | string;
+  height?: number | string;
+  ratio?: number;
+}
+
+// An explicit dimension drops the preset class for that axis only, so setting
+// just a width keeps the orientation's height instead of collapsing.
+const tileBox = (orientation: AssetOrientation, own: TileSize, inherited: TileSize) => {
+  const width = own.width ?? inherited.width;
+  const height = own.height ?? inherited.height;
+  const ratio = own.ratio ?? inherited.ratio;
+  return {
+    className: cn(
+      width == null && tileSizes[orientation].width,
+      height == null && ratio == null && tileSizes[orientation].height,
+    ),
+    style: { width, height, aspectRatio: ratio },
+  };
 };
 
 interface AssetUploaderContextValue {
   orientation: AssetOrientation;
+  tile: TileSize;
   tileClassName?: string;
   disabled: boolean;
   remaining: number;
@@ -80,6 +102,9 @@ export interface AssetUploaderProps {
   maxSize?: number;
   minSize?: number;
   orientation?: AssetOrientation;
+  tileWidth?: number | string;
+  tileHeight?: number | string;
+  tileRatio?: number;
   accept?: string | Accept;
   multiple?: boolean;
   disabled?: boolean;
@@ -101,6 +126,9 @@ function AssetUploaderRoot({
   maxSize,
   minSize,
   orientation = "portrait",
+  tileWidth,
+  tileHeight,
+  tileRatio,
   accept = DEFAULT_ASSET_ACCEPT,
   multiple = false,
   disabled = false,
@@ -134,7 +162,15 @@ function AssetUploaderRoot({
 
   return (
     <AssetUploaderContext.Provider
-      value={{ orientation, tileClassName, disabled, remaining, isDragActive, open }}
+      value={{
+        orientation,
+        tile: { width: tileWidth, height: tileHeight, ratio: tileRatio },
+        tileClassName,
+        disabled,
+        remaining,
+        isDragActive,
+        open,
+      }}
     >
       <div
         {...getRootProps({
@@ -173,7 +209,7 @@ function AssetUploaderRoot({
   );
 }
 
-export interface AssetUploaderItemProps {
+export interface AssetUploaderItemProps extends TileSize {
   url: string;
   type?: "image" | "video";
   thumbnailUrl?: string;
@@ -192,17 +228,22 @@ function AssetUploaderItemTile({
   alt = "Preview",
   onRemove,
   children,
+  width,
+  height,
+  ratio,
   className,
 }: AssetUploaderItemProps) {
-  const { orientation, tileClassName } = useAssetUploader("Item");
+  const { orientation, tile, tileClassName } = useAssetUploader("Item");
+  const box = tileBox(orientation, { width, height, ratio }, tile);
   const isVideo = type === "video";
 
   return (
     <div
       data-justui="asset-uploader-item"
+      style={box.style}
       className={cn(
         "relative overflow-hidden rounded-xl bg-bg-secondary",
-        tileSizes[orientation],
+        box.className,
         tileClassName,
         className,
       )}
@@ -246,7 +287,7 @@ function AssetUploaderItemTile({
   );
 }
 
-export interface AssetUploaderAddProps {
+export interface AssetUploaderAddProps extends TileSize {
   label?: ReactNode;
   dropLabel?: ReactNode;
   withRemaining?: boolean;
@@ -259,11 +300,16 @@ function AssetUploaderAdd({
   dropLabel = "Drop to upload",
   withRemaining = false,
   children,
+  width,
+  height,
+  ratio,
   className,
 }: AssetUploaderAddProps) {
-  const { orientation, tileClassName, disabled, remaining, isDragActive, open } =
+  const { orientation, tile, tileClassName, disabled, remaining, isDragActive, open } =
     useAssetUploader("Add");
   if (remaining <= 0) return null;
+
+  const box = tileBox(orientation, { width, height, ratio }, tile);
 
   return (
     <button
@@ -271,10 +317,11 @@ function AssetUploaderAdd({
       onClick={open}
       disabled={disabled}
       data-justui="asset-uploader-add"
+      style={box.style}
       className={cn(
         "flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-accent text-secondary hover:bg-accent/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:opacity-60",
         isDragActive ? "bg-accent/25" : "bg-accent/10",
-        tileSizes[orientation],
+        box.className,
         tileClassName,
         className,
       )}

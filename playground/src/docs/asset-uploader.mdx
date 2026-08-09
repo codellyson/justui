@@ -215,10 +215,10 @@ render(
 );
 ```
 
-## Tile shape
+## Tile size
 
-`orientation` picks between two defaults; `tileClassName` replaces the size
-entirely and applies to every tile including the add one.
+`orientation` picks between two presets. Past that, `tileWidth`, `tileHeight` and
+`tileRatio` set real dimensions — a number is px, a string is any CSS length.
 
 ```jsx live noInline
 const shot = (hue) =>
@@ -233,27 +233,88 @@ render(
       <AssetUploader.Add />
     </AssetUploader>
 
-    <AssetUploader
-      onAddFiles={() => {}}
-      tileClassName="w-20 h-20"
-      maxItems={4}
-      count={2}
-    >
+    <AssetUploader onAddFiles={() => {}} tileWidth={80} tileHeight={80} maxItems={4} count={2}>
       <AssetUploader.Item url={shot(150)} alt="" onRemove={() => {}} />
       <AssetUploader.Item url={shot(20)} alt="" onRemove={() => {}} />
       <AssetUploader.Add label="Add" />
     </AssetUploader>
 
-    <AssetUploader onAddFiles={() => {}} disabled maxItems={2} count={1}>
-      <AssetUploader.Item url={shot(265)} alt="" />
+    <AssetUploader onAddFiles={() => {}} tileWidth={100} maxItems={3} count={1}>
+      <AssetUploader.Item url={shot(265)} alt="" onRemove={() => {}} />
       <AssetUploader.Add />
     </AssetUploader>
   </div>
 );
 ```
 
-The last one is `disabled` — the add tile dims and stops opening the picker,
-while tiles stay visible.
+The third row sets only `tileWidth` — the orientation's height survives, so a
+tile never collapses because you set one axis.
+
+### Ratios and fluid tiles
+
+`tileRatio` replaces the height, so a tile can track its own width. Combine with
+a percentage or `minmax` width for a grid that reflows.
+
+```jsx live noInline
+const shot = (hue) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><rect width="100%" height="100%" fill="hsl(${hue} 40% 38%)"/></svg>`
+  )}`;
+
+render(
+  <div className="max-w-md space-y-6">
+    <AssetUploader onAddFiles={() => {}} tileWidth="calc(33.333% - 11px)" tileRatio={1} maxItems={6} count={3}>
+      <AssetUploader.Item url={shot(210)} alt="" onRemove={() => {}} />
+      <AssetUploader.Item url={shot(150)} alt="" onRemove={() => {}} />
+      <AssetUploader.Item url={shot(20)} alt="" onRemove={() => {}} />
+      <AssetUploader.Add label="Add" />
+    </AssetUploader>
+
+    <AssetUploader onAddFiles={() => {}} tileWidth={120} tileRatio={16 / 9} maxItems={3} count={1}>
+      <AssetUploader.Item url={shot(265)} alt="" onRemove={() => {}} />
+      <AssetUploader.Add label="16:9" />
+    </AssetUploader>
+  </div>
+);
+```
+
+### Per tile
+
+`Item` and `Add` take the same three props, overriding the root — for a hero
+first image, or an add tile that stays small next to large previews.
+
+```jsx live noInline
+const shot = (hue) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><rect width="100%" height="100%" fill="hsl(${hue} 40% 38%)"/></svg>`
+  )}`;
+
+render(
+  <AssetUploader onAddFiles={() => {}} tileWidth={72} tileHeight={72} maxItems={5} count={3}>
+    <AssetUploader.Item url={shot(210)} alt="" width={152} height={152} onRemove={() => {}} />
+    <AssetUploader.Item url={shot(150)} alt="" onRemove={() => {}} />
+    <AssetUploader.Item url={shot(20)} alt="" onRemove={() => {}} />
+    <AssetUploader.Add />
+  </AssetUploader>
+);
+```
+
+`disabled` dims the add tile and stops it opening the picker, while tiles stay
+visible:
+
+```jsx live noInline
+const shot = (hue) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><rect width="100%" height="100%" fill="hsl(${hue} 40% 38%)"/></svg>`
+  )}`;
+
+render(
+  <AssetUploader onAddFiles={() => {}} disabled tileWidth={96} tileHeight={96} maxItems={2} count={1}>
+    <AssetUploader.Item url={shot(265)} alt="" />
+    <AssetUploader.Add />
+  </AssetUploader>
+);
+```
 
 ## Props
 
@@ -269,24 +330,32 @@ while tiles stay visible.
 | `count` | `number` | `items.length` |
 | `maxSize` / `minSize` | `number` (bytes) | — |
 | `orientation` | `portrait` `landscape` | `"portrait"` |
+| `tileWidth` / `tileHeight` | `number \| string` | from `orientation` |
+| `tileRatio` | `number` | — |
 | `accept` | `string \| Accept` | `DEFAULT_ASSET_ACCEPT` |
 | `multiple` | `boolean` | `false` |
 | `disabled` | `boolean` | `false` |
 | `noDrop` | `boolean` | `false` |
 | `addLabel` / `withRemaining` | for the `items` shorthand | |
-| `className` / `tileClassName` | `string` | — |
+| `className` | `string` | — |
+| `tileClassName` | `string` — escape hatch for looks, not size | — |
 
 `AssetUploaderItem` is `{ id, url, type?, thumbnailUrl?, durationLabel?, alt? }`.
 
 ### AssetUploader.Item
 
 `url`, `type`, `thumbnailUrl`, `durationLabel`, `alt`, `onRemove`, `children`,
-`className`. The remove button only renders when `onRemove` is given.
+`width`, `height`, `ratio`, `className`. The remove button only renders when
+`onRemove` is given.
 
 ### AssetUploader.Add
 
-`label`, `dropLabel`, `withRemaining`, `children`, `className`. Renders nothing
-once `maxItems` is reached.
+`label`, `dropLabel`, `withRemaining`, `children`, `width`, `height`, `ratio`,
+`className`. Renders nothing once `maxItems` is reached.
+
+Sizes resolve per axis: a tile's own `width` / `height` / `ratio` beat the root's
+`tileWidth` / `tileHeight` / `tileRatio`, which beat `orientation`. Setting one
+axis leaves the other on its preset, and `ratio` replaces the height.
 
 `alt` defaults to `"Preview"` — pass the filename or a description when you have
 one, since the tile *is* the content rather than decoration.

@@ -148,7 +148,10 @@ picks the palette — there is no `destructive` variant:
 <Badge variant="solid" color="green">Live</Badge>
 ```
 
-**Sizes are `xs` `sm` `md` `lg`.**
+**Sizes are `xs` `sm` `md` `lg`.** Where a component needs a real dimension
+instead of a scale step, it takes `number | string` — `Modal`'s `width`,
+`AssetUploader`'s `tileWidth` / `tileHeight` / `tileRatio`. Class-name props are
+escape hatches for looks, never the way to set a size.
 
 **Form controls own their label.** `label`, `description` and `error` are props on
 `Input`, `Textarea`, `Select`, `Checkbox` and `Switch` — there is no separate
