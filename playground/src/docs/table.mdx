@@ -193,6 +193,152 @@ const data = [
 render(<Table columns={columns} data={data} />);
 ```
 
+## Sorting
+
+`sortable` turns every eligible header into a button that cycles through three
+states, with `aria-sort` kept in step.
+
+```jsx live noInline
+const data = [
+  { service: 'api-gateway', region: 'us-east-1', p99: 48, cost: 412.1 },
+  { service: 'billing-worker', region: 'eu-west-2', p99: 210, cost: 38.44 },
+  { service: 'image-resizer', region: 'us-east-1', p99: 1400, cost: 96.2 },
+  { service: 'search-index', region: 'ap-south-1', p99: 12, cost: 7.05 },
+];
+
+const columns = [
+  { accessorKey: 'service', header: 'Service' },
+  { accessorKey: 'region', header: 'Region', enableSorting: false },
+  {
+    accessorKey: 'p99',
+    header: 'p99',
+    cell: (c) => <span className="font-mono">{c.getValue()}ms</span>,
+  },
+  {
+    accessorKey: 'cost',
+    header: 'Cost',
+    cell: (c) => <span className="font-mono">${c.getValue().toFixed(2)}</span>,
+  },
+];
+
+render(<Table columns={columns} data={data} sortable defaultSorting={[{ id: 'p99', desc: true }]} />);
+```
+
+Region opts out with `enableSorting: false` and stays a plain header — no button,
+no `aria-sort`. `defaultSorting` sets the initial order; the table owns the state
+from there.
+
+Which direction a first click picks depends on the data, not on a fixed cycle:
+text columns start ascending, numbers start **descending** so the largest lands on
+top. TanStack infers this from the first row's value, and `sortDescFirst` on the
+column overrides it. The third click clears the sort and the source order returns.
+
+Comparison is type-aware too — `p99` orders 12 → 48 → 210 → 1400, not
+lexically.
+
+### Server-side sorting
+
+Pass `sorting` and `onSortingChange` to own the state, and `manualSorting` so the
+rows you supply are rendered in the order you supplied them.
+
+```jsx live noInline
+const ROWS = [
+  { service: 'api-gateway', p99: 48 },
+  { service: 'billing-worker', p99: 210 },
+  { service: 'image-resizer', p99: 1400 },
+  { service: 'search-index', p99: 12 },
+];
+
+const columns = [
+  { accessorKey: 'service', header: 'Service' },
+  { accessorKey: 'p99', header: 'p99', cell: (c) => <span className="font-mono">{c.getValue()}ms</span> },
+];
+
+function Demo() {
+  const [sorting, setSorting] = useState([{ id: 'service', desc: false }]);
+
+  // Stands in for a request keyed on the sort.
+  const rows = [...ROWS].sort((a, b) => {
+    const { id, desc } = sorting[0] ?? {};
+    if (!id) return 0;
+    const dir = desc ? -1 : 1;
+    return a[id] > b[id] ? dir : a[id] < b[id] ? -dir : 0;
+  });
+
+  return (
+    <div className="space-y-3">
+      <Table
+        columns={columns}
+        data={rows}
+        sortable
+        manualSorting
+        sorting={sorting}
+        onSortingChange={setSorting}
+      />
+      <p className="text-xs text-muted">
+        sent to the server: <code>{JSON.stringify(sorting)}</code>
+      </p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`onSortingChange` receives the resolved `SortingState` — an array, not an updater
+function — so it drops straight into a `useState` setter or a request.
+
+### On the parts
+
+`Table.Head` carries the affordance, so an authored table sorts the same way:
+`sortDirection` is `"asc"`, `"desc"`, or `false` for sortable-but-unsorted, and
+omitting it leaves a plain header. Wire it to whatever state you like.
+
+```jsx live noInline
+function Demo() {
+  const [sort, setSort] = useState({ key: 'name', desc: false });
+  const rows = [
+    { name: 'nord', downloads: 1204 },
+    { name: 'espresso', downloads: 8890 },
+    { name: 'gruvbox', downloads: 430 },
+  ];
+  const sorted = [...rows].sort((a, b) => {
+    const dir = sort.desc ? -1 : 1;
+    return a[sort.key] > b[sort.key] ? dir : a[sort.key] < b[sort.key] ? -dir : 0;
+  });
+  const head = (key, label) => (
+    <Table.Head
+      className={key === 'downloads' ? 'text-right' : undefined}
+      sortDirection={sort.key === key ? (sort.desc ? 'desc' : 'asc') : false}
+      onSort={() => setSort((s) => ({ key, desc: s.key === key ? !s.desc : false }))}
+    >
+      {label}
+    </Table.Head>
+  );
+
+  return (
+    <Table.Root bordered={{}}>
+      <Table.Header>
+        <Table.Row>
+          {head('name', 'Theme')}
+          {head('downloads', 'Downloads')}
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {sorted.map((row) => (
+          <Table.Row key={row.name}>
+            <Table.Cell className="font-medium">{row.name}</Table.Cell>
+            <Table.Cell className="text-right font-mono">{row.downloads.toLocaleString()}</Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table.Root>
+  );
+}
+
+render(<Demo />);
+```
+
 ## Writing the markup yourself
 
 `columns` and `data` suit real tabular data. For a short static table, a totals
@@ -313,6 +459,10 @@ element.
 | `columns` | `ColumnDef<T>[]` | required |
 | `data` | `T[]` | required |
 | `bordered` | `{ column?: boolean }` | — (no frame) |
+| `sortable` | `boolean` | `false` |
+| `defaultSorting` | `SortingState` | — |
+| `sorting` / `onSortingChange` | controlled sort state | — |
+| `manualSorting` | `boolean` | `false` |
 | `isLoading` | `boolean` | `false` |
 | `loadingRows` | `number` | `5` |
 | `emptyMessage` | `ReactNode` | `"No data"` |
@@ -325,7 +475,8 @@ element.
 `Table.Root` · `Table.Caption` · `Table.Header` · `Table.Body` · `Table.Footer` ·
 `Table.Row` · `Table.Head` · `Table.Cell`
 
-Each takes its element's native props plus `className`. `Root` also takes
+`Head` also takes `sortDirection` and `onSort`. Each part otherwise takes its
+element's native props plus `className`. `Root` also takes
 `bordered` and `wrapperClassName`, since `className` there lands on the `<table>`
 while the border and scrolling live on the wrapper around it. All are exported
 flat too (`TableRoot`, `TableCell`, …).

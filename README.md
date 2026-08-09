@@ -242,6 +242,10 @@ const rows = all.slice((page - 1) * perPage, page * perPage);
 
 Server-side paging is the same code with a request in place of `slice`.
 
+`sortable` makes eligible headers clickable and wires `aria-sort`; a column opts
+out with `enableSorting: false`. Own the state with `sorting` / `onSortingChange`
+(plus `manualSorting`) when the server does the ordering.
+
 For a hand-written table — a totals row, a `colSpan` group heading, an expandable
 detail row — `Table.Root` / `.Header` / `.Body` / `.Footer` / `.Row` / `.Head` /
 `.Cell` / `.Caption` are the same styled elements `Table` is built from, so both

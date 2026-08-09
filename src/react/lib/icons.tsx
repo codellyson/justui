@@ -8,6 +8,7 @@ export {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ChevronUpDownIcon,
   ChevronUpIcon,
   ClockIcon,
   EyeIcon,

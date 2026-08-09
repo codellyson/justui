@@ -185,7 +185,10 @@ export {
   TableRoot,
   TableRow,
   type ColumnDef,
+  type SortDirection,
+  type SortingState,
   type TableBordered,
+  type TableHeadProps,
   type TableProps,
   type TableRootProps,
 } from "./ui/table.js";
