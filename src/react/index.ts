@@ -162,6 +162,17 @@ export {
   type PanelSize,
 } from "./ui/date-input.js";
 
+export {
+  AssetUploader,
+  DEFAULT_ASSET_ACCEPT,
+  type Accept,
+  type AssetOrientation,
+  type AssetUploaderAddProps,
+  type AssetUploaderItem,
+  type AssetUploaderItemProps,
+  type AssetUploaderProps,
+  type FileRejection,
+} from "./ui/asset-uploader.js";
 export { Table, type ColumnDef, type TableProps } from "./ui/table.js";
 export {
   Pagination,

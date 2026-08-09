@@ -1,6 +1,6 @@
 {
   "name": "@codellyson/justui",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Shared design system for the just* app family — theme tokens, six dev + six consumer themes, a no-flash boot script, and a token-themed React component kit (shadcn/Radix under the hood) plus Astro adapters.",
   "license": "MIT",
   "type": "module",
@@ -73,6 +73,7 @@
     "@tanstack/react-table": "^8.21.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "react-dropzone": "^20.0.0",
     "tailwind-merge": "^2.5.0"
   },
   "peerDependencies": {

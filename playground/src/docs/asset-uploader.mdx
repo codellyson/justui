@@ -1,0 +1,250 @@
+export const title = "AssetUploader";
+export const group = "Forms";
+
+# AssetUploader
+
+A grid of media tiles plus an add tile. Files arrive by click, drop or paste —
+[react-dropzone](https://react-dropzone.js.org) handles that part. Reading the
+files, uploading and compressing stay with you, so it works the same against any
+backend.
+
+**Try dropping an image onto the grid below.**
+
+```jsx live noInline
+const shot = (label, hue) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="272" height="320"><rect width="100%" height="100%" fill="hsl(${hue} 40% 38%)"/><text x="50%" y="50%" fill="white" font-family="sans-serif" font-size="34" text-anchor="middle" dominant-baseline="middle">${label}</text></svg>`
+  )}`;
+
+function Demo() {
+  const [items, setItems] = useState([
+    { id: 1, url: shot('1', 210), alt: 'Front view' },
+    { id: 2, url: shot('2', 150), alt: 'Side view' },
+  ]);
+
+  return (
+    <div className="space-y-3">
+      <AssetUploader
+        items={items}
+        maxItems={4}
+        withRemaining
+        onRemove={(id) => setItems((prev) => prev.filter((i) => i.id !== id))}
+        onAddFiles={(files) =>
+          setItems((prev) => [
+            ...prev,
+            ...files.map((file, i) => ({
+              id: `${file.name}-${prev.length + i}`,
+              url: URL.createObjectURL(file),
+              alt: file.name,
+            })),
+          ])
+        }
+      />
+      <p className="text-xs text-muted">{items.length} of 4 · pick a file to add one</p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`onAddFiles` hands you a `File[]` however they arrived. While a drag is over the
+grid it takes an accent ring and the add tile's label switches to "Drop to
+upload". The add tile disappears once `maxItems` is reached, and dropping is
+refused at that point too.
+
+## Rejections
+
+`accept`, `maxSize` and `minSize` are enforced before `onAddFiles` — anything
+failing goes to `onReject` instead, with a per-file reason.
+
+```jsx live noInline
+function Demo() {
+  const [log, setLog] = useState([]);
+
+  return (
+    <div className="space-y-3">
+      <AssetUploader
+        onAddFiles={(files) => setLog(files.map((f) => `accepted ${f.name}`))}
+        onReject={(rejections) =>
+          setLog(
+            rejections.map((r) => `${r.file.name} — ${r.errors.map((e) => e.code).join(', ')}`)
+          )
+        }
+        accept={{ 'image/png': ['.png'] }}
+        maxSize={50 * 1024}
+        addLabel="PNG under 50 KB"
+      />
+      <div className="text-xs text-muted">
+        {log.length === 0 ? 'Drop a JPEG or a large PNG to see a rejection.' : log.map((line, i) => <p key={i}>{line}</p>)}
+      </div>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Error codes are `file-invalid-type`, `file-too-large`, `file-too-small` and
+`too-many-files`. `accept` takes react-dropzone's mime-to-extensions object, and
+a plain `"image/png,video/mp4"` string is normalised to it for you.
+
+Drops are partially accepted: with room for two more files and four dropped, the
+first two reach `onAddFiles` and the rest arrive at `onReject` as
+`too-many-files`. Both callbacks fire for the same drop, so don't treat them as
+mutually exclusive.
+
+## Composing tiles
+
+Upload UIs always grow per-tile affordances — progress while a file is in flight,
+a retry on failure, a badge on the first image. Pass tiles as children instead of
+`items` and each one takes its own overlay.
+
+```jsx live noInline
+const shot = (label, hue) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="272" height="320"><rect width="100%" height="100%" fill="hsl(${hue} 40% 38%)"/><text x="50%" y="50%" fill="white" font-family="sans-serif" font-size="34" text-anchor="middle" dominant-baseline="middle">${label}</text></svg>`
+  )}`;
+
+render(
+  <AssetUploader onAddFiles={() => {}} maxItems={5} count={3}>
+    <AssetUploader.Item url={shot('1', 210)} alt="Front view" onRemove={() => {}}>
+      <span className="absolute left-1 top-1 rounded bg-bg/85 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+        Cover
+      </span>
+    </AssetUploader.Item>
+
+    <AssetUploader.Item url={shot('2', 150)} alt="Side view">
+      <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-bg/70">
+        <Loader size="sm" />
+        <span className="text-xs text-secondary">Uploading…</span>
+      </span>
+    </AssetUploader.Item>
+
+    <AssetUploader.Item url={shot('3', 20)} alt="Back view" onRemove={() => {}}>
+      <span className="absolute inset-x-0 bottom-0 bg-danger px-2 py-1 text-center text-[11px] font-medium text-bg">
+        Failed — retry
+      </span>
+    </AssetUploader.Item>
+
+    <AssetUploader.Add withRemaining />
+  </AssetUploader>
+);
+```
+
+Children render in order, so the add tile goes wherever you put it. `count` tells
+the root how many tiles exist — it can't count children reliably — which is all
+`withRemaining` and the auto-hide need.
+
+`Add` also takes `children`, replacing the icon and label outright.
+
+## Video tiles
+
+A tile with `type="video"` gets a play badge. Nothing reads media metadata, so
+pass `durationLabel` already formatted and `thumbnailUrl` for a poster frame —
+without one the tile renders the `<video>` element itself.
+
+```jsx live noInline
+const poster = (label, hue) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="440" height="272"><rect width="100%" height="100%" fill="hsl(${hue} 35% 30%)"/><text x="50%" y="50%" fill="white" font-family="sans-serif" font-size="30" text-anchor="middle" dominant-baseline="middle">${label}</text></svg>`
+  )}`;
+
+render(
+  <AssetUploader onAddFiles={() => {}} orientation="landscape" maxItems={3} count={2}>
+    <AssetUploader.Item
+      type="video"
+      url="#"
+      thumbnailUrl={poster('clip A', 265)}
+      durationLabel="0:42"
+      alt="Product demo"
+      onRemove={() => {}}
+    />
+    <AssetUploader.Item
+      type="video"
+      url="#"
+      thumbnailUrl={poster('clip B', 190)}
+      durationLabel="1:15"
+      alt="Unboxing"
+      onRemove={() => {}}
+    />
+    <AssetUploader.Add label="Add video" />
+  </AssetUploader>
+);
+```
+
+## Tile shape
+
+`orientation` picks between two defaults; `tileClassName` replaces the size
+entirely and applies to every tile including the add one.
+
+```jsx live noInline
+const shot = (hue) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><rect width="100%" height="100%" fill="hsl(${hue} 40% 38%)"/></svg>`
+  )}`;
+
+render(
+  <div className="space-y-6">
+    <AssetUploader onAddFiles={() => {}} orientation="landscape" maxItems={2} count={1}>
+      <AssetUploader.Item url={shot(210)} alt="" onRemove={() => {}} />
+      <AssetUploader.Add />
+    </AssetUploader>
+
+    <AssetUploader
+      onAddFiles={() => {}}
+      tileClassName="w-20 h-20"
+      maxItems={4}
+      count={2}
+    >
+      <AssetUploader.Item url={shot(150)} alt="" onRemove={() => {}} />
+      <AssetUploader.Item url={shot(20)} alt="" onRemove={() => {}} />
+      <AssetUploader.Add label="Add" />
+    </AssetUploader>
+
+    <AssetUploader onAddFiles={() => {}} disabled maxItems={2} count={1}>
+      <AssetUploader.Item url={shot(265)} alt="" />
+      <AssetUploader.Add />
+    </AssetUploader>
+  </div>
+);
+```
+
+The last one is `disabled` — the add tile dims and stops opening the picker,
+while tiles stay visible.
+
+## Props
+
+### AssetUploader
+
+| Prop | Type | Default |
+|---|---|---|
+| `onAddFiles` | `(files: File[]) => void` | required |
+| `onReject` | `(rejections: FileRejection[]) => void` | — |
+| `items` | `AssetUploaderItem[]` | — (use children) |
+| `onRemove` | `(id: string \| number) => void` | — |
+| `maxItems` | `number` | `5` |
+| `count` | `number` | `items.length` |
+| `maxSize` / `minSize` | `number` (bytes) | — |
+| `orientation` | `portrait` `landscape` | `"portrait"` |
+| `accept` | `string \| Accept` | `DEFAULT_ASSET_ACCEPT` |
+| `multiple` | `boolean` | `false` |
+| `disabled` | `boolean` | `false` |
+| `noDrop` | `boolean` | `false` |
+| `addLabel` / `withRemaining` | for the `items` shorthand | |
+| `className` / `tileClassName` | `string` | — |
+
+`AssetUploaderItem` is `{ id, url, type?, thumbnailUrl?, durationLabel?, alt? }`.
+
+### AssetUploader.Item
+
+`url`, `type`, `thumbnailUrl`, `durationLabel`, `alt`, `onRemove`, `children`,
+`className`. The remove button only renders when `onRemove` is given.
+
+### AssetUploader.Add
+
+`label`, `dropLabel`, `withRemaining`, `children`, `className`. Renders nothing
+once `maxItems` is reached.
+
+`alt` defaults to `"Preview"` — pass the filename or a description when you have
+one, since the tile *is* the content rather than decoration.

@@ -13,6 +13,8 @@ export {
   EyeIcon,
   EyeSlashIcon,
   MagnifyingGlassIcon,
+  PlayIcon,
+  PlusIcon,
   SwatchIcon,
   XMarkIcon as XIcon,
 } from "@heroicons/react/16/solid";

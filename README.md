@@ -205,6 +205,22 @@ everything else is prop-driven. Parts are also exported flat (`MenuItem`,
 </Tabs>
 ```
 
+**`AssetUploader` is compound where tiles are.** Files arrive by click, drop or
+paste via [react-dropzone](https://react-dropzone.js.org); reading and uploading
+them stays yours. Pass `items` for the plain case, or tiles as children when each
+needs its own overlay — progress, a retry, a cover badge:
+
+```tsx
+<AssetUploader onAddFiles={upload} onReject={warn} maxItems={5} count={assets.length}>
+  {assets.map((a) => (
+    <AssetUploader.Item key={a.id} url={a.url} onRemove={() => remove(a.id)}>
+      {a.progress != null && <UploadRing value={a.progress} />}
+    </AssetUploader.Item>
+  ))}
+  <AssetUploader.Add withRemaining />
+</AssetUploader>
+```
+
 **`Table` renders rows, nothing else.** Columns are
 [TanStack Table](https://tanstack.com/table) v8 `ColumnDef`s — pinned to v8
 because that's what `@khaime-dev/ui` uses, and v9 renamed the row-model API, so
