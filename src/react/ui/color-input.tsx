@@ -24,7 +24,6 @@ export interface ColorInputProps {
   size?: ControlSize;
   disabled?: boolean;
   name?: string;
-  /** Preset row under the field. Pass `[]` to hide it. */
   swatches?: string[];
   className?: string;
   containerClassName?: string;

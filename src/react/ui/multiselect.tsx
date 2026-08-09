@@ -34,7 +34,6 @@ export interface MultiSelectProps {
   searchPlaceholder?: string;
   emptyMessage?: string;
   withSelectAll?: boolean;
-  /** Collapse the chips past this many into a "+N more" badge. */
   maxDisplayed?: number;
   renderValue?: (selected: MultiSelectOption[]) => ReactNode;
   className?: string;

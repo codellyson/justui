@@ -56,16 +56,13 @@ const controlSizes: Record<ControlSize, string> = {
 };
 
 export interface TimeInputProps {
-  /** A Date carrying the time; strings are parsed ("2:30 PM", "14:30", ISO). */
   value?: Date | string | null;
-  /** Emits a Date keeping the incoming value's date part (today when unset). */
   onChange?: (date: Date) => void;
   label?: ReactNode;
   description?: ReactNode;
   error?: ReactNode;
   placeholder?: string;
   format?: TimeFormat;
-  /** Interval of the option list, in minutes. */
   minuteStep?: number;
   size?: ControlSize;
   disabled?: boolean;

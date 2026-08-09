@@ -23,9 +23,7 @@ export interface TagInputProps {
   disabled?: boolean;
   maxTags?: number;
   allowDuplicates?: boolean;
-  /** Typing this commits the tag, alongside Enter. */
   separator?: string | RegExp;
-  /** Return false to reject a tag. */
   validateTag?: (tag: string) => boolean;
   onTagAdd?: (tag: string) => void;
   onTagRemove?: (tag: string) => void;

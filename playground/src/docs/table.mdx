@@ -3,9 +3,11 @@ export const group = "Display";
 
 # Table
 
-A thin layer over [TanStack Table](https://tanstack.com/table) v8 — columns are
-`ColumnDef`s, so anything TanStack can express (custom cells, sizes, grouped
-headers) works here unchanged.
+Renders rows and nothing else — columns are
+[TanStack Table](https://tanstack.com/table) v8 `ColumnDef`s, so custom cells,
+column sizes and grouped headers all work unchanged. Paging, sorting and
+filtering stay yours: slice the `data` you pass in and compose
+[Pagination](#pagination) beside it.
 
 ```jsx live noInline
 const rows = [
@@ -41,14 +43,13 @@ render(<Table columns={columns} data={rows} />);
 `Badge`, a `Button`, a nested component. `columns` is data like `Select`'s
 options, not children.
 
-## Client pagination
+## Paging a table
 
-Pass `pageSize` and the table paginates in the browser, with the page list and
-row range wired up for you.
+There's no `pageSize` prop. The page is a slice of your own data, which is the
+same shape whether the rows came from memory or from a request.
 
 ```jsx live noInline
-const data = Array.from({ length: 47 }, (_, i) => ({
-  id: i + 1,
+const ALL = Array.from({ length: 47 }, (_, i) => ({
   build: `#${2100 + i}`,
   branch: i % 3 === 0 ? 'main' : `feat/queue-${i}`,
   duration: `${(1 + (i % 7) * 0.4).toFixed(1)}s`,
@@ -60,58 +61,26 @@ const columns = [
   { accessorKey: 'duration', header: 'Duration' },
 ];
 
-render(<Table columns={columns} data={data} pageSize={8} />);
-```
-
-Omit `pageSize` and every row renders — useful when the list is already short or
-the page scrolls.
-
-## Server pagination
-
-When the server owns the page, hand over the page state and the total. The table
-stops slicing rows itself and only asks for the page you gave it.
-
-```jsx live noInline
-const ALL = Array.from({ length: 34 }, (_, i) => ({
-  id: i + 1,
-  email: `user${i + 1}@example.com`,
-  plan: ['Free', 'Pro', 'Team'][i % 3],
-}));
-
-const columns = [
-  { accessorKey: 'email', header: 'Email' },
-  { accessorKey: 'plan', header: 'Plan' },
-];
-
 function Demo() {
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 6 });
-  const [loading, setLoading] = useState(false);
-
-  // Stands in for a fetch keyed on the page.
-  const start = pagination.pageIndex * pagination.pageSize;
-  const page = ALL.slice(start, start + pagination.pageSize);
-
-  useEffect(() => {
-    setLoading(true);
-    const id = setTimeout(() => setLoading(false), 400);
-    return () => clearTimeout(id);
-  }, [pagination.pageIndex]);
+  const [page, setPage] = useState(1);
+  const perPage = 8;
+  const total = Math.ceil(ALL.length / perPage);
+  const start = (page - 1) * perPage;
+  const rows = ALL.slice(start, start + perPage);
 
   return (
-    <div className="space-y-3">
-      <Table
-        isServerSidePagination
-        columns={columns}
-        data={page}
-        isLoading={loading}
-        queryPageIndex={pagination.pageIndex}
-        queryPageSize={pagination.pageSize}
-        setPaginationState={setPagination}
-        totalItems={ALL.length}
-      />
-      <p className="text-xs text-muted">
-        requested page: <code>{pagination.pageIndex + 1}</code>
-      </p>
+    <div className="space-y-4">
+      <Table columns={columns} data={rows} />
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <p className="text-sm text-muted">
+          Showing{' '}
+          <span className="font-medium text-primary">
+            {start + 1}–{Math.min(start + perPage, ALL.length)}
+          </span>{' '}
+          of {ALL.length}
+        </p>
+        <Pagination page={page} total={total} onChange={setPage} />
+      </div>
     </div>
   );
 }
@@ -119,8 +88,41 @@ function Demo() {
 render(<Demo />);
 ```
 
-`setPaginationState` takes the same updater shape as a `useState` setter, so it
-can be your state setter directly.
+Server-side paging is the same code with a request in place of `slice` — `page`
+goes out, rows come back, `total` comes from the response. Nothing about the
+table changes.
+
+## Borders
+
+Rows are separated by default and nothing else. Pass `bordered` to frame the
+table; column dividers stay off unless you ask for them.
+
+```jsx live noInline
+const columns = [
+  { accessorKey: 'metric', header: 'Metric' },
+  { accessorKey: 'p50', header: 'p50' },
+  { accessorKey: 'p99', header: 'p99' },
+];
+
+const data = [
+  { metric: 'render', p50: '12ms', p99: '48ms' },
+  { metric: 'query', p50: '3ms', p99: '210ms' },
+  { metric: 'upload', p50: '90ms', p99: '1.4s' },
+];
+
+render(
+  <div className="space-y-8">
+    <Table columns={columns} data={data} />
+    <Table columns={columns} data={data} bordered={{}} />
+    <Table columns={columns} data={data} bordered={{ column: true }} />
+  </div>
+);
+```
+
+Top to bottom: no frame, `bordered={{}}`, then `bordered={{ column: true }}`.
+Providing `bordered` at all is what draws the outer frame — `column` is the
+separate opt-in for the vertical rules, since they add a lot of ink for data that
+already lines up.
 
 ## Loading and empty
 
@@ -191,37 +193,13 @@ const data = [
 render(<Table columns={columns} data={data} />);
 ```
 
-## TablePagination on its own
-
-The page list is exported separately, for lists that aren't tables.
-
-```jsx live noInline
-function Demo() {
-  const [page, setPage] = useState(5);
-  return (
-    <div className="space-y-4">
-      <TablePagination currentPage={page} totalPages={9} onPageChange={setPage} />
-      <TablePagination currentPage={1} totalPages={3} onPageChange={() => {}} />
-      <p className="text-xs text-muted">page {page} of 9</p>
-    </div>
-  );
-}
-
-render(<Demo />);
-```
-
-It anchors the first two and last two pages plus a window around the current
-one, collapsing the gaps — `1 2 … 4 5 6 … 8 9`. Four pages or fewer are all
-shown, and a single page renders nothing at all. `buildPageList(current, total)`
-is exported if you want the same sequence without the markup.
-
 ## Props
 
 | Prop | Type | Default |
 |---|---|---|
 | `columns` | `ColumnDef<T>[]` | required |
 | `data` | `T[]` | required |
-| `pageSize` | `number` | — (no client pagination) |
+| `bordered` | `{ column?: boolean }` | — (no frame) |
 | `isLoading` | `boolean` | `false` |
 | `loadingRows` | `number` | `5` |
 | `emptyMessage` | `ReactNode` | `"No data"` |
@@ -229,17 +207,10 @@ is exported if you want the same sequence without the markup.
 | `onRowClick` | `(row: T) => void` | — |
 | `className` / `tableClassName` / `headerRowClassName` | `string` | — |
 
-With `isServerSidePagination`, these become required and `pageSize` is rejected:
-
-| Prop | Type |
-|---|---|
-| `queryPageIndex` | `number` |
-| `queryPageSize` | `number` |
-| `setPaginationState` | `Dispatch<SetStateAction<PaginationState>>` |
-| `totalItems` | `number` |
-
-`ColumnDef` is re-exported, so you don't need a direct
-`@tanstack/react-table` import for the common case.
+`ColumnDef` is re-exported, so the common case needs no direct
+`@tanstack/react-table` import. Keep `columns` and `data` referentially stable —
+define columns at module scope, or memoise them — so the table isn't rebuilt on
+every render.
 
 Wide tables scroll horizontally inside their own container rather than stacking
 each row into an unlabeled column list on narrow screens.

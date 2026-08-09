@@ -205,23 +205,23 @@ everything else is prop-driven. Parts are also exported flat (`MenuItem`,
 </Tabs>
 ```
 
-**`Table` columns are `ColumnDef`s.** It wraps [TanStack Table](https://tanstack.com/table)
-v8 — pinned to v8 because that's what `@khaime-dev/ui` uses, and v9 renamed the
-row-model API, so column definitions would stop transferring. `ColumnDef` is
-re-exported for the common case.
+**`Table` renders rows, nothing else.** Columns are
+[TanStack Table](https://tanstack.com/table) v8 `ColumnDef`s — pinned to v8
+because that's what `@khaime-dev/ui` uses, and v9 renamed the row-model API, so
+column definitions would stop transferring. `ColumnDef` is re-exported for the
+common case.
+
+Paging isn't a table concern: the page is a slice of your own data, and
+`Pagination` is a separate component that works for any paged list.
 
 ```tsx
-<Table columns={columns} data={rows} pageSize={10} />          // client pagination
-<Table
-  isServerSidePagination
-  columns={columns}
-  data={page}
-  queryPageIndex={pagination.pageIndex}
-  queryPageSize={pagination.pageSize}
-  setPaginationState={setPagination}
-  totalItems={total}
-/>
+const rows = all.slice((page - 1) * perPage, page * perPage);
+
+<Table columns={columns} data={rows} />
+<Pagination page={page} total={Math.ceil(all.length / perPage)} onChange={setPage} />
 ```
+
+Server-side paging is the same code with a request in place of `slice`.
 
 `Dialog` is the one exception that keeps Radix's `open` / `onOpenChange` — it *is*
 the Radix layer. `Modal` is where the `opened` / `onClose` house style lives, as a

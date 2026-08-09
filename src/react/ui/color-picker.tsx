@@ -33,7 +33,6 @@ export interface ColorPickerProps {
   size?: ControlSize;
   disabled?: boolean;
   name?: string;
-  /** Grid shown in the dropdown. */
   presetColors?: string[];
   columns?: number;
   presetsLabel?: ReactNode;

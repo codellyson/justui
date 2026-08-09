@@ -162,15 +162,13 @@ export {
   type PanelSize,
 } from "./ui/date-input.js";
 
+export { Table, type ColumnDef, type TableProps } from "./ui/table.js";
 export {
-  Table,
-  TablePagination,
+  Pagination,
   buildPageList,
-  type ColumnDef,
-  type PaginationState,
-  type TablePaginationProps,
-  type TableProps,
-} from "./ui/table.js";
+  type BuildPageListOptions,
+  type PaginationProps,
+} from "./ui/pagination.js";
 
 export { isHex, normaliseHex } from "./lib/color.js";
 export { Flag, flagUrl, type FlagProps } from "./lib/flag.js";

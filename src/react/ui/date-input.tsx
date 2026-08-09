@@ -340,7 +340,6 @@ export interface MultiDatePickerPanelProps {
   value?: Date[];
   onChange?: (dates: Date[]) => void;
   minDate?: Date;
-  /** Defaults to six months from today. */
   maxDate?: Date;
   maxSelections?: number;
   disabled?: boolean;
