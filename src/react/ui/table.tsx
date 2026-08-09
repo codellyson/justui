@@ -19,9 +19,15 @@ import { Skeleton } from "./skeleton.js";
 
 export type { ColumnDef, Row, RowSelectionState, SortingState } from "@tanstack/react-table";
 
-export interface TableBordered {
+export interface TableBorderedOptions {
   column?: boolean;
 }
+
+export type TableBordered = boolean | TableBorderedOptions;
+
+const isFramed = (bordered?: TableBordered) => bordered !== undefined && bordered !== false;
+const hasColumnDividers = (bordered?: TableBordered) =>
+  typeof bordered === "object" && bordered.column === true;
 
 const TableStyle = createContext<{ columnDividers: boolean }>({ columnDividers: false });
 
@@ -32,12 +38,12 @@ export interface TableRootProps extends ComponentPropsWithoutRef<"table"> {
 
 function TableRoot({ bordered, className, wrapperClassName, children, ...props }: TableRootProps) {
   return (
-    <TableStyle.Provider value={{ columnDividers: !!bordered?.column }}>
+    <TableStyle.Provider value={{ columnDividers: hasColumnDividers(bordered) }}>
       <div
         data-justui="table"
         className={cn(
           "w-full overflow-x-auto",
-          bordered && "rounded-lg border border-border",
+          isFramed(bordered) && "rounded-lg border border-border",
           wrapperClassName,
         )}
       >

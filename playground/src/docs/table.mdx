@@ -113,16 +113,16 @@ const data = [
 render(
   <div className="space-y-8">
     <Table columns={columns} data={data} />
-    <Table columns={columns} data={data} bordered={{}} />
+    <Table columns={columns} data={data} bordered />
     <Table columns={columns} data={data} bordered={{ column: true }} />
   </div>
 );
 ```
 
-Top to bottom: no frame, `bordered={{}}`, then `bordered={{ column: true }}`.
-Providing `bordered` at all is what draws the outer frame — `column` is the
-separate opt-in for the vertical rules, since they add a lot of ink for data that
-already lines up.
+Top to bottom: no frame, `bordered`, then `bordered={{ column: true }}`. The bare
+prop frames the table; `column` is a separate opt-in for the vertical rules, since
+they add a lot of ink to data that already lines up. `bordered={{}}` is the same
+as `bordered`, so a computed value can be passed straight through.
 
 ## Loading and empty
 
@@ -317,7 +317,7 @@ function Demo() {
   );
 
   return (
-    <Table.Root bordered={{}}>
+    <Table.Root bordered>
       <Table.Header>
         <Table.Row>
           {head('name', 'Theme')}
@@ -436,7 +436,7 @@ function Demo() {
         enableRowSelection={(row) => row.original.status !== 'archived'}
         defaultRowSelection={{ a: true }}
         onRowClick={(row) => setOpened(row.name)}
-        bordered={{}}
+        bordered
       />
       <p className="text-xs text-muted">
         row click: <code>{opened ?? '(none)'}</code>
@@ -463,7 +463,7 @@ elements `Table` is built from — so an authored table matches a data-driven on
 exactly.
 
 ```jsx live
-<Table.Root bordered={{}}>
+<Table.Root bordered>
   <Table.Caption>Spend by region, last 30 days</Table.Caption>
   <Table.Header>
     <Table.Row>
@@ -641,7 +641,7 @@ this far easier than measured ones.
 |---|---|---|
 | `columns` | `ColumnDef<T>[]` | required |
 | `data` | `T[]` | required |
-| `bordered` | `{ column?: boolean }` | — (no frame) |
+| `bordered` | `boolean \| { column?: boolean }` | — (no frame) |
 | `sortable` | `boolean` | `false` |
 | `defaultSorting` | `SortingState` | — |
 | `sorting` / `onSortingChange` | controlled sort state | — |

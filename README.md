@@ -242,6 +242,9 @@ const rows = all.slice((page - 1) * perPage, page * perPage);
 
 Server-side paging is the same code with a request in place of `slice`.
 
+`bordered` frames the table — bare for the frame alone, `bordered={{ column: true }}`
+to add vertical rules.
+
 `sortable` makes eligible headers clickable and wires `aria-sort`; a column opts
 out with `enableSorting: false`. Own the state with `sorting` / `onSortingChange`
 (plus `manualSorting`) when the server does the ordering.

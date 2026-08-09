@@ -188,6 +188,7 @@ export {
   type SortDirection,
   type SortingState,
   type TableBordered,
+  type TableBorderedOptions,
   type TableHeadProps,
   type TableProps,
   type TableRootProps,
