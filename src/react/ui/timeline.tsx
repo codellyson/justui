@@ -21,7 +21,6 @@ interface TimelineConfig {
 const TimelineContext = createContext<TimelineConfig | null>(null);
 
 export interface TimelineProps extends HTMLAttributes<HTMLDivElement> {
-  /** Items up to and including this index render as completed. */
   active?: number;
   bulletSize?: number;
   lineWidth?: number;

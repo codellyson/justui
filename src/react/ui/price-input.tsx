@@ -42,7 +42,6 @@ const controlSizes: Record<ControlSize, string> = {
 
 export interface PriceInputProps {
   value?: number | string;
-  /** Receives the parsed amount. `null` while the field is empty. */
   onChange?: (value: number | null) => void;
   currency?: CurrencyCode;
   onCurrencyChange?: (currency: CurrencyCode) => void;

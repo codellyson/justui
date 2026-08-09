@@ -18,13 +18,11 @@ const fills: Record<ProgressColor, string> = {
 const heights = { xs: "h-1", sm: "h-1.5", md: "h-2", lg: "h-3", xl: "h-4" } as const;
 
 export interface ProgressProps extends Omit<HTMLAttributes<HTMLDivElement>, "color"> {
-  /** 0–100. Clamped. */
   value: number;
   color?: ProgressColor;
   size?: keyof typeof heights | number;
   striped?: boolean;
   animated?: boolean;
-  /** Announced to screen readers in place of the raw percentage. */
   label?: string;
 }
 

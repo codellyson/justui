@@ -14,7 +14,6 @@ export interface PhoneCountry {
   nationalLength?: number;
 }
 
-/** A starting set, not exhaustive — pass `countries` to replace it. */
 export const PHONE_COUNTRIES: PhoneCountry[] = [
   { code: "NG", name: "Nigeria", dial: "+234", nationalLength: 10 },
   { code: "GH", name: "Ghana", dial: "+233", nationalLength: 9 },
@@ -43,7 +42,6 @@ const controlSizes: Record<ControlSize, string> = {
 };
 
 export interface PhoneInputProps {
-  /** E.164, e.g. `+2348012345678`. */
   value?: string;
   onChange?: (value: string) => void;
   country?: string;

@@ -19,7 +19,6 @@ export interface ModalProps {
   centered?: boolean;
   mobileBreakpoint?: number;
   width?: number | string;
-  /** Explicit height. `"100vh"` makes the sheet full-screen and squares its corners. */
   height?: number | string;
   radius?: number;
   withCloseButton?: boolean;

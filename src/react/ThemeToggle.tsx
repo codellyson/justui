@@ -4,16 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { useTheme } from "./useTheme.js";
 
 export interface ThemeToggleProps {
-  /** Tailwind position classes. Defaults to bottom-right of viewport. */
   className?: string;
 }
 
-/**
- * Floating button + popover panel. Clicking the button toggles the panel;
- * clicking outside closes it. The panel offers a light/dark switch and
- * the six built-in theme swatches. All persistence goes through
- * `useTheme()`, which writes to localStorage + reapplies CSS variables.
- */
 export function ThemeToggle({ className }: ThemeToggleProps) {
   const { themeId, mode, themes, setThemeId, toggleMode } = useTheme();
   const [open, setOpen] = useState(false);

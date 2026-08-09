@@ -25,7 +25,6 @@ export interface SegmentedControlProps {
   disabled?: boolean;
   className?: string;
   itemClassName?: string;
-  /** Names the group for screen readers, e.g. "View mode". */
   label?: string;
 }
 

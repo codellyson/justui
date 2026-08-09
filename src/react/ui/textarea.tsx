@@ -10,7 +10,6 @@ export interface TextareaProps
   error?: ReactNode;
   containerClassName?: string;
   labelClassName?: string;
-  /** Receives the value, not the event — use `onChangeEvent` for the event. */
   onChange?: (value: string) => void;
   onChangeEvent?: TextareaHTMLAttributes<HTMLTextAreaElement>["onChange"];
 }

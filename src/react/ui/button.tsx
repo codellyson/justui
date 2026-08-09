@@ -57,7 +57,6 @@ export interface ButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "color">,
     Omit<VariantProps<typeof buttonVariants>, "fullWidth"> {
   variant?: "primary" | "secondary" | "outline" | "ghost" | "transparent" | "danger";
-  /** Palette for the `primary`, `outline` and `ghost` variants. Ignored by the rest. */
   color?: ButtonColor;
   loading?: boolean;
   leftIcon?: ReactNode;

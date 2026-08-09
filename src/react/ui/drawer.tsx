@@ -29,7 +29,6 @@ export interface DrawerProps {
   children: ReactNode;
   title?: ReactNode;
   position?: DrawerPosition;
-  /** Width for left/right, height for top/bottom. */
   size?: number | string;
   withCloseButton?: boolean;
   closeOnClickOutside?: boolean;

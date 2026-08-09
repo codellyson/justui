@@ -4,7 +4,6 @@ import type { ImgHTMLAttributes } from "react";
 import { cn } from "./cn.js";
 
 export interface FlagProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src" | "srcSet"> {
-  /** ISO 3166-1 alpha-2, any case. `eu` is also served. */
   code: string;
 }
 

@@ -43,7 +43,6 @@ interface InputBaseProps
 export interface TextInputProps extends InputBaseProps {
   type?: "text" | "email" | "password" | "url" | "tel" | "search";
   value?: string;
-  /** Receives the value, not the event — use `onChangeEvent` for the event. */
   onChange?: (value: string) => void;
   withPasswordToggle?: boolean;
 }
@@ -51,7 +50,6 @@ export interface TextInputProps extends InputBaseProps {
 export interface NumberInputProps extends InputBaseProps {
   type: "number";
   value?: number | string;
-  /** Receives a number. Empty input reports `NaN`, so guard if that matters. */
   onChange?: (value: number) => void;
   step?: number;
   showNumberControls?: boolean;

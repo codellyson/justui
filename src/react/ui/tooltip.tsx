@@ -7,7 +7,6 @@ import { cn } from "../lib/cn.js";
 export const TooltipProvider = TooltipPrimitive.Provider;
 
 export interface TooltipProps {
-  /** Tooltip body. Supplementary only — never the sole source of the information. */
   label: ReactNode;
   children: ReactNode;
   position?: "top" | "right" | "bottom" | "left";
@@ -18,7 +17,6 @@ export interface TooltipProps {
   withArrow?: boolean;
   offset?: number;
   className?: string;
-  /** Delay before opening, when there's no TooltipProvider above. */
   openDelay?: number;
 }
 

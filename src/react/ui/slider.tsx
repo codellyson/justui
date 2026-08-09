@@ -23,7 +23,6 @@ export interface SliderProps {
   marks?: SliderMark[];
   disabled?: boolean;
   size?: keyof typeof trackSizes;
-  /** A node, or a formatter given the current value. Shown above the thumb while dragging. */
   label?: ReactNode | ((value: number) => ReactNode);
   className?: string;
   name?: string;

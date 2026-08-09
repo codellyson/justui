@@ -23,7 +23,6 @@ export interface CheckboxProps
   description?: ReactNode;
   error?: ReactNode;
   size?: "sm" | "md" | "lg";
-  /** Receives the next checked state. `"indeterminate"` is passed through. */
   onChange?: (checked: boolean | "indeterminate") => void;
 }
 

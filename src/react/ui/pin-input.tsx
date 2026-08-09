@@ -13,7 +13,6 @@ export interface PinInputProps {
   length?: number;
   value: string;
   onChange: (value: string) => void;
-  /** Fires once every box is filled. */
   onComplete?: (value: string) => void;
   label?: ReactNode;
   description?: ReactNode;
