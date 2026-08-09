@@ -138,7 +138,31 @@ export {
   DEFAULT_SWATCHES,
   type ColorInputProps,
 } from "./ui/color-input.js";
+export {
+  ColorPicker,
+  DEFAULT_PRESET_COLORS,
+  type ColorPickerProps,
+} from "./ui/color-picker.js";
+export {
+  TimeInput,
+  formatTime,
+  toTimeDate,
+  type TimeFormat,
+  type TimeInputProps,
+} from "./ui/time-input.js";
+export {
+  DateInput,
+  DatePickerPanel,
+  MultiDatePickerPanel,
+  formatDate,
+  toDate,
+  type DateInputProps,
+  type DatePickerPanelProps,
+  type MultiDatePickerPanelProps,
+  type PanelSize,
+} from "./ui/date-input.js";
 
+export { isHex, normaliseHex } from "./lib/color.js";
 export { Flag, flagUrl, type FlagProps } from "./lib/flag.js";
 export { cn } from "./lib/cn.js";
 

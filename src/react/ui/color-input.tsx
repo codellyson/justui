@@ -2,36 +2,16 @@
 
 import { forwardRef, useId, useState, type ReactNode } from "react";
 import { cn } from "../lib/cn.js";
+import { DEFAULT_SWATCHES, isHex, normaliseHex as normalise } from "../lib/color.js";
 import { controlHeight, controlText, type ControlSize } from "../lib/control-sizes.js";
 
-export const DEFAULT_SWATCHES = [
-  "#0f172a",
-  "#64748b",
-  "#ef4444",
-  "#f97316",
-  "#eab308",
-  "#22c55e",
-  "#14b8a6",
-  "#3b82f6",
-  "#8b5cf6",
-  "#ec4899",
-];
+export { DEFAULT_SWATCHES };
 
 const controlSizes: Record<ControlSize, string> = {
   xs: cn(controlHeight.xs, controlText.xs),
   sm: cn(controlHeight.sm, controlText.sm),
   md: cn(controlHeight.md, controlText.md),
   lg: cn(controlHeight.lg, controlText.lg),
-};
-
-const HEX = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i;
-
-const normalise = (raw: string) => {
-  const hex = raw.startsWith("#") ? raw : `#${raw}`;
-  if (hex.length !== 4) return hex.toLowerCase();
-  // #abc -> #aabbcc, since <input type="color"> only accepts the long form.
-  const [, r, g, b] = hex;
-  return `#${r}${r}${g}${g}${b}${b}`.toLowerCase();
 };
 
 export interface ColorInputProps {
@@ -75,7 +55,7 @@ export const ColorInput = forwardRef<HTMLInputElement, ColorInputProps>(
     const id = useId();
     const messageId = `${id}-message`;
 
-    const valid = HEX.test(text.trim());
+    const valid = isHex(text);
     const hasError = (error != null && error !== false) || (text !== "" && !valid);
     const message =
       error != null && error !== false

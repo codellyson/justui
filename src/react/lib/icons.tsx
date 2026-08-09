@@ -3,13 +3,17 @@
 import type { SVGProps } from "react";
 
 export {
+  CalendarIcon,
   CheckIcon,
   ChevronDownIcon,
+  ChevronLeftIcon,
   ChevronRightIcon,
   ChevronUpIcon,
+  ClockIcon,
   EyeIcon,
   EyeSlashIcon,
   MagnifyingGlassIcon,
+  SwatchIcon,
   XMarkIcon as XIcon,
 } from "@heroicons/react/16/solid";
 
