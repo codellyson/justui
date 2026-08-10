@@ -20,11 +20,21 @@ export const LoadingOverlay = forwardRef<HTMLDivElement, LoadingOverlayProps>(
         ref={ref}
         data-justui="loading-overlay"
         aria-busy="true"
-        className={cn("absolute inset-0 flex items-center justify-center", className)}
+        // rounded-[inherit] so the wash follows the container's corners instead of
+        // squaring them off and bleeding past the border.
+        className={cn(
+          "absolute inset-0 flex items-center justify-center rounded-[inherit]",
+          className,
+        )}
         style={{ zIndex, ...style }}
         {...props}
       >
-        <div className={cn("absolute inset-0 bg-bg/70 backdrop-blur-sm", overlayClassName)} />
+        <div
+          className={cn(
+            "absolute inset-0 rounded-[inherit] bg-bg/70 backdrop-blur-sm",
+            overlayClassName,
+          )}
+        />
         <Loader size={loaderProps?.size ?? "md"} color={loaderProps?.color ?? "accent"} label={loaderProps?.label} />
       </div>
     );
