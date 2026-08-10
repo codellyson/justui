@@ -39,29 +39,55 @@ const hideAt: Record<AppShellBreakpoint, string> = {
 };
 
 const padLeftAt: Record<AppShellBreakpoint, string> = {
-  sm: "shell-sm:pl-[var(--justui-navbar-w)]",
-  md: "shell-md:pl-[var(--justui-navbar-w)]",
-  lg: "shell-lg:pl-[var(--justui-navbar-w)]",
-  xl: "shell-xl:pl-[var(--justui-navbar-w)]",
+  sm: "shell-sm:pl-[var(--justui-navbar-wc)]",
+  md: "shell-md:pl-[var(--justui-navbar-wc)]",
+  lg: "shell-lg:pl-[var(--justui-navbar-wc)]",
+  xl: "shell-xl:pl-[var(--justui-navbar-wc)]",
 };
 
 const padRightAt: Record<AppShellBreakpoint, string> = {
-  sm: "shell-sm:pr-[var(--justui-aside-w)]",
-  md: "shell-md:pr-[var(--justui-aside-w)]",
-  lg: "shell-lg:pr-[var(--justui-aside-w)]",
-  xl: "shell-xl:pr-[var(--justui-aside-w)]",
+  sm: "shell-sm:pr-[var(--justui-aside-wc)]",
+  md: "shell-md:pr-[var(--justui-aside-wc)]",
+  lg: "shell-lg:pr-[var(--justui-aside-wc)]",
+  xl: "shell-xl:pr-[var(--justui-aside-wc)]",
 };
 
 const leftAt: Record<AppShellBreakpoint, string> = {
-  sm: "shell-sm:left-[var(--justui-navbar-w)]",
-  md: "shell-md:left-[var(--justui-navbar-w)]",
-  lg: "shell-lg:left-[var(--justui-navbar-w)]",
-  xl: "shell-xl:left-[var(--justui-navbar-w)]",
+  sm: "shell-sm:left-[var(--justui-navbar-wc)]",
+  md: "shell-md:left-[var(--justui-navbar-wc)]",
+  lg: "shell-lg:left-[var(--justui-navbar-wc)]",
+  xl: "shell-xl:left-[var(--justui-navbar-wc)]",
 };
 
-const padLeft = "pl-[var(--justui-navbar-w)]";
-const padRight = "pr-[var(--justui-aside-w)]";
-const left = "left-[var(--justui-navbar-w)]";
+const padLeft = "pl-[var(--justui-navbar-wc)]";
+const padRight = "pr-[var(--justui-aside-wc)]";
+const left = "left-[var(--justui-navbar-wc)]";
+
+const widthRawNavbar = "w-[var(--justui-navbar-w)]";
+const widthRawAside = "w-[var(--justui-aside-w)]";
+const widthClampedNavbar = "w-[var(--justui-navbar-wc)]";
+const widthClampedAside = "w-[var(--justui-aside-wc)]";
+
+const widthNavbarAt: Record<AppShellBreakpoint, string> = {
+  sm: "shell-sm:w-[var(--justui-navbar-wc)]",
+  md: "shell-md:w-[var(--justui-navbar-wc)]",
+  lg: "shell-lg:w-[var(--justui-navbar-wc)]",
+  xl: "shell-xl:w-[var(--justui-navbar-wc)]",
+};
+
+const widthAsideAt: Record<AppShellBreakpoint, string> = {
+  sm: "shell-sm:w-[var(--justui-aside-wc)]",
+  md: "shell-md:w-[var(--justui-aside-wc)]",
+  lg: "shell-lg:w-[var(--justui-aside-wc)]",
+  xl: "shell-xl:w-[var(--justui-aside-wc)]",
+};
+
+const clamped = (raw: string) => `min(var(${raw}), max(0px, calc(50cqw - 80px)))`;
+
+const reserveVars = {
+  ["--justui-navbar-wc" as string]: clamped("--justui-navbar-w"),
+  ["--justui-aside-wc" as string]: clamped("--justui-aside-w"),
+};
 
 export interface AppShellHeaderConfig {
   height: number | string;
@@ -201,7 +227,7 @@ function AppShellHeader({
           : "left-0",
         className,
       )}
-      style={{ height: "var(--justui-header-h)", ...style }}
+      style={{ ...reserveVars, height: "var(--justui-header-h)", ...style }}
       {...props}
     >
       {children}
@@ -228,7 +254,7 @@ function AppShellFooter({
           : "left-0",
         className,
       )}
-      style={{ height: "var(--justui-footer-h)", ...style }}
+      style={{ ...reserveVars, height: "var(--justui-footer-h)", ...style }}
       {...props}
     >
       {children}
@@ -267,12 +293,13 @@ function AppShellNavbar({ className, children, style, ...props }: ComponentProps
         className={cn(
           "fixed bottom-0 left-0 z-40 flex-col overflow-hidden border-r border-border bg-bg",
           opened ? "flex" : showAt[navbarBreakpoint],
+          docked ? widthClampedNavbar : cn(widthRawNavbar, widthNavbarAt[navbarBreakpoint]),
           className,
         )}
         style={{
+          ...reserveVars,
           top: layout === "alt" ? 0 : "var(--justui-header-h)",
           bottom: layout === "alt" ? 0 : "var(--justui-footer-h)",
-          width: "var(--justui-navbar-w)",
           ...style,
         }}
         {...props}
@@ -314,12 +341,13 @@ function AppShellAside({ className, children, style, ...props }: ComponentPropsW
         className={cn(
           "fixed right-0 z-40 flex-col overflow-hidden border-l border-border bg-bg",
           opened ? "flex" : showAt[asideBreakpoint],
+          docked ? widthClampedAside : cn(widthRawAside, widthAsideAt[asideBreakpoint]),
           className,
         )}
         style={{
+          ...reserveVars,
           top: "var(--justui-header-h)",
           bottom: "var(--justui-footer-h)",
-          width: "var(--justui-aside-w)",
           ...style,
         }}
         {...props}
@@ -363,6 +391,7 @@ function AppShellMain({ className, children, style, ...props }: ComponentPropsWi
         className,
       )}
       style={{
+        ...reserveVars,
         marginTop: "var(--justui-header-h)",
         marginBottom: "var(--justui-footer-h)",
         ...style,

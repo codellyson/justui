@@ -302,6 +302,25 @@ what your own toggle calls — but nothing dismisses a docked region for you, wh
 is the point: no scrim to click, and Escape is left alone so it can't yank a region
 out of the layout from under the user.
 
+### Where the room runs out
+
+A region that reserves space is capped at `50cqw - 80px`, so it can never squeeze
+`Main` below 160px however narrow the shell gets. Two 160px regions in an 830px
+shell keep their full width and leave 510px; at 360px they shrink to 99px each and
+`Main` still gets its 160px. The cap moves the region and the inset together, so
+they can't drift apart and overlap.
+
+| shell | navbar | aside | Main |
+|---|---|---|---|
+| 830px | 160 | 160 | 510 |
+| 498px | 160 | 160 | 178 |
+| 418px | 129 | 129 | 160 |
+| 298px | 69 | 69 | 160 |
+
+An `overlay` region is never capped — it floats over the content instead of taking
+its space, so a 160px drawer stays 160px at any width. The cap is only about not
+starving what's underneath.
+
 ## Props
 
 ### AppShell
