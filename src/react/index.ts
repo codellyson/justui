@@ -243,6 +243,7 @@ export {
   type AppShellLayout,
   type AppShellNavbarConfig,
   type AppShellPadding,
+  type AppShellRegionMode,
   type AppShellProps,
   type AppShellSectionProps,
 } from "./ui/app-shell.js";

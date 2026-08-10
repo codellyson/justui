@@ -236,6 +236,69 @@ function Demo() {
 render(<Demo />);
 ```
 
+## Docking instead of floating
+
+Below the breakpoint, `opened` floats the region over the content behind a scrim.
+`mode="dock"` makes it take its space instead: `Main` insets around it, there's no
+scrim, and it stays put until you close it — so a region can be a persistent part
+of a narrow layout rather than a drawer you dismiss.
+
+Both regions use `breakpoint="xl"` here, so narrow the window under 1280px and flip
+the switch. Above that they're pinned and `mode` has nothing to do.
+
+```jsx live noInline
+function Demo() {
+  const [mode, setMode] = useState('overlay');
+  const [nav, setNav] = useState(false);
+  const [aside, setAside] = useState(false);
+
+  return (
+    <div className="space-y-3">
+      <SegmentedControl
+        label="Mode"
+        value={mode}
+        onChange={setMode}
+        data={[{ value: 'overlay', label: 'overlay' }, { value: 'dock', label: 'dock' }]}
+      />
+      <div
+        className="relative h-[320px] overflow-hidden rounded-lg border border-border"
+        style={{ transform: 'translate(0)' }}
+      >
+        <AppShell
+          header={{ height: 48 }}
+          navbar={{ width: 160, breakpoint: 'xl', mode, opened: nav, onClose: () => setNav(false) }}
+          aside={{ width: 160, breakpoint: 'xl', mode, opened: aside, onClose: () => setAside(false) }}
+          padding="sm"
+          className="min-h-full"
+        >
+          <AppShell.Header className="gap-2 px-2">
+            <Button size="xs" variant="ghost" onClick={() => setNav((o) => !o)}>Nav</Button>
+            <Button size="xs" variant="ghost" className="ml-auto" onClick={() => setAside((o) => !o)}>
+              Aside
+            </Button>
+          </AppShell.Header>
+          <AppShell.Navbar className="p-2 text-sm text-secondary">Navbar</AppShell.Navbar>
+          <AppShell.Aside className="p-2 text-sm text-secondary">Aside</AppShell.Aside>
+          <AppShell.Main>
+            <p className="text-sm text-secondary">
+              Main content. In <code>dock</code> it gets narrower; in <code>overlay</code> it stays
+              put and the panel covers it.
+            </p>
+          </AppShell.Main>
+        </AppShell>
+      </div>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+A docked region carries `data-mode="dock"`. `onClose` is still worth passing — it's
+what your own toggle calls — but nothing dismisses a docked region for you, which
+is the point: no scrim to click, and Escape is left alone so it can't yank a region
+out of the layout from under the user.
+
 ## Props
 
 ### AppShell
@@ -244,13 +307,14 @@ render(<Demo />);
 |---|---|---|
 | `header` | `{ height }` | — |
 | `footer` | `{ height }` | — |
-| `navbar` | `{ width, collapsedWidth?, collapsed?, breakpoint?, opened?, onClose? }` | — |
-| `aside` | `{ width, breakpoint?, opened?, onClose? }` | — |
+| `navbar` | `{ width, collapsedWidth?, collapsed?, breakpoint?, opened?, onClose?, mode? }` | — |
+| `aside` | `{ width, breakpoint?, opened?, onClose?, mode? }` | — |
 | `layout` | `default` `alt` | `default` |
 | `padding` | `none` `xs` `sm` `md` `lg` `xl` | `md` |
 
 Sizes take a number (px) or any CSS length. `navbar.breakpoint` defaults to `md`,
 `aside.breakpoint` to `lg`. `collapsed` is inert unless `collapsedWidth` is set.
+`mode` is `overlay` or `dock`, described above.
 
 ### Parts
 

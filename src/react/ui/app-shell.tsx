@@ -20,6 +20,7 @@ const padding = {
 export type AppShellPadding = keyof typeof padding;
 export type AppShellBreakpoint = "sm" | "md" | "lg" | "xl";
 export type AppShellLayout = "default" | "alt";
+export type AppShellRegionMode = "overlay" | "dock";
 
 // Tailwind can't build class names from a variable, so each responsive piece is
 // spelled out per breakpoint.
@@ -58,6 +59,10 @@ const leftAt: Record<AppShellBreakpoint, string> = {
   xl: "xl:left-[var(--justui-navbar-w)]",
 };
 
+const padLeft = "pl-[var(--justui-navbar-w)]";
+const padRight = "pr-[var(--justui-aside-w)]";
+const left = "left-[var(--justui-navbar-w)]";
+
 export interface AppShellHeaderConfig {
   height: number | string;
 }
@@ -75,6 +80,7 @@ export interface AppShellNavbarConfig {
   /** Opens the navbar below the breakpoint, where it is otherwise hidden. */
   opened?: boolean;
   onClose?: () => void;
+  mode?: AppShellRegionMode;
 }
 
 export interface AppShellAsideConfig {
@@ -82,6 +88,7 @@ export interface AppShellAsideConfig {
   breakpoint?: AppShellBreakpoint;
   opened?: boolean;
   onClose?: () => void;
+  mode?: AppShellRegionMode;
 }
 
 interface AppShellContextValue {
@@ -179,6 +186,7 @@ function AppShellHeader({
   ...props
 }: ComponentPropsWithoutRef<"header">) {
   const { layout, navbarBreakpoint, navbar } = useAppShell("Header");
+  const navbarDocked = navbar?.mode === "dock" && !!navbar.opened;
 
   return (
     <header
@@ -187,7 +195,9 @@ function AppShellHeader({
         "fixed right-0 top-0 z-30 flex items-center border-b border-border bg-bg",
         // In the alt layout the navbar runs full height, so the header starts
         // beside it instead of above it.
-        layout === "alt" && navbar ? cn("left-0", leftAt[navbarBreakpoint]) : "left-0",
+        layout === "alt" && navbar
+          ? cn("left-0", leftAt[navbarBreakpoint], navbarDocked && left)
+          : "left-0",
         className,
       )}
       style={{ height: "var(--justui-header-h)", ...style }}
@@ -205,13 +215,16 @@ function AppShellFooter({
   ...props
 }: ComponentPropsWithoutRef<"footer">) {
   const { layout, navbarBreakpoint, navbar } = useAppShell("Footer");
+  const navbarDocked = navbar?.mode === "dock" && !!navbar.opened;
 
   return (
     <footer
       data-justui="app-shell-footer"
       className={cn(
         "fixed bottom-0 right-0 z-30 flex items-center border-t border-border bg-bg",
-        layout === "alt" && navbar ? cn("left-0", leftAt[navbarBreakpoint]) : "left-0",
+        layout === "alt" && navbar
+          ? cn("left-0", leftAt[navbarBreakpoint], navbarDocked && left)
+          : "left-0",
         className,
       )}
       style={{ height: "var(--justui-footer-h)", ...style }}
@@ -226,19 +239,20 @@ function AppShellNavbar({ className, children, style, ...props }: ComponentProps
   const { navbar, navbarBreakpoint, layout } = useAppShell("Navbar");
   const opened = navbar?.opened ?? false;
   const onClose = navbar?.onClose;
+  const docked = navbar?.mode === "dock";
 
   useEffect(() => {
-    if (!opened || !onClose) return;
+    if (!opened || !onClose || docked) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [opened, onClose]);
+  }, [opened, onClose, docked]);
 
   return (
     <>
-      {opened && (
+      {opened && !docked && (
         <div
           aria-hidden="true"
           onClick={onClose}
@@ -248,6 +262,7 @@ function AppShellNavbar({ className, children, style, ...props }: ComponentProps
       <nav
         data-justui="app-shell-navbar"
         data-opened={opened || undefined}
+        data-mode={docked ? "dock" : undefined}
         className={cn(
           "fixed bottom-0 left-0 z-40 flex-col overflow-hidden border-r border-border bg-bg",
           opened ? "flex" : showAt[navbarBreakpoint],
@@ -271,19 +286,20 @@ function AppShellAside({ className, children, style, ...props }: ComponentPropsW
   const { aside, asideBreakpoint } = useAppShell("Aside");
   const opened = aside?.opened ?? false;
   const onClose = aside?.onClose;
+  const docked = aside?.mode === "dock";
 
   useEffect(() => {
-    if (!opened || !onClose) return;
+    if (!opened || !onClose || docked) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [opened, onClose]);
+  }, [opened, onClose, docked]);
 
   return (
     <>
-      {opened && (
+      {opened && !docked && (
         <div
           aria-hidden="true"
           onClick={onClose}
@@ -293,6 +309,7 @@ function AppShellAside({ className, children, style, ...props }: ComponentPropsW
       <aside
         data-justui="app-shell-aside"
         data-opened={opened || undefined}
+        data-mode={docked ? "dock" : undefined}
         className={cn(
           "fixed right-0 z-40 flex-col overflow-hidden border-l border-border bg-bg",
           opened ? "flex" : showAt[asideBreakpoint],
@@ -329,6 +346,8 @@ function AppShellSection({ className, grow = false, ...props }: AppShellSectionP
 
 function AppShellMain({ className, children, style, ...props }: ComponentPropsWithoutRef<"main">) {
   const { navbar, aside, navbarBreakpoint, asideBreakpoint, padding: pad } = useAppShell("Main");
+  const navbarDocked = navbar?.mode === "dock" && !!navbar.opened;
+  const asideDocked = aside?.mode === "dock" && !!aside.opened;
 
   return (
     <main
@@ -337,7 +356,9 @@ function AppShellMain({ className, children, style, ...props }: ComponentPropsWi
       // scale below still applies on all four sides.
       className={cn(
         navbar && padLeftAt[navbarBreakpoint],
+        navbarDocked && padLeft,
         aside && padRightAt[asideBreakpoint],
+        asideDocked && padRight,
         className,
       )}
       style={{
