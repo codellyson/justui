@@ -2,6 +2,7 @@
 
 import { forwardRef, useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { cn } from "../lib/cn.js";
+import { focusRingInset } from "../lib/focus.js";
 import { ChevronDownIcon } from "../lib/icons.js";
 import { useAppShellNavbar } from "./app-shell.js";
 import { Tooltip, TooltipProvider } from "./tooltip.js";
@@ -72,9 +73,8 @@ export const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
     );
 
     const shared = cn(
-      // Rows take a background tint on focus, like Menu.Item and Select options —
-      // a ring draws a hard box around the row.
-      "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none focus:bg-bg-secondary focus:text-primary",
+      "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm",
+      focusRingInset,
       rail && "justify-center px-0",
       active
         ? "bg-bg-secondary font-medium text-primary"

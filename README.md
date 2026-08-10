@@ -148,6 +148,12 @@ picks the palette — there is no `destructive` variant:
 <Badge variant="solid" color="green">Live</Badge>
 ```
 
+**Focus has one treatment per kind of focusable**, exported from the package so a
+new component doesn't invent its own: `focusRing` for fields and standalone
+buttons, `focusRingInset` for rows in a list or sidebar, `focusLink` for inline
+text. The row variant is inset deliberately — an outer ring boxes the row, and it
+has to stay visible on a row that already carries a selected background.
+
 **Sizes are `xs` `sm` `md` `lg`.** Where a component needs a real dimension
 instead of a scale step, it takes `number | string` — `Modal`'s `width`,
 `AssetUploader`'s `tileWidth` / `tileHeight` / `tileRatio`. Class-name props are

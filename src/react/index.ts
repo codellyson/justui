@@ -222,6 +222,7 @@ export {
   type PaginationProps,
 } from "./ui/pagination.js";
 
+export { focusLink, focusRing, focusRingInset } from "./lib/focus.js";
 export { isHex, normaliseHex } from "./lib/color.js";
 export { Flag, flagUrl, type FlagProps } from "./lib/flag.js";
 export { cn } from "./lib/cn.js";

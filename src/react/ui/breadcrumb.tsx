@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { cn } from "../lib/cn.js";
+import { focusLink } from "../lib/focus.js";
 import { ChevronRightIcon } from "../lib/icons.js";
 
 export interface BreadcrumbProps extends Omit<ComponentPropsWithoutRef<"nav">, "children"> {
@@ -69,8 +70,8 @@ const BreadcrumbItem = forwardRef<HTMLAnchorElement, BreadcrumbItemProps>(
         href={href}
         data-justui="breadcrumb-item"
         className={cn(
-          // An inline link takes an underline on focus; a ring boxes the text.
-          "rounded text-secondary outline-none hover:text-primary hover:underline focus-visible:text-primary focus-visible:underline",
+          "rounded text-secondary hover:text-primary hover:underline",
+          focusLink,
           className,
         )}
         {...props}
