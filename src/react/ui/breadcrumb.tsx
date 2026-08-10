@@ -69,7 +69,8 @@ const BreadcrumbItem = forwardRef<HTMLAnchorElement, BreadcrumbItemProps>(
         href={href}
         data-justui="breadcrumb-item"
         className={cn(
-          "rounded text-secondary hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+          // An inline link takes an underline on focus; a ring boxes the text.
+          "rounded text-secondary outline-none hover:text-primary hover:underline focus-visible:text-primary focus-visible:underline",
           className,
         )}
         {...props}

@@ -72,7 +72,9 @@ export const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
     );
 
     const shared = cn(
-      "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+      // Rows take a background tint on focus, like Menu.Item and Select options —
+      // a ring draws a hard box around the row.
+      "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none focus:bg-bg-secondary focus:text-primary",
       rail && "justify-center px-0",
       active
         ? "bg-bg-secondary font-medium text-primary"
