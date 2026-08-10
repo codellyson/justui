@@ -228,15 +228,24 @@ export { cn } from "./lib/cn.js";
 
 export {
   AppShell,
+  AppShellAside,
+  AppShellFooter,
   AppShellHeader,
   AppShellMain,
   AppShellNavbar,
+  AppShellSection,
+  useAppShellNavbar,
+  type AppShellAsideConfig,
   type AppShellBreakpoint,
+  type AppShellFooterConfig,
   type AppShellHeaderConfig,
+  type AppShellLayout,
   type AppShellNavbarConfig,
   type AppShellPadding,
   type AppShellProps,
+  type AppShellSectionProps,
 } from "./ui/app-shell.js";
+export { NavLink, type NavLinkProps } from "./ui/nav-link.js";
 export { Modal, type ModalProps } from "./ui/modal.js";
 export { ThemeToggle, type ThemeToggleProps } from "./ThemeToggle.js";
 export { useTheme, type ThemeMode, type ThemeState } from "./useTheme.js";

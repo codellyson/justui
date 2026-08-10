@@ -1,6 +1,11 @@
 "use client";
 
-import { createContext, useContext, type ComponentPropsWithoutRef } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  type ComponentPropsWithoutRef,
+} from "react";
 import { cn } from "../lib/cn.js";
 
 const padding = {
@@ -14,46 +19,80 @@ const padding = {
 
 export type AppShellPadding = keyof typeof padding;
 export type AppShellBreakpoint = "sm" | "md" | "lg" | "xl";
+export type AppShellLayout = "default" | "alt";
 
-// Tailwind can't build class names from a variable, so the responsive pieces are
+// Tailwind can't build class names from a variable, so each responsive piece is
 // spelled out per breakpoint.
-const navbarVisible: Record<AppShellBreakpoint, string> = {
+const showAt: Record<AppShellBreakpoint, string> = {
   sm: "hidden sm:flex",
   md: "hidden md:flex",
   lg: "hidden lg:flex",
   xl: "hidden xl:flex",
 };
 
-const mainOffset: Record<AppShellBreakpoint, string> = {
-  sm: "sm:pl-[var(--justui-navbar-w)]",
-  md: "md:pl-[var(--justui-navbar-w)]",
-  lg: "lg:pl-[var(--justui-navbar-w)]",
-  xl: "xl:pl-[var(--justui-navbar-w)]",
-};
-
-const overlayHidden: Record<AppShellBreakpoint, string> = {
+const hideAt: Record<AppShellBreakpoint, string> = {
   sm: "sm:hidden",
   md: "md:hidden",
   lg: "lg:hidden",
   xl: "xl:hidden",
 };
 
+const padLeftAt: Record<AppShellBreakpoint, string> = {
+  sm: "sm:pl-[var(--justui-navbar-w)]",
+  md: "md:pl-[var(--justui-navbar-w)]",
+  lg: "lg:pl-[var(--justui-navbar-w)]",
+  xl: "xl:pl-[var(--justui-navbar-w)]",
+};
+
+const padRightAt: Record<AppShellBreakpoint, string> = {
+  sm: "sm:pr-[var(--justui-aside-w)]",
+  md: "md:pr-[var(--justui-aside-w)]",
+  lg: "lg:pr-[var(--justui-aside-w)]",
+  xl: "xl:pr-[var(--justui-aside-w)]",
+};
+
+const leftAt: Record<AppShellBreakpoint, string> = {
+  sm: "sm:left-[var(--justui-navbar-w)]",
+  md: "md:left-[var(--justui-navbar-w)]",
+  lg: "lg:left-[var(--justui-navbar-w)]",
+  xl: "xl:left-[var(--justui-navbar-w)]",
+};
+
 export interface AppShellHeaderConfig {
+  height: number | string;
+}
+
+export interface AppShellFooterConfig {
   height: number | string;
 }
 
 export interface AppShellNavbarConfig {
   width: number | string;
+  /** Width in the collapsed rail. Omit to make `collapsed` a no-op. */
+  collapsedWidth?: number | string;
+  collapsed?: boolean;
   breakpoint?: AppShellBreakpoint;
   /** Opens the navbar below the breakpoint, where it is otherwise hidden. */
   opened?: boolean;
   onClose?: () => void;
 }
 
+export interface AppShellAsideConfig {
+  width: number | string;
+  breakpoint?: AppShellBreakpoint;
+  opened?: boolean;
+  onClose?: () => void;
+}
+
 interface AppShellContextValue {
   header?: AppShellHeaderConfig;
+  footer?: AppShellFooterConfig;
   navbar?: AppShellNavbarConfig;
-  breakpoint: AppShellBreakpoint;
+  aside?: AppShellAsideConfig;
+  navbarBreakpoint: AppShellBreakpoint;
+  asideBreakpoint: AppShellBreakpoint;
+  navbarCollapsed: boolean;
+  layout: AppShellLayout;
   padding: AppShellPadding;
 }
 
@@ -65,34 +104,64 @@ const useAppShell = (part: string) => {
   return ctx;
 };
 
+/** Reads the collapsed rail state, so navbar content can go icon-only. */
+export const useAppShellNavbar = () => {
+  const ctx = useContext(AppShellContext);
+  return { collapsed: ctx?.navbarCollapsed ?? false, opened: ctx?.navbar?.opened ?? false };
+};
+
 const size = (value: number | string | undefined) =>
   typeof value === "number" ? `${value}px` : value;
 
 export interface AppShellProps extends ComponentPropsWithoutRef<"div"> {
   header?: AppShellHeaderConfig;
+  footer?: AppShellFooterConfig;
   navbar?: AppShellNavbarConfig;
+  aside?: AppShellAsideConfig;
+  layout?: AppShellLayout;
   padding?: AppShellPadding;
 }
 
 function AppShellRoot({
   children,
   header,
+  footer,
   navbar,
+  aside,
+  layout = "default",
   padding: pad = "md",
   className,
   style,
   ...props
 }: AppShellProps) {
-  const breakpoint = navbar?.breakpoint ?? "md";
+  const navbarBreakpoint = navbar?.breakpoint ?? "md";
+  const asideBreakpoint = aside?.breakpoint ?? "lg";
+  const navbarCollapsed = !!navbar?.collapsed && navbar.collapsedWidth != null;
+  const navbarWidth = navbarCollapsed ? navbar?.collapsedWidth : navbar?.width;
 
   return (
-    <AppShellContext.Provider value={{ header, navbar, breakpoint, padding: pad }}>
+    <AppShellContext.Provider
+      value={{
+        header,
+        footer,
+        navbar,
+        aside,
+        navbarBreakpoint,
+        asideBreakpoint,
+        navbarCollapsed,
+        layout,
+        padding: pad,
+      }}
+    >
       <div
         data-justui="app-shell"
+        data-layout={layout}
         className={cn("relative min-h-screen bg-bg", className)}
         style={{
           ["--justui-header-h" as string]: size(header?.height) ?? "0px",
-          ["--justui-navbar-w" as string]: size(navbar?.width) ?? "0px",
+          ["--justui-footer-h" as string]: size(footer?.height) ?? "0px",
+          ["--justui-navbar-w" as string]: size(navbarWidth) ?? "0px",
+          ["--justui-aside-w" as string]: size(aside?.width) ?? "0px",
           ...style,
         }}
         {...props}
@@ -103,13 +172,22 @@ function AppShellRoot({
   );
 }
 
-function AppShellHeader({ className, children, style, ...props }: ComponentPropsWithoutRef<"header">) {
-  useAppShell("Header");
+function AppShellHeader({
+  className,
+  children,
+  style,
+  ...props
+}: ComponentPropsWithoutRef<"header">) {
+  const { layout, navbarBreakpoint, navbar } = useAppShell("Header");
+
   return (
     <header
       data-justui="app-shell-header"
       className={cn(
-        "fixed inset-x-0 top-0 z-30 flex items-center border-b border-border bg-bg",
+        "fixed right-0 top-0 z-30 flex items-center border-b border-border bg-bg",
+        // In the alt layout the navbar runs full height, so the header starts
+        // beside it instead of above it.
+        layout === "alt" && navbar ? cn("left-0", leftAt[navbarBreakpoint]) : "left-0",
         className,
       )}
       style={{ height: "var(--justui-header-h)", ...style }}
@@ -120,28 +198,67 @@ function AppShellHeader({ className, children, style, ...props }: ComponentProps
   );
 }
 
+function AppShellFooter({
+  className,
+  children,
+  style,
+  ...props
+}: ComponentPropsWithoutRef<"footer">) {
+  const { layout, navbarBreakpoint, navbar } = useAppShell("Footer");
+
+  return (
+    <footer
+      data-justui="app-shell-footer"
+      className={cn(
+        "fixed bottom-0 right-0 z-30 flex items-center border-t border-border bg-bg",
+        layout === "alt" && navbar ? cn("left-0", leftAt[navbarBreakpoint]) : "left-0",
+        className,
+      )}
+      style={{ height: "var(--justui-footer-h)", ...style }}
+      {...props}
+    >
+      {children}
+    </footer>
+  );
+}
+
 function AppShellNavbar({ className, children, style, ...props }: ComponentPropsWithoutRef<"nav">) {
-  const { navbar, breakpoint } = useAppShell("Navbar");
+  const { navbar, navbarBreakpoint, layout } = useAppShell("Navbar");
   const opened = navbar?.opened ?? false;
+  const onClose = navbar?.onClose;
+
+  useEffect(() => {
+    if (!opened || !onClose) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [opened, onClose]);
 
   return (
     <>
       {opened && (
         <div
           aria-hidden="true"
-          onClick={navbar?.onClose}
-          className={cn("fixed inset-0 z-30 bg-black/50", overlayHidden[breakpoint])}
+          onClick={onClose}
+          className={cn("fixed inset-0 z-30 bg-black/50", hideAt[navbarBreakpoint])}
         />
       )}
       <nav
         data-justui="app-shell-navbar"
         data-opened={opened || undefined}
         className={cn(
-          "fixed bottom-0 left-0 z-40 flex-col overflow-y-auto border-r border-border bg-bg",
-          opened ? "flex" : navbarVisible[breakpoint],
+          "fixed bottom-0 left-0 z-40 flex-col overflow-hidden border-r border-border bg-bg",
+          opened ? "flex" : showAt[navbarBreakpoint],
           className,
         )}
-        style={{ top: "var(--justui-header-h)", width: "var(--justui-navbar-w)", ...style }}
+        style={{
+          top: layout === "alt" ? 0 : "var(--justui-header-h)",
+          bottom: layout === "alt" ? 0 : "var(--justui-footer-h)",
+          width: "var(--justui-navbar-w)",
+          ...style,
+        }}
         {...props}
       >
         {children}
@@ -150,17 +267,84 @@ function AppShellNavbar({ className, children, style, ...props }: ComponentProps
   );
 }
 
+function AppShellAside({ className, children, style, ...props }: ComponentPropsWithoutRef<"aside">) {
+  const { aside, asideBreakpoint } = useAppShell("Aside");
+  const opened = aside?.opened ?? false;
+  const onClose = aside?.onClose;
+
+  useEffect(() => {
+    if (!opened || !onClose) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [opened, onClose]);
+
+  return (
+    <>
+      {opened && (
+        <div
+          aria-hidden="true"
+          onClick={onClose}
+          className={cn("fixed inset-0 z-30 bg-black/50", hideAt[asideBreakpoint])}
+        />
+      )}
+      <aside
+        data-justui="app-shell-aside"
+        data-opened={opened || undefined}
+        className={cn(
+          "fixed right-0 z-40 flex-col overflow-hidden border-l border-border bg-bg",
+          opened ? "flex" : showAt[asideBreakpoint],
+          className,
+        )}
+        style={{
+          top: "var(--justui-header-h)",
+          bottom: "var(--justui-footer-h)",
+          width: "var(--justui-aside-w)",
+          ...style,
+        }}
+        {...props}
+      >
+        {children}
+      </aside>
+    </>
+  );
+}
+
+export interface AppShellSectionProps extends ComponentPropsWithoutRef<"div"> {
+  /** Takes the leftover height and scrolls, pinning the sections around it. */
+  grow?: boolean;
+}
+
+function AppShellSection({ className, grow = false, ...props }: AppShellSectionProps) {
+  return (
+    <div
+      data-justui="app-shell-section"
+      className={cn(grow ? "min-h-0 flex-1 overflow-y-auto" : "shrink-0", className)}
+      {...props}
+    />
+  );
+}
+
 function AppShellMain({ className, children, style, ...props }: ComponentPropsWithoutRef<"main">) {
-  const { breakpoint, navbar, padding: pad } = useAppShell("Main");
+  const { navbar, aside, navbarBreakpoint, asideBreakpoint, padding: pad } = useAppShell("Main");
 
   return (
     <main
       data-justui="app-shell-main"
-      // The header offset is margin, not padding, so the padding scale below
-      // still applies on all four sides — the reference overrode paddingTop and
-      // left content flush against the header.
-      className={cn(navbar && mainOffset[breakpoint], className)}
-      style={{ marginTop: "var(--justui-header-h)", ...style }}
+      // Header and footer are cleared with margin, not padding, so the padding
+      // scale below still applies on all four sides.
+      className={cn(
+        navbar && padLeftAt[navbarBreakpoint],
+        aside && padRightAt[asideBreakpoint],
+        className,
+      )}
+      style={{
+        marginTop: "var(--justui-header-h)",
+        marginBottom: "var(--justui-footer-h)",
+        ...style,
+      }}
       {...props}
     >
       <div className={padding[pad]}>{children}</div>
@@ -170,14 +354,27 @@ function AppShellMain({ className, children, style, ...props }: ComponentPropsWi
 
 AppShellRoot.displayName = "AppShell";
 AppShellHeader.displayName = "AppShell.Header";
+AppShellFooter.displayName = "AppShell.Footer";
 AppShellNavbar.displayName = "AppShell.Navbar";
+AppShellAside.displayName = "AppShell.Aside";
+AppShellSection.displayName = "AppShell.Section";
 AppShellMain.displayName = "AppShell.Main";
 
-export { AppShellHeader, AppShellMain, AppShellNavbar };
+export {
+  AppShellAside,
+  AppShellFooter,
+  AppShellHeader,
+  AppShellMain,
+  AppShellNavbar,
+  AppShellSection,
+};
 
 export const AppShell = Object.assign(AppShellRoot, {
   Root: AppShellRoot,
   Header: AppShellHeader,
+  Footer: AppShellFooter,
   Navbar: AppShellNavbar,
+  Aside: AppShellAside,
+  Section: AppShellSection,
   Main: AppShellMain,
 });
