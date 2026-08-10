@@ -1,6 +1,6 @@
 {
   "name": "@codellyson/justui",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Shared design system for the just* app family — theme tokens, six dev + six consumer themes, a no-flash boot script, and a token-themed React component kit (shadcn/Radix under the hood) plus Astro adapters.",
   "license": "MIT",
   "type": "module",

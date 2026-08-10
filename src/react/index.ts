@@ -226,6 +226,17 @@ export { isHex, normaliseHex } from "./lib/color.js";
 export { Flag, flagUrl, type FlagProps } from "./lib/flag.js";
 export { cn } from "./lib/cn.js";
 
+export {
+  AppShell,
+  AppShellHeader,
+  AppShellMain,
+  AppShellNavbar,
+  type AppShellBreakpoint,
+  type AppShellHeaderConfig,
+  type AppShellNavbarConfig,
+  type AppShellPadding,
+  type AppShellProps,
+} from "./ui/app-shell.js";
 export { Modal, type ModalProps } from "./ui/modal.js";
 export { ThemeToggle, type ThemeToggleProps } from "./ThemeToggle.js";
 export { useTheme, type ThemeMode, type ThemeState } from "./useTheme.js";

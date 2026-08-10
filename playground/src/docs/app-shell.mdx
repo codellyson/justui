@@ -1,0 +1,206 @@
+export const title = "AppShell";
+export const group = "Foundations";
+
+# AppShell
+
+The frame an application sits in: a fixed header, a fixed left navbar, and a main
+area offset from both. Compound, because you fill each region yourself.
+
+Sizes go on the root as config — `header={{ height }}` and `navbar={{ width }}` —
+and reach the parts through CSS variables, so nothing has to be repeated.
+
+```jsx live noInline
+const NAV = [
+  { label: 'Overview', icon: <HomeIcon className="h-4 w-4" /> },
+  { label: 'Deployments', icon: <ArrowPathIcon className="h-4 w-4" /> },
+  { label: 'Logs', icon: <DocumentTextIcon className="h-4 w-4" /> },
+  { label: 'Settings', icon: <Cog6ToothIcon className="h-4 w-4" /> },
+];
+
+function Demo() {
+  const [active, setActive] = useState('Deployments');
+  return (
+    // A transformed ancestor makes `fixed` resolve against this box instead of
+    // the viewport, so the shell can be demoed inline. In an app it wraps the page.
+    <div
+      className="relative h-[420px] overflow-hidden rounded-lg border border-border"
+      style={{ transform: 'translate(0)' }}
+    >
+      <AppShell header={{ height: 52 }} navbar={{ width: 200 }} padding="md" className="min-h-full">
+        <AppShell.Header className="gap-3 px-4">
+          <span className="font-semibold">justdeploy</span>
+          <span className="ml-auto flex items-center gap-3">
+            <Badge variant="light" color="green">Live</Badge>
+            <Avatar size="sm" name="Ada Lovelace" />
+          </span>
+        </AppShell.Header>
+
+        <AppShell.Navbar className="gap-1 p-2">
+          {NAV.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => setActive(item.label)}
+              className={
+                'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm ' +
+                (active === item.label
+                  ? 'bg-bg-secondary font-medium text-primary'
+                  : 'text-secondary hover:bg-bg-secondary hover:text-primary')
+              }
+            >
+              {item.icon}
+              {item.label}
+            </button>
+          ))}
+        </AppShell.Navbar>
+
+        <AppShell.Main>
+          <Breadcrumb className="mb-3">
+            <Breadcrumb.Item href="#app-shell">Projects</Breadcrumb.Item>
+            <Breadcrumb.Item current>{active}</Breadcrumb.Item>
+          </Breadcrumb>
+          <h3 className="mb-2 text-lg font-semibold">{active}</h3>
+          <p className="text-sm text-secondary">
+            Main scrolls under the header while the header and navbar stay put.
+          </p>
+          <div className="mt-4 space-y-2">
+            {Array.from({ length: 8 }, (_, i) => (
+              <div key={i} className="rounded-md border border-border p-3 text-sm">
+                Row {i + 1}
+              </div>
+            ))}
+          </div>
+        </AppShell.Main>
+      </AppShell>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Scroll the panel: the header and navbar hold position, and `Main` starts below the
+header rather than under it. `padding` sets the main area's inset on all four
+sides — `none` `xs` `sm` `md` `lg` `xl`.
+
+## Collapsing on small screens
+
+The navbar hides below `navbar.breakpoint` (default `md`). Below it, `opened`
+brings the navbar in over the content with a dismissable overlay — pair it with a
+burger in the header.
+
+The demo below uses `breakpoint="xl"`, so narrow this window under 1280px to see
+the navbar collapse and the toggle take over. Above that the navbar is pinned and
+`opened` has nothing to do.
+
+```jsx live noInline
+function Demo() {
+  const [opened, setOpened] = useState(false);
+  return (
+    <div
+      className="relative h-[360px] overflow-hidden rounded-lg border border-border"
+      style={{ transform: 'translate(0)' }}
+    >
+      <AppShell
+        header={{ height: 52 }}
+        navbar={{ width: 200, breakpoint: 'xl', opened, onClose: () => setOpened(false) }}
+        className="min-h-full"
+      >
+        <AppShell.Header className="gap-2 px-3">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setOpened((o) => !o)}
+            leftIcon={<Bars3Icon className="h-4 w-4" />}
+          >
+            Menu
+          </Button>
+          <span className="font-semibold">justdeploy</span>
+        </AppShell.Header>
+
+        <AppShell.Navbar className="gap-1 p-2">
+          {['Overview', 'Logs', 'Settings'].map((label) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => setOpened(false)}
+              className="rounded-md px-2 py-1.5 text-left text-sm text-secondary hover:bg-bg-secondary hover:text-primary"
+            >
+              {label}
+            </button>
+          ))}
+        </AppShell.Navbar>
+
+        <AppShell.Main>
+          <p className="text-sm text-secondary">
+            {opened ? 'Navbar is open — click the overlay to dismiss.' : 'Press Menu to open the navbar.'}
+          </p>
+        </AppShell.Main>
+      </AppShell>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`onClose` fires from the overlay; closing on navigation is your call, which is why
+the links above do it themselves.
+
+## Header only, and navbar only
+
+Both regions are optional. Leave one out and nothing is reserved for it.
+
+```jsx live noInline
+render(
+  <div className="grid gap-6 md:grid-cols-2">
+    <div
+      className="relative h-56 overflow-hidden rounded-lg border border-border"
+      style={{ transform: 'translate(0)' }}
+    >
+      <AppShell header={{ height: 44 }} padding="sm" className="min-h-full">
+        <AppShell.Header className="px-3 text-sm font-semibold">Header only</AppShell.Header>
+        <AppShell.Main>
+          <p className="text-sm text-secondary">No navbar, so no left offset.</p>
+        </AppShell.Main>
+      </AppShell>
+    </div>
+
+    <div
+      className="relative h-56 overflow-hidden rounded-lg border border-border"
+      style={{ transform: 'translate(0)' }}
+    >
+      <AppShell navbar={{ width: 120, breakpoint: 'sm' }} padding="sm" className="min-h-full">
+        <AppShell.Navbar className="p-2 text-sm text-secondary">Navbar only</AppShell.Navbar>
+        <AppShell.Main>
+          <p className="text-sm text-secondary">No header, so main starts at the top.</p>
+        </AppShell.Main>
+      </AppShell>
+    </div>
+  </div>
+);
+```
+
+## Props
+
+### AppShell
+
+| Prop | Type | Default |
+|---|---|---|
+| `header` | `{ height: number \| string }` | — |
+| `navbar` | `{ width, breakpoint?, opened?, onClose? }` | — |
+| `padding` | `none` `xs` `sm` `md` `lg` `xl` | `md` |
+
+A number is px; a string is any CSS length, so `header={{ height: '4rem' }}` works.
+`breakpoint` is `sm` `md` `lg` `xl` and defaults to `md`.
+
+### Parts
+
+`AppShell.Header`, `AppShell.Navbar`, `AppShell.Main` — each takes its element's
+native props plus `className`. They read their geometry from the root, so a part
+used outside an `AppShell` throws rather than rendering something subtly wrong.
+
+The regions are `fixed`, which is what keeps them in place while main scrolls. If
+you ever need to contain the shell inside a box rather than the viewport — as this
+page does — give the wrapper a `transform`, which makes it the containing block
+for fixed descendants.

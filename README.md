@@ -185,8 +185,22 @@ you need the event itself:
 `mobileBreakpoint` (768px), and the sheet can be dragged down to dismiss. Pass
 `centered` to keep it centred at every width.
 
-**Compound only where children repeat.** `Menu`, `Tabs`, `Dialog`, `Table` and
-`AssetUploader` expose parts; everything else is prop-driven. Parts are also exported flat (`MenuItem`,
+**`AppShell` frames the page.** `header={{ height }}` and `navbar={{ width, breakpoint, opened }}`
+on the root reach `AppShell.Header` / `.Navbar` / `.Main` through CSS variables:
+
+```tsx
+<AppShell header={{ height: 56 }} navbar={{ width: 240, opened, onClose: close }}>
+  <AppShell.Header>…</AppShell.Header>
+  <AppShell.Navbar>…</AppShell.Navbar>
+  <AppShell.Main>…</AppShell.Main>
+</AppShell>
+```
+
+The navbar hides below `breakpoint` (default `md`) and `opened` brings it in over
+the content with a dismissable overlay.
+
+**Compound only where children repeat.** `Menu`, `Tabs`, `Dialog`, `Table`,
+`AssetUploader`, `Breadcrumb` and `AppShell` expose parts; everything else is prop-driven. Parts are also exported flat (`MenuItem`,
 `TabsList`, …) if you need per-part tree-shaking.
 
 ```tsx
