@@ -1,4 +1,5 @@
 const { join } = require('node:path');
+const plugin = require('tailwindcss/plugin');
 
 // Derived from __dirname because a hand-written node_modules glob matches nothing
 // under pnpm (symlink into the store). Forward slashes: fast-glob treats \ as an escape.
@@ -7,8 +8,17 @@ const root = join(__dirname, '..').replace(/\\/g, '/');
 const content = [`${root}/dist/**/*.js`, `${root}/src/astro/**/*.astro`];
 
 /** @type {import('tailwindcss').Config} */
+const shellBreakpoints = { sm: '640px', md: '768px', lg: '1024px', xl: '1280px' };
+
 module.exports = {
   darkMode: 'class',
+  plugins: [
+    plugin(({ addVariant }) => {
+      Object.entries(shellBreakpoints).forEach(([name, min]) => {
+        addVariant(`shell-${name}`, `@container (min-width: ${min})`);
+      });
+    }),
+  ],
   // Ignored once the consumer sets its own `content` — v3 replaces, never merges.
   // Real configs use withJustUI() or spread preset.content.
   content,

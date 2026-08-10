@@ -181,7 +181,7 @@ const shell = (layout) => (
 );
 
 render(
-  <div className="grid gap-6 md:grid-cols-2">
+  <div className="grid gap-6">
     {shell('default')}
     {shell('alt')}
   </div>
@@ -194,8 +194,10 @@ Navbar and aside each hide below their own breakpoint — `md` and `lg` by defau
 Below it, `opened` brings the region in over the content with an overlay that
 dismisses on click or Escape.
 
-The demo uses `breakpoint="xl"` for both, so narrow this window under 1280px to
-see them collapse. Above that they're pinned and `opened` has nothing to do.
+A breakpoint is measured against **the shell's own width**, not the viewport's, so
+a shell in a narrow column collapses even on a wide screen. The demo below asks for
+`breakpoint="xl"` and the shell is nowhere near 1280px wide, so both regions are
+already collapsed — press the buttons and they come in over the content.
 
 ```jsx live noInline
 function Demo() {
@@ -243,8 +245,9 @@ Below the breakpoint, `opened` floats the region over the content behind a scrim
 scrim, and it stays put until you close it — so a region can be a persistent part
 of a narrow layout rather than a drawer you dismiss.
 
-Both regions use `breakpoint="xl"` here, so narrow the window under 1280px and flip
-the switch. Above that they're pinned and `mode` has nothing to do.
+Both regions ask for `breakpoint="xl"`, which this shell is far short of, so they're
+collapsed and `mode` is in play. Open one and flip the switch: `overlay` covers the
+content, `dock` narrows it.
 
 ```jsx live noInline
 function Demo() {
@@ -315,6 +318,13 @@ out of the layout from under the user.
 Sizes take a number (px) or any CSS length. `navbar.breakpoint` defaults to `md`,
 `aside.breakpoint` to `lg`. `collapsed` is inert unless `collapsedWidth` is set.
 `mode` is `overlay` or `dock`, described above.
+
+Breakpoints are container queries against the shell itself — `sm` 640, `md` 768,
+`lg` 1024, `xl` 1280, the same numbers as Tailwind's screens. A shell that fills the
+page behaves exactly as viewport breakpoints would; one in a split pane or a preview
+card responds to the room it actually has. The root carries
+`container-type: inline-size` to make that work, which does not affect the `fixed`
+regions.
 
 ### Parts
 

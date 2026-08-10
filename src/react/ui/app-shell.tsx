@@ -25,38 +25,38 @@ export type AppShellRegionMode = "overlay" | "dock";
 // Tailwind can't build class names from a variable, so each responsive piece is
 // spelled out per breakpoint.
 const showAt: Record<AppShellBreakpoint, string> = {
-  sm: "hidden sm:flex",
-  md: "hidden md:flex",
-  lg: "hidden lg:flex",
-  xl: "hidden xl:flex",
+  sm: "hidden shell-sm:flex",
+  md: "hidden shell-md:flex",
+  lg: "hidden shell-lg:flex",
+  xl: "hidden shell-xl:flex",
 };
 
 const hideAt: Record<AppShellBreakpoint, string> = {
-  sm: "sm:hidden",
-  md: "md:hidden",
-  lg: "lg:hidden",
-  xl: "xl:hidden",
+  sm: "shell-sm:hidden",
+  md: "shell-md:hidden",
+  lg: "shell-lg:hidden",
+  xl: "shell-xl:hidden",
 };
 
 const padLeftAt: Record<AppShellBreakpoint, string> = {
-  sm: "sm:pl-[var(--justui-navbar-w)]",
-  md: "md:pl-[var(--justui-navbar-w)]",
-  lg: "lg:pl-[var(--justui-navbar-w)]",
-  xl: "xl:pl-[var(--justui-navbar-w)]",
+  sm: "shell-sm:pl-[var(--justui-navbar-w)]",
+  md: "shell-md:pl-[var(--justui-navbar-w)]",
+  lg: "shell-lg:pl-[var(--justui-navbar-w)]",
+  xl: "shell-xl:pl-[var(--justui-navbar-w)]",
 };
 
 const padRightAt: Record<AppShellBreakpoint, string> = {
-  sm: "sm:pr-[var(--justui-aside-w)]",
-  md: "md:pr-[var(--justui-aside-w)]",
-  lg: "lg:pr-[var(--justui-aside-w)]",
-  xl: "xl:pr-[var(--justui-aside-w)]",
+  sm: "shell-sm:pr-[var(--justui-aside-w)]",
+  md: "shell-md:pr-[var(--justui-aside-w)]",
+  lg: "shell-lg:pr-[var(--justui-aside-w)]",
+  xl: "shell-xl:pr-[var(--justui-aside-w)]",
 };
 
 const leftAt: Record<AppShellBreakpoint, string> = {
-  sm: "sm:left-[var(--justui-navbar-w)]",
-  md: "md:left-[var(--justui-navbar-w)]",
-  lg: "lg:left-[var(--justui-navbar-w)]",
-  xl: "xl:left-[var(--justui-navbar-w)]",
+  sm: "shell-sm:left-[var(--justui-navbar-w)]",
+  md: "shell-md:left-[var(--justui-navbar-w)]",
+  lg: "shell-lg:left-[var(--justui-navbar-w)]",
+  xl: "shell-xl:left-[var(--justui-navbar-w)]",
 };
 
 const padLeft = "pl-[var(--justui-navbar-w)]";
@@ -165,6 +165,7 @@ function AppShellRoot({
         data-layout={layout}
         className={cn("relative min-h-screen bg-bg", className)}
         style={{
+          containerType: "inline-size",
           ["--justui-header-h" as string]: size(header?.height) ?? "0px",
           ["--justui-footer-h" as string]: size(footer?.height) ?? "0px",
           ["--justui-navbar-w" as string]: size(navbarWidth) ?? "0px",
