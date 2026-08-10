@@ -1,9 +1,16 @@
 "use client";
 
-import { forwardRef, useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useState,
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+} from "react";
 import { cn } from "../lib/cn.js";
 import { focusRingInset } from "../lib/focus.js";
-import { ChevronDownIcon } from "../lib/icons.js";
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "../lib/icons.js";
 import { useAppShellNavbar } from "./app-shell.js";
 import { Tooltip, TooltipProvider } from "./tooltip.js";
 
@@ -20,6 +27,11 @@ export interface NavLinkProps
   defaultOpened?: boolean;
   opened?: boolean;
   onToggle?: (opened: boolean) => void;
+  /**
+   * How children are revealed. `panel` slides them in over the whole navbar with
+   * a back header, replacing the list rather than indenting under it.
+   */
+  nested?: "expand" | "panel";
   /** Icon-only, with the label in a tooltip. Inferred from a collapsed AppShell navbar. */
   iconOnly?: boolean;
 }
@@ -38,6 +50,7 @@ export const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
       defaultOpened = false,
       opened,
       onToggle,
+      nested = "expand",
       iconOnly,
       href,
       onClick,
@@ -50,6 +63,25 @@ export const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
     const [uncontrolled, setUncontrolled] = useState(defaultOpened);
     const isOpen = opened ?? uncontrolled;
     const hasChildren = children != null && children !== false;
+    const asPanel = nested === "panel";
+    const panelOpen = asPanel && isOpen && !rail;
+
+    const setOpen = useCallback(
+      (next: boolean) => {
+        if (opened == null) setUncontrolled(next);
+        onToggle?.(next);
+      },
+      [opened, onToggle],
+    );
+
+    useEffect(() => {
+      if (!panelOpen) return;
+      const onKeyDown = (event: KeyboardEvent) => {
+        if (event.key === "Escape") setOpen(false);
+      };
+      window.addEventListener("keydown", onKeyDown);
+      return () => window.removeEventListener("keydown", onKeyDown);
+    }, [panelOpen, setOpen]);
 
     const body = (
       <>
@@ -61,12 +93,18 @@ export const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
               {description && <span className="truncate text-xs text-muted">{description}</span>}
             </span>
             {rightSection && <span className="shrink-0">{rightSection}</span>}
-            {hasChildren && (
-              <ChevronDownIcon
-                aria-hidden="true"
-                className={cn("h-3.5 w-3.5 shrink-0 transition-transform", isOpen && "rotate-180")}
-              />
-            )}
+            {hasChildren &&
+              (asPanel ? (
+                <ChevronRightIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
+              ) : (
+                <ChevronDownIcon
+                  aria-hidden="true"
+                  className={cn(
+                    "h-3.5 w-3.5 shrink-0 transition-transform",
+                    isOpen && "rotate-180",
+                  )}
+                />
+              ))}
           </>
         )}
       </>
@@ -93,11 +131,7 @@ export const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
           aria-expanded={hasChildren ? isOpen : undefined}
           disabled={disabled}
           onClick={(event) => {
-            if (hasChildren) {
-              const next = !isOpen;
-              if (opened == null) setUncontrolled(next);
-              onToggle?.(next);
-            }
+            if (hasChildren) setOpen(!isOpen);
             onClick?.(event as never);
           }}
           className={shared}
@@ -138,7 +172,39 @@ export const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
     return (
       <div data-justui="nav-link-group">
         {wrapped}
-        {isOpen && !rail && (
+        {panelOpen && (
+          // inset-0 resolves against the navbar, which is positioned and clips its
+          // overflow — so the panel covers the whole rail and escapes the scrolling
+          // section it was declared in. The rows underneath stay tabbable.
+          <div
+            data-justui="nav-link-panel"
+            className="absolute inset-0 z-10 flex flex-col bg-bg animate-justui-slide-in-right"
+          >
+            <div className="flex shrink-0 items-center gap-1 p-2">
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className={cn(
+                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-muted hover:bg-bg-secondary hover:text-primary",
+                  focusRingInset,
+                )}
+              >
+                <ChevronLeftIcon aria-hidden="true" className="h-4 w-4" />
+                <span className="sr-only">Back</span>
+              </button>
+              <span className="min-w-0 flex-1 truncate text-center text-sm font-medium text-primary">
+                {label}
+              </span>
+              {/* Balances the back button so the title centres on the panel, not on
+                  the space left over beside it. */}
+              <span aria-hidden="true" className="h-6 w-6 shrink-0" />
+            </div>
+            <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-2 pb-2">
+              {children}
+            </div>
+          </div>
+        )}
+        {!asPanel && isOpen && !rail && (
           <div className="mt-1 flex flex-col gap-1 border-l border-border pl-3 ml-3">{children}</div>
         )}
       </div>
