@@ -2,6 +2,7 @@
 
 import { forwardRef, useId, useMemo, useState, type ReactNode } from "react";
 import { cn } from "../lib/cn.js";
+import { useListboxNav } from "../lib/listbox.js";
 import { controlText, type ControlSize } from "../lib/control-sizes.js";
 import { CheckIcon, ChevronDownIcon, MagnifyingGlassIcon, XIcon } from "../lib/icons.js";
 import { Badge } from "./badge.js";
@@ -68,6 +69,7 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
     ref,
   ) => {
     const [query, setQuery] = useState("");
+    const [open, setOpen] = useState(false);
     const id = useId();
     const messageId = `${id}-message`;
     const hasError = error != null && error !== false;
@@ -85,6 +87,16 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
 
     const selectable = options.filter((o) => !o.disabled);
     const allSelected = selectable.length > 0 && selectable.every((o) => value.includes(o.value));
+
+    const nav = useListboxNav({
+      items: filtered.map((o) => ({ value: o.value, label: o.label, disabled: o.disabled })),
+      opened: open,
+      multiple: true,
+      onSelect: (v) => {
+        const hit = filtered.find((o) => o.value === v);
+        if (hit) toggle(hit);
+      },
+    });
 
     const toggle = (option: MultiSelectOption) => {
       if (option.disabled) return;
@@ -109,7 +121,7 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
           </label>
         )}
 
-        <Popover position="bottom">
+        <Popover position="bottom" opened={open} onChange={setOpen}>
           <Popover.Target asChild>
             <button
               ref={ref}
@@ -156,6 +168,10 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
                 <input
                   autoFocus
                   value={query}
+                  role="combobox"
+                  aria-expanded={open}
+                  aria-activedescendant={nav.activeDescendant}
+                  onKeyDown={nav.onKeyDown}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={searchPlaceholder}
                   aria-label={searchPlaceholder}
@@ -190,17 +206,22 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
               {filtered.length === 0 ? (
                 <p className="px-2 py-6 text-center text-sm text-muted">{emptyMessage}</p>
               ) : (
-                filtered.map((o) => {
+                filtered.map((o, i) => {
                   const checked = value.includes(o.value);
                   return (
                     <button
                       key={o.value}
+                      id={nav.optionId(i)}
                       type="button"
                       role="option"
                       aria-selected={checked}
                       disabled={o.disabled}
                       onClick={() => toggle(o)}
-                      className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-primary hover:bg-bg-secondary disabled:pointer-events-none disabled:opacity-50"
+                      onPointerMove={() => !o.disabled && nav.setActiveIndex(i)}
+                      className={cn(
+                        "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-primary disabled:pointer-events-none disabled:opacity-50",
+                        i === nav.activeIndex ? "bg-bg-secondary" : "hover:bg-bg-secondary",
+                      )}
                     >
                       <span
                         className={cn(

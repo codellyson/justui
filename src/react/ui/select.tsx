@@ -15,6 +15,7 @@ import {
   MagnifyingGlassIcon,
   XIcon,
 } from "../lib/icons.js";
+import { useListboxNav } from "../lib/listbox.js";
 import { Popover } from "./popover.js";
 
 export interface SelectOption {
@@ -362,6 +363,23 @@ const SearchableSelect = forwardRef<HTMLButtonElement, SearchableSelectProps>(
         .filter((entry) => entry.items.length > 0);
     }, [options, query]);
 
+    const visible = useMemo(() => groups.flatMap((g) => g.items), [groups]);
+    const nav = useListboxNav({
+      items: visible.map((o) => ({
+        value: String(o.value),
+        label: o.label,
+        searchText: `${o.label} ${o.subLabel ?? ""}`,
+        disabled: o.disabled,
+      })),
+      opened,
+      onSelect: (v) => {
+        const hit = visible.find((o) => String(o.value) === v);
+        if (hit) pick(hit);
+      },
+      onClose: () => setOpened(false),
+      initialIndex: visible.findIndex((o) => String(o.value) === String(current)),
+    });
+
     const hits = groups.reduce((total, entry) => total + entry.items.length, 0);
 
     const pick = (option: SelectOption) => {
@@ -437,6 +455,10 @@ const SearchableSelect = forwardRef<HTMLButtonElement, SearchableSelectProps>(
               <input
                 autoFocus
                 value={query}
+                role="combobox"
+                aria-expanded={opened}
+                aria-activedescendant={nav.activeDescendant}
+                onKeyDown={nav.onKeyDown}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={searchPlaceholder}
                 aria-label={searchPlaceholder}
@@ -468,12 +490,21 @@ const SearchableSelect = forwardRef<HTMLButtonElement, SearchableSelectProps>(
                       return (
                         <button
                           key={option.value}
+                          id={nav.optionId(visible.indexOf(option))}
                           type="button"
                           role="option"
                           aria-selected={active}
                           disabled={option.disabled}
                           onClick={() => pick(option)}
-                          className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-primary hover:bg-bg-secondary disabled:pointer-events-none disabled:opacity-50"
+                          onPointerMove={() =>
+                            !option.disabled && nav.setActiveIndex(visible.indexOf(option))
+                          }
+                          className={cn(
+                            "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-primary disabled:pointer-events-none disabled:opacity-50",
+                            visible.indexOf(option) === nav.activeIndex
+                              ? "bg-bg-secondary"
+                              : "hover:bg-bg-secondary",
+                          )}
                         >
                           <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center">
                             {active && <CheckIcon className="h-4 w-4" />}

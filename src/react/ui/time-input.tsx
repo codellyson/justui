@@ -4,6 +4,7 @@ import { forwardRef, useEffect, useId, useMemo, useRef, useState, type ReactNode
 import { cn } from "../lib/cn.js";
 import { controlHeight, controlText, type ControlSize } from "../lib/control-sizes.js";
 import { ClockIcon } from "../lib/icons.js";
+import { useListboxNav } from "../lib/listbox.js";
 import { Popover } from "./popover.js";
 
 export type TimeFormat = "12h" | "24h";
@@ -140,6 +141,17 @@ export const TimeInput = forwardRef<HTMLInputElement, TimeInputProps>(
       ? Math.round((selected.getHours() * 60 + selected.getMinutes()) / minuteStep) % options.length
       : -1;
 
+    const nav = useListboxNav({
+      items: options.map((o) => ({ value: o.label, label: o.label })),
+      opened,
+      onSelect: (label) => {
+        const hit = options.find((o) => o.label === label);
+        if (hit) emit(hit.hours, hit.minutes);
+      },
+      onClose: () => setOpened(false),
+      initialIndex: activeIndex,
+    });
+
     const emit = (hours: number, minutes: number) => {
       const next = new Date(selected ?? new Date());
       next.setHours(hours, minutes, 0, 0);
@@ -194,6 +206,17 @@ export const TimeInput = forwardRef<HTMLInputElement, TimeInputProps>(
                 value={text}
                 aria-invalid={hasError || undefined}
                 aria-describedby={message ? messageId : undefined}
+                role="combobox"
+                aria-expanded={opened}
+                aria-controls={`${id}-listbox`}
+                aria-activedescendant={opened ? nav.activeDescendant : undefined}
+                onKeyDown={(e) => {
+                  if (!opened && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+                    setOpened(true);
+                    return;
+                  }
+                  if (opened) nav.onKeyDown(e);
+                }}
                 onChange={(e) => handleText(e.target.value)}
                 onBlur={() => setText(formatTime(toTimeDate(value), format))}
                 className="min-w-0 flex-1 bg-transparent px-3 text-primary placeholder:text-muted focus-visible:outline-hidden disabled:cursor-not-allowed"
@@ -225,21 +248,25 @@ export const TimeInput = forwardRef<HTMLInputElement, TimeInputProps>(
             }}
             className={cn("w-[var(--radix-popover-trigger-width)] min-w-40 p-1", dropdownClassName)}
           >
-            <div ref={listRef} role="listbox" className="max-h-60 overflow-y-auto">
+            <div ref={listRef} id={`${id}-listbox`} role="listbox" className="max-h-60 overflow-y-auto">
               {options.map((o, i) => (
                 <button
                   key={o.label}
                   type="button"
                   role="option"
+                  id={nav.optionId(i)}
                   aria-selected={i === activeIndex}
-                  data-active={i === activeIndex || undefined}
+                  data-active={i === (opened ? nav.activeIndex : activeIndex) || undefined}
+                  onPointerMove={() => nav.setActiveIndex(i)}
                   onClick={() => {
                     emit(o.hours, o.minutes);
                     setOpened(false);
                   }}
                   className={cn(
                     "w-full rounded-sm px-3 py-1.5 text-left text-sm hover:bg-bg-secondary",
-                    i === activeIndex ? "bg-bg-secondary font-medium text-accent" : "text-primary",
+                    i === (opened ? nav.activeIndex : activeIndex)
+                      ? "bg-bg-secondary font-medium text-accent"
+                      : "text-primary",
                   )}
                 >
                   {o.label}
