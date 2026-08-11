@@ -1,0 +1,10 @@
+---
+// Without a client router every sidebar click is a full document load: the page
+// blanks, scroll resets and each demo re-hydrates. ClientRouter swaps the content
+// in place instead.
+import Default from "@astrojs/starlight/components/Head.astro";
+import { ClientRouter } from "astro:transitions";
+---
+
+<Default><slot /></Default>
+<ClientRouter />
