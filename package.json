@@ -1,7 +1,7 @@
 {
   "name": "@codellyson/justui",
   "version": "0.18.0",
-  "description": "Shared design system for the just* app family \u2014 theme tokens, six dev + six consumer themes, a no-flash boot script, and a token-themed React component kit (shadcn/Radix under the hood) plus Astro adapters.",
+  "description": "Shared design system for the just* app family — theme tokens, six dev + six consumer themes, a no-flash boot script, and a token-themed React component kit (shadcn/Radix under the hood) plus Astro adapters.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -12,8 +12,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "clean": "rm -rf dist",
-    "prepack": "pnpm run clean && pnpm run build",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "prepack": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc",
     "playground": "pnpm run build && vite --config playground/vite.config.ts",
     "playground:build": "pnpm run build && vite build --config playground/vite.config.ts",
     "check:icons": "node scripts/check-icons.mjs",
