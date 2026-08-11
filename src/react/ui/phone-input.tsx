@@ -5,7 +5,7 @@ import { cn } from "../lib/cn.js";
 import { controlHeight, controlText, type ControlSize } from "../lib/control-sizes.js";
 import { Flag } from "../lib/flag.js";
 import { ChevronDownIcon } from "../lib/icons.js";
-import { Menu } from "./menu.js";
+import { Listbox } from "../lib/listbox.js";
 
 export interface PhoneCountry {
   code: string;
@@ -143,8 +143,21 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
             className,
           )}
         >
-          <Menu>
-            <Menu.Target asChild>
+          <Listbox
+            aria-label="Country"
+            width={260}
+            value={`${active.code}-${active.dial}`}
+            onSelect={(key) => {
+              const next = countries.find((c) => `${c.code}-${c.dial}` === key);
+              if (next) pickCountry(next);
+            }}
+            items={countries.map((c) => ({
+              value: `${c.code}-${c.dial}`,
+              label: c.name,
+              leftSection: flag(c.code) ?? <span className="w-5" />,
+              rightSection: <span className="tabular-nums">{c.dial}</span>,
+            }))}
+            target={
               <button
                 type="button"
                 disabled={disabled}
@@ -155,20 +168,8 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                 <span className="tabular-nums">{active.dial}</span>
                 <ChevronDownIcon className="h-3 w-3 opacity-60" />
               </button>
-            </Menu.Target>
-            <Menu.Dropdown align="start" width={260} className="max-h-72 overflow-y-auto">
-              {countries.map((c) => (
-                <Menu.Item
-                  key={`${c.code}-${c.dial}`}
-                  onSelect={() => pickCountry(c)}
-                  leftSection={flag(c.code) ?? <span className="w-5" />}
-                  rightSection={<span className="tabular-nums">{c.dial}</span>}
-                >
-                  {c.name}
-                </Menu.Item>
-              ))}
-            </Menu.Dropdown>
-          </Menu>
+            }
+          />
 
           <input
             ref={ref}

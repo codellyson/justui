@@ -5,7 +5,7 @@ import { cn } from "../lib/cn.js";
 import { controlHeight, controlText, type ControlSize } from "../lib/control-sizes.js";
 import { Flag } from "../lib/flag.js";
 import { CheckIcon, ChevronDownIcon } from "../lib/icons.js";
-import { Menu } from "./menu.js";
+import { Listbox } from "../lib/listbox.js";
 
 export type CurrencyCode =
   | "USD"
@@ -146,8 +146,23 @@ export const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
           )}
         >
           {withCurrencySelect ? (
-            <Menu>
-              <Menu.Target asChild>
+            <Listbox
+              aria-label="Currency"
+              width={220}
+              value={currency}
+              onSelect={(code) => onCurrencyChange?.(code as CurrencyCode)}
+              items={offered.map((code) => ({
+                value: code,
+                label: CURRENCIES[code].label,
+                leftSection: flag(CURRENCIES[code].country) ?? <span className="w-5" />,
+                rightSection: (
+                  <span className="flex items-center gap-2 text-muted">
+                    {CURRENCIES[code].symbol}
+                    {code === currency && <CheckIcon className="h-3 w-3 text-accent" />}
+                  </span>
+                ),
+              }))}
+              target={
                 <button
                   type="button"
                   disabled={disabled}
@@ -158,25 +173,8 @@ export const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
                   <span className="text-xs text-muted">{currency}</span>
                   <ChevronDownIcon className="h-3 w-3 opacity-60" />
                 </button>
-              </Menu.Target>
-              <Menu.Dropdown align="start" width={220}>
-                {offered.map((code) => (
-                  <Menu.Item
-                    key={code}
-                    onSelect={() => onCurrencyChange?.(code)}
-                    leftSection={flag(CURRENCIES[code].country) ?? <span className="w-5" />}
-                    rightSection={
-                      <span className="flex items-center gap-2 text-muted">
-                        {CURRENCIES[code].symbol}
-                        {code === currency && <CheckIcon className="h-3 w-3 text-accent" />}
-                      </span>
-                    }
-                  >
-                    {CURRENCIES[code].label}
-                  </Menu.Item>
-                ))}
-              </Menu.Dropdown>
-            </Menu>
+              }
+            />
           ) : (
             <span className="flex shrink-0 items-center gap-1.5 border-r border-border px-2.5 font-medium text-secondary">
               {flag(meta.country)}
