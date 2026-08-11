@@ -1,0 +1,68 @@
+export const title = "Alert";
+export const group = "Foundations";
+
+# Alert
+
+Prop-driven: `title`, then the body as children. Carries `role="alert"`, so
+screen readers announce it when it appears.
+
+```jsx live
+<div className="w-full space-y-3">
+  <Alert title="Heads up">Your workspace will sleep after 30 minutes idle.</Alert>
+  <Alert title="Deployed" color="green">Build 4821 is live in production.</Alert>
+  <Alert title="Migration failed" color="red">
+    Column `user_id` already exists. No changes were applied.
+  </Alert>
+  <Alert title="Quota at 90%" color="yellow">Consider upgrading before the reset.</Alert>
+</div>
+```
+
+## Variants
+
+```jsx live
+<div className="w-full space-y-3">
+  {['light', 'filled', 'outline'].map((v) => (
+    <Alert key={v} variant={v} color="green" title={`variant="${v}"`}>
+      Build 4821 is live.
+    </Alert>
+  ))}
+</div>
+```
+
+## Icon, close button, title-only
+
+`withCloseButton` renders the ✕ but doesn't manage visibility — wire `onClose` to
+your own state.
+
+```jsx live noInline
+function Demo() {
+  const [shown, setShown] = useState(true);
+  return (
+    <div className="w-full space-y-3">
+      {shown ? (
+        <Alert title="Dismissible" color="blue" icon={<InformationCircleIcon />} withCloseButton onClose={() => setShown(false)}>
+          Close me.
+        </Alert>
+      ) : (
+        <Button size="xs" variant="outline" onClick={() => setShown(true)}>Bring it back</Button>
+      )}
+      <Alert color="gray" title="Read-only mode — you can browse but not edit." />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `title` | `ReactNode` | — |
+| `color` | `primary` `gray` `red` `green` `yellow` `orange` `blue` | `primary` |
+| `variant` | `light` `filled` `outline` | `light` |
+| `icon` | `ReactNode` | — |
+| `withCloseButton` | `boolean` | `false` |
+| `onClose` | `() => void` | — |
+
+Children are the body. Forwards a ref.

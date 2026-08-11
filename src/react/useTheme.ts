@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import type { ThemePlugin, ThemeVariant } from "../theme-plugins.js";
 import { BUILT_IN_THEMES, DEFAULT_THEME_ID, VAR_MAP } from "../theme-plugins.js";
@@ -50,17 +52,8 @@ function readInitialState(): { themeId: string; mode: ThemeMode } {
   return { themeId, mode };
 }
 
-/**
- * React hook around the bootTheme() store. Returns the current themeId
- * + mode and setters that write through to localStorage + reapply the
- * CSS custom properties on `<html>`. Subscribes to the `storage` event
- * so cross-tab updates land here too.
- *
- * bootTheme() must have run before the component mounts (typically from
- * main.tsx before createRoot, or from an inline boot script in
- * index.html). Without it the hook still works but falls back to the
- * default theme on first render.
- */
+// bootTheme() must have run before mount — without it the hook still works but
+// falls back to the default theme on first render.
 export function useTheme(): ThemeState {
   const [state, setState] = useState(readInitialState);
 

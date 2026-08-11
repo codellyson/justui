@@ -1,0 +1,81 @@
+---
+title: "Timeline"
+description: "active is an index: items up to and including it render as completed. Items get their index from the root, so you don't number them yourself."
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/timeline/0";
+import Demo1 from "../../components/demos/timeline/1";
+
+`active` is an index: items up to and including it render as completed. Items get
+their index from the root, so you don't number them yourself.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full max-w-md">
+  <Timeline active={1}>
+    <Timeline.Item title="Pushed to main" bullet="1">
+      <span className="text-xs text-muted">2 minutes ago</span>
+    </Timeline.Item>
+    <Timeline.Item title="Build passed" bullet="2">
+      <span className="text-xs text-muted">tsc --noEmit · 2.1s</span>
+    </Timeline.Item>
+    <Timeline.Item title="Deploying" bullet="3">
+      <span className="text-xs text-muted">In progress</span>
+    </Timeline.Item>
+    <Timeline.Item title="Live" bullet="4" />
+  </Timeline>
+</div>
+```
+
+## Bullet size and line width
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [active, setActive] = useState(1);
+  return (
+    <div className="w-full max-w-md space-y-4">
+      <SegmentedControl
+        value={String(active)}
+        onChange={(v) => setActive(Number(v))}
+        label="Active step"
+        data={[
+          { value: '-1', label: 'None' },
+          { value: '0', label: '1' },
+          { value: '1', label: '2' },
+          { value: '2', label: '3' },
+        ]}
+      />
+      <Timeline active={active} bulletSize={28} lineWidth={3}>
+        <Timeline.Item title="Created" bullet="✓">Order placed</Timeline.Item>
+        <Timeline.Item title="Packed" bullet="✓">Left the warehouse</Timeline.Item>
+        <Timeline.Item title="Delivered" bullet="✓">Signed for</Timeline.Item>
+      </Timeline>
+    </div>
+  );
+}
+```
+
+The connecting line is positioned against the **row**, not the bullet column, so
+`h-full` covers the row's bottom padding and the line reaches the next bullet
+rather than stopping where the item's text ends. It's omitted on the last item, so
+there's no stub hanging off the end.
+
+## Props
+
+| Prop | Type | Default | On |
+|---|---|---|---|
+| `active` | `number` | `-1` | root |
+| `bulletSize` | `number` | `20` | root |
+| `lineWidth` | `number` | `2` | root |
+| `bullet` | `ReactNode` | — | item |
+| `title` | `ReactNode` | — | item |
+
+`Timeline.Item` must be a child of `Timeline` — it reads its index from context and
+throws with a clear message otherwise.

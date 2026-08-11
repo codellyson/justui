@@ -1,0 +1,105 @@
+export const title = "Pagination";
+export const group = "Display";
+
+# Pagination
+
+A page list for anything paged — a [Table](/table), a card grid, search results.
+It holds no state and knows nothing about your data: give it the current page and
+how many there are.
+
+```jsx live noInline
+function Demo() {
+  const [page, setPage] = useState(1);
+  return (
+    <div className="space-y-3">
+      <Pagination page={page} total={9} onChange={setPage} />
+      <p className="text-xs text-muted">page <code>{page}</code> of 9</p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`page` is 1-based, `onChange` receives the page number, and clicks are clamped to
+`1…total` — so Previous on page 1 can't emit `0`.
+
+## Collapsing
+
+Two pages are pinned at each end and one either side of the current page; the
+rest collapses. A gap of exactly one page shows that page instead, because an
+ellipsis would cost the slot it saves.
+
+```jsx live noInline
+function Demo() {
+  const [page, setPage] = useState(9);
+  return (
+    <div className="space-y-3">
+      <Pagination page={page} total={40} onChange={setPage} />
+      <p className="text-xs text-muted">
+        page <code>{page}</code> of 40 — walk to the middle and back
+      </p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Tune the window with `siblings` and `boundaries`. `buildPageList(page, total,
+options)` is exported if you want the same sequence without the markup.
+
+```jsx live
+<div className="space-y-4">
+  <Pagination page={12} total={40} onChange={() => {}} siblings={0} boundaries={1} />
+  <Pagination page={12} total={40} onChange={() => {}} />
+  <Pagination page={12} total={40} onChange={() => {}} siblings={2} boundaries={3} />
+</div>
+```
+
+Above: `siblings={0} boundaries={1}` is the tightest useful window, the middle row
+is the default, and the last shows a wide one.
+
+## Sizes, no controls, disabled
+
+```jsx live
+<div className="space-y-4">
+  <Pagination size="xs" page={3} total={12} onChange={() => {}} />
+  <Pagination size="sm" page={3} total={12} onChange={() => {}} />
+  <Pagination size="lg" page={3} total={12} onChange={() => {}} />
+  <Pagination page={3} total={12} onChange={() => {}} withControls={false} />
+  <Pagination page={3} total={12} onChange={() => {}} disabled />
+</div>
+```
+
+`withControls={false}` drops Previous and Next and leaves the numbers. Heights
+match every other control at the same `size`.
+
+## One page
+
+A single page renders nothing at all, so you don't have to guard the call site.
+
+```jsx live
+<div className="space-y-2">
+  <Pagination page={1} total={1} onChange={() => {}} />
+  <p className="text-xs text-muted">↑ nothing above this line — total is 1</p>
+  <Pagination page={1} total={2} onChange={() => {}} />
+</div>
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `page` | `number` (1-based) | required |
+| `total` | `number` | required |
+| `onChange` | `(page: number) => void` | required |
+| `siblings` | `number` | `1` |
+| `boundaries` | `number` | `2` |
+| `withControls` | `boolean` | `true` |
+| `size` | `xs` `sm` `md` `lg` | `md` |
+| `disabled` | `boolean` | `false` |
+| `aria-label` | `string` | `"Pagination"` |
+
+The list is a `<nav>`; the current page carries `aria-current="page"`, every
+number has an `aria-label`, and the ellipses are `aria-hidden`.

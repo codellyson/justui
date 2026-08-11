@@ -1,0 +1,193 @@
+export const title = "NavLink";
+export const group = "Display";
+
+# NavLink
+
+A navigation row: icon, label, an optional right section, and nested children.
+Built for [AppShell](/app-shell)'s navbar, but it works in any sidebar.
+
+```jsx live noInline
+function Demo() {
+  const [active, setActive] = useState('deployments');
+  return (
+    <div className="w-56 rounded-lg border border-border p-2">
+      <div className="flex flex-col gap-1">
+        <NavLink
+          label="Overview"
+          icon={<HomeIcon className="h-4 w-4" />}
+          active={active === 'overview'}
+          onClick={() => setActive('overview')}
+        />
+        <NavLink
+          label="Deployments"
+          icon={<ArrowPathIcon className="h-4 w-4" />}
+          rightSection={<Badge variant="light">3</Badge>}
+          active={active === 'deployments'}
+          onClick={() => setActive('deployments')}
+        />
+        <NavLink
+          label="Logs"
+          description="Last 7 days"
+          icon={<DocumentTextIcon className="h-4 w-4" />}
+          active={active === 'logs'}
+          onClick={() => setActive('logs')}
+        />
+        <NavLink label="Archived" icon={<ArchiveBoxIcon className="h-4 w-4" />} disabled />
+      </div>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`active` sets `aria-current="page"` and the selected treatment. A link with an
+`href` renders an anchor; without one it's a button, so it stays keyboard- and
+screen-reader-correct either way.
+
+## Nested links
+
+Children turn the row into a disclosure with a chevron. Uncontrolled by default,
+or drive it with `opened` and `onToggle`.
+
+```jsx live noInline
+function Demo() {
+  const [active, setActive] = useState('members');
+  return (
+    <div className="w-56 rounded-lg border border-border p-2">
+      <div className="flex flex-col gap-1">
+        <NavLink label="Project" icon={<CodeBracketIcon className="h-4 w-4" />} defaultOpened>
+          <NavLink label="General" active={active === 'general'} onClick={() => setActive('general')} />
+          <NavLink label="Members" active={active === 'members'} onClick={() => setActive('members')} />
+          <NavLink label="Tokens" active={active === 'tokens'} onClick={() => setActive('tokens')} />
+        </NavLink>
+        <NavLink label="Billing" icon={<Cog6ToothIcon className="h-4 w-4" />}>
+          <NavLink label="Invoices" active={active === 'invoices'} onClick={() => setActive('invoices')} />
+        </NavLink>
+      </div>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Nested rows sit behind a rule so the hierarchy reads without indentation guesswork.
+`aria-expanded` tracks the chevron.
+
+## Drilling into a panel
+
+`nested="panel"` swaps the disclosure for a drill-down: the children slide in over
+the whole navbar behind a back header, replacing the list instead of indenting
+under it. Better than a tree once a section has more than a handful of children,
+or when those children want group headings of their own.
+
+```jsx live noInline
+function Demo() {
+  const [active, setActive] = useState('functions');
+  const heading = 'px-2 pb-1 pt-2 text-xs font-medium uppercase tracking-wider text-muted';
+
+  return (
+    // The panel is absolute, so it fills the nearest positioned ancestor. Inside an
+    // AppShell that's the navbar; standalone, mark the container `relative`.
+    <div className="relative h-[340px] w-56 overflow-hidden rounded-lg border border-border p-2">
+      <div className="flex flex-col gap-1">
+        <NavLink label="Overview" icon={<HomeIcon className="h-4 w-4" />} />
+        <NavLink label="Deployments" icon={<ArrowPathIcon className="h-4 w-4" />} />
+        <NavLink
+          label="Observability"
+          icon={<Squares2X2Icon className="h-4 w-4" />}
+          nested="panel"
+        >
+          <NavLink
+            label="Overview"
+            icon={<Squares2X2Icon className="h-4 w-4" />}
+            active={active === 'overview'}
+            onClick={() => setActive('overview')}
+          />
+          <NavLink
+            label="Alerts"
+            icon={<ExclamationTriangleIcon className="h-4 w-4" />}
+            active={active === 'alerts'}
+            onClick={() => setActive('alerts')}
+          />
+          <p className={heading}>Compute</p>
+          <NavLink
+            label="Functions"
+            icon={<CodeBracketIcon className="h-4 w-4" />}
+            active={active === 'functions'}
+            onClick={() => setActive('functions')}
+          />
+          <NavLink
+            label="Sandboxes"
+            icon={<ArchiveBoxIcon className="h-4 w-4" />}
+            active={active === 'sandboxes'}
+            onClick={() => setActive('sandboxes')}
+          />
+          <p className={heading}>CDN</p>
+          <NavLink
+            label="Edge Requests"
+            icon={<ArrowUpRightIcon className="h-4 w-4" />}
+            active={active === 'edge'}
+            onClick={() => setActive('edge')}
+          />
+          <NavLink
+            label="Image Optimization"
+            icon={<DocumentDuplicateIcon className="h-4 w-4" />}
+            active={active === 'images'}
+            onClick={() => setActive('images')}
+          />
+        </NavLink>
+        <NavLink label="Settings" icon={<Cog6ToothIcon className="h-4 w-4" />} />
+      </div>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+The parent row shows a right chevron rather than a disclosure caret, the header
+centres the parent's label, and Escape backs out. Children are arbitrary, which is
+how the group headings above work — the panel scrolls when the list outgrows it.
+
+One limitation to know: the panel is an opaque overlay, so the rows it covers stay
+in the tab order behind it. Fine for a short top level, worth avoiding if that list
+is long.
+
+## Icon-only
+
+`iconOnly` drops the label and moves it into a tooltip — for a collapsed rail. In
+an `AppShell` this is inferred from `navbar.collapsed`, so you don't set it by hand.
+
+```jsx live noInline
+render(
+  <div className="flex w-14 flex-col gap-1 rounded-lg border border-border p-2">
+    <NavLink iconOnly label="Overview" icon={<HomeIcon className="h-4 w-4" />} active />
+    <NavLink iconOnly label="Deployments" icon={<ArrowPathIcon className="h-4 w-4" />} />
+    <NavLink iconOnly label="Logs" icon={<DocumentTextIcon className="h-4 w-4" />} />
+    <NavLink iconOnly label="Settings" icon={<Cog6ToothIcon className="h-4 w-4" />} />
+  </div>
+);
+```
+
+Hover one to see its label. Nested children are suppressed in this mode — there's
+nowhere sensible to put them at 40px wide.
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `label` | `ReactNode` | required |
+| `icon` | `ReactNode` | — |
+| `description` | `ReactNode` | — |
+| `rightSection` | `ReactNode` | — |
+| `active` | `boolean` | `false` |
+| `disabled` | `boolean` | `false` |
+| `children` | `ReactNode` | — (nested links) |
+| `opened` / `defaultOpened` / `onToggle` | disclosure state | — |
+| `nested` | `expand` `panel` | `expand` |
+| `iconOnly` | `boolean` | from `AppShell` |
+| `href` | `string` | — (renders a button without it) |
+
+Plus the native anchor props.

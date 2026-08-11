@@ -1,0 +1,9 @@
+---
+// Frames a demo. An Astro component so it costs no client JS — only the island
+// inside it hydrates. font-sans because the surrounding page is Starlight's and a
+// component should be shown in the type it ships with.
+---
+
+<div class="not-content mt-4 rounded-lg border border-border bg-bg p-6 font-sans text-primary">
+  <slot />
+</div>

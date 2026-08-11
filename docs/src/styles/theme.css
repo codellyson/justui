@@ -1,0 +1,43 @@
+/* Tailwind utilities must outrank Starlight's own rules, which are unlayered
+   without this declaration — otherwise a component's text-sm loses to Starlight's
+   content styles. Utilities last means utilities win. */
+@layer base, starlight, theme, components, utilities;
+
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+/* One import: tokens, Tailwind and the design config. A consumer writes
+   @import "@codellyson/justui/tailwind.css" instead of this relative path. */
+@import "../../../src/styles/tailwind.css";
+
+/* Starlight owns the theme toggle and reports it as data-theme, so the tokens
+   follow it rather than the boot script the gallery uses. Espresso, both modes. */
+:root[data-theme="light"] {
+  --bg: 249 250 251;
+  --bg-secondary: 243 244 246;
+  --border: 229 231 235;
+  --text-primary: 17 24 39;
+  --text-secondary: 107 114 128;
+  --text-muted: 156 163 175;
+  --accent: 99 102 241;
+  --accent-hover: 79 70 229;
+  --accent-text: 255 255 255;
+  --danger: 239 68 68;
+  --success: 34 197 94;
+  --warning: 234 179 8;
+}
+
+:root[data-theme="dark"] {
+  --bg: 22 20 18;
+  --bg-secondary: 37 33 30;
+  --border: 56 50 45;
+  --text-primary: 232 222 210;
+  --text-secondary: 178 167 152;
+  --text-muted: 124 114 102;
+  --accent: 168 180 220;
+  --accent-hover: 195 205 235;
+  --accent-text: 22 20 18;
+  --danger: 220 105 95;
+  --success: 165 195 130;
+  --warning: 230 195 115;
+}

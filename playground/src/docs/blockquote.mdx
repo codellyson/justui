@@ -1,0 +1,32 @@
+export const title = "Blockquote";
+export const group = "Foundations";
+
+# Blockquote
+
+```jsx live
+<div className="w-full max-w-lg space-y-4">
+  <Blockquote>A plain pull quote.</Blockquote>
+  <Blockquote variant="info" icon={<InformationCircleIcon />}>Deploys are immutable.</Blockquote>
+  <Blockquote variant="warning" icon={<ExclamationTriangleIcon />}>This will drop the column.</Blockquote>
+  <Blockquote variant="success" icon={<CheckCircleIcon />} cite="Release notes 4.2">
+    Migrations now run in a transaction.
+  </Blockquote>
+</div>
+```
+
+Renders a real `<blockquote>`, and `cite` a real `<cite>` — so the markup carries
+the meaning, not just the border colour.
+
+## Blockquote vs Alert
+
+- **Blockquote** — quoted or emphasised prose that's part of the page's content.
+- **[Alert](/alert)** — a message about state, with `role="alert"` so it's
+  announced when it appears.
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | `default` `info` `warning` `success` | `default` |
+| `icon` | `ReactNode` | — |
+| `cite` | `ReactNode` | — |

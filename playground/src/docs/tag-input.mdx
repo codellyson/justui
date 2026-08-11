@@ -1,0 +1,92 @@
+export const title = "TagInput";
+export const group = "Forms";
+
+# TagInput
+
+Free-form tags. Enter commits, the separator commits, Backspace on an empty field
+removes the last one, and blurring commits whatever's left in the draft.
+
+```jsx live noInline
+function Demo() {
+  const [tags, setTags] = useState(['react', 'radix']);
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <TagInput label="Topics" value={tags} onChange={setTags} />
+      <p className="text-xs text-muted">value: <code>{JSON.stringify(tags)}</code></p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Paste `a,b,c` and you get three tags — anything before the separator commits, the
+remainder stays in the draft.
+
+## Limits, duplicates, validation
+
+```jsx live noInline
+function Demo() {
+  const [a, setA] = useState(['one', 'two']);
+  const [b, setB] = useState([]);
+  const [c, setC] = useState([]);
+  return (
+    <div className="w-full max-w-sm space-y-4">
+      <TagInput label="Max 3" value={a} onChange={setA} maxTags={3} description="Field disables at the limit." />
+      <TagInput label="Duplicates allowed" value={b} onChange={setB} allowDuplicates />
+      <TagInput
+        label="Lowercase only"
+        value={c}
+        onChange={setC}
+        validateTag={(tag) => /^[a-z-]+$/.test(tag)}
+        description="Rejects anything but a-z and dashes."
+      />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`validateTag` returning false rejects silently — surface the reason yourself via
+`error` if the user needs telling.
+
+## Semicolon separator, sizes
+
+`separator` takes a string or a RegExp, so `/[,;\s]/` splits on commas, semicolons
+and whitespace.
+
+```jsx live noInline
+function Demo() {
+  const [a, setA] = useState([]);
+  const [b, setB] = useState(['sm']);
+  return (
+    <div className="w-full max-w-sm space-y-4">
+      <TagInput label="Split on , ; or space" value={a} onChange={setA} separator={/[,;\s]/} />
+      <TagInput size="sm" value={b} onChange={setB} placeholder="Small" />
+      <TagInput size="lg" value={[]} onChange={() => {}} placeholder="Large" />
+      <TagInput label="Invalid" value={['x']} onChange={() => {}} error="At least two tags required." />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | `string[]` | uncontrolled |
+| `onChange` | `(tags: string[]) => void` | — |
+| `maxTags` | `number` | — |
+| `allowDuplicates` | `boolean` | `false` |
+| `separator` | `string \| RegExp` | `","` |
+| `validateTag` | `(tag: string) => boolean` | — |
+| `onTagAdd` / `onTagRemove` | `(tag: string) => void` | — |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `xs` `sm` `md` `lg` | `md` |
+
+Works uncontrolled if you omit `value`. Each remove button carries
+`aria-label="Remove {tag}"` and is `tabIndex={-1}`, so tabbing moves to the next
+field rather than through every chip.

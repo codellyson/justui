@@ -1,0 +1,53 @@
+export const title = "Loader";
+export const group = "Foundations";
+
+# Loader
+
+A spinner, for when you can't predict the shape of what's coming. When you can,
+use a [skeleton](/skeleton) instead.
+
+```jsx live
+<div className="flex items-end gap-6">
+  {['xs', 'sm', 'md', 'lg', 'xl'].map((s) => (
+    <div key={s} className="text-center">
+      <Loader size={s} />
+      <code className="mt-2 block font-mono text-xs text-muted">{s}</code>
+    </div>
+  ))}
+</div>
+```
+
+## Colours
+
+```jsx live
+<div className="flex items-center gap-6">
+  <Loader color="accent" />
+  <Loader color="primary" />
+  <Loader color="danger" />
+  <span className="text-accent"><Loader color="current" /></span>
+</div>
+```
+
+`current` inherits the surrounding text colour, which is how `Button loading`
+gets a spinner that reads against a solid fill.
+
+## Announcing
+
+`Loader` carries `role="status"` and the text "Loading" by default. Pass
+`label={null}` when something else already announces the wait — otherwise a
+button in a loading state gets read out twice.
+
+```jsx live
+<div className="flex items-center gap-4">
+  <Loader size="sm" label="Fetching deploys" />
+  <Button loading>Saving</Button>
+</div>
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `size` | `xs` `sm` `md` `lg` `xl` | `md` |
+| `color` | `accent` `primary` `current` `danger` | `accent` |
+| `label` | `string \| null` | `"Loading"` |

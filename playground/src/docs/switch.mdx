@@ -1,0 +1,64 @@
+export const title = "Switch";
+export const group = "Forms";
+
+# Switch
+
+Use a switch for a setting that applies immediately, and a
+[checkbox](/checkbox) for something that takes effect on submit.
+
+```jsx live noInline
+function Demo() {
+  const [on, setOn] = useState(true);
+  return (
+    <div className="space-y-4">
+      <Switch label="Auto-deploy on push" description="Runs on every push to main." checked={on} onChange={setOn} />
+      <Switch label="Label on the left" labelPosition="left" defaultChecked />
+      <Switch label="Requires an upgraded plan" disabled />
+      <p className="text-xs text-muted">Auto-deploy is {on ? 'enabled' : 'disabled'}.</p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+`onChange` receives the next boolean, not an event.
+
+## Sizes
+
+```jsx live
+<div className="flex items-center gap-6">
+  <Switch size="sm" label="sm" defaultChecked />
+  <Switch size="md" label="md" defaultChecked />
+  <Switch size="lg" label="lg" defaultChecked />
+</div>
+```
+
+## Bare control
+
+Omit `label` and `description` and you get the track alone, with no wrapper —
+handy in a table cell or a toolbar where the row already carries the meaning.
+
+```jsx live
+<div className="flex items-center gap-4 rounded-md border border-border px-3 py-2">
+  <span className="flex-1 text-sm text-primary">acme-production</span>
+  <Switch defaultChecked aria-label="Enable acme-production" />
+</div>
+```
+
+Give it an `aria-label` when there's no visible label, or a screen reader
+announces an unnamed switch.
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `checked` / `defaultChecked` | `boolean` | — |
+| `onChange` | `(checked: boolean) => void` | — |
+| `label` / `description` | `ReactNode` | — |
+| `labelPosition` | `left` `right` | `right` |
+| `size` | `sm` `md` `lg` | `md` |
+| `disabled` | `boolean` | `false` |
+
+A Radix primitive underneath, so it's keyboard operable and `name`/`value` aware
+inside a form.

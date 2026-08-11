@@ -1,0 +1,55 @@
+export const title = "Badge";
+export const group = "Foundations";
+
+# Badge
+
+Same split as Button — `variant` is the shape, `color` is the palette.
+
+```jsx live
+<div className="space-y-3">
+  {['light', 'solid', 'outline'].map((v) => (
+    <div key={v} className="flex flex-wrap items-center gap-2">
+      {['primary', 'gray', 'red', 'blue', 'green', 'orange', 'yellow'].map((c) => (
+        <Badge key={c} variant={v} color={c}>{v}/{c}</Badge>
+      ))}
+    </div>
+  ))}
+</div>
+```
+
+## Sizes
+
+```jsx live
+<div className="flex flex-wrap items-center gap-2">
+  <Badge size="sm">Small</Badge>
+  <Badge size="md">Medium</Badge>
+  <Badge size="lg">Large</Badge>
+</div>
+```
+
+## Inside phrasing content
+
+Badge renders a `<span>`, so it's valid inside a `<button>`, a `<p>` or a label —
+which is where a count badge usually goes. A `<div>` there would be invalid HTML
+and browsers would reparent it.
+
+```jsx live
+<div className="flex flex-wrap items-center gap-3">
+  <Button variant="outline">
+    Inbox <Badge color="red" variant="solid">12</Badge>
+  </Button>
+  <p className="text-sm text-secondary">
+    Status: <Badge color="green">healthy</Badge> as of just now.
+  </p>
+</div>
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `variant` | `light` `solid` `outline` | `light` |
+| `color` | `primary` `gray` `red` `blue` `green` `orange` `yellow` | `primary` |
+| `size` | `sm` `md` `lg` | `sm` |
+
+Forwards a ref to the `<span>`.

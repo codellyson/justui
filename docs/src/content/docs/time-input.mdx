@@ -1,0 +1,102 @@
+---
+title: "TimeInput"
+description: "A typeable time field with a list of interval options behind it. value is a Date, so the time slots into whatever date you already had — useful when the…"
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/time-input/0";
+import Demo1 from "../../components/demos/time-input/1";
+import Demo2 from "../../components/demos/time-input/2";
+
+A typeable time field with a list of interval options behind it. `value` is a
+`Date`, so the time slots into whatever date you already had — useful when the
+same object carries both.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [time, setTime] = useState(() => {
+    const d = new Date();
+    d.setHours(14, 30, 0, 0);
+    return d;
+  });
+  return (
+    <div className="w-full max-w-xs space-y-3">
+      <TimeInput label="Starts at" value={time} onChange={setTime} />
+      <p className="text-xs text-muted">
+        Date: <code>{time.toISOString()}</code>
+      </p>
+    </div>
+  );
+}
+```
+
+Typing is parsed as you go — `2:30 PM`, `14:30` and a bare `14` all commit. Whatever
+you leave in the field is reformatted on blur, so a half-finished entry snaps back
+to the last good value rather than sitting there invalid.
+
+`onChange` emits a `Date` built from the one you passed in, with only the hours
+and minutes replaced. Seconds and milliseconds are zeroed; the date part survives.
+
+## Format and interval
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [a, setA] = useState(null);
+  const [b, setB] = useState(null);
+  const [c, setC] = useState(null);
+  return (
+    <div className="w-full max-w-xs space-y-4">
+      <TimeInput label="24-hour" format="24h" value={a} onChange={setA} />
+      <TimeInput label="Every 15 minutes" minuteStep={15} value={b} onChange={setB} />
+      <TimeInput label="Every 5 minutes" minuteStep={5} value={c} onChange={setC} />
+    </div>
+  );
+}
+```
+
+`minuteStep` only controls the option list — typing is never restricted to the
+interval. The list scrolls the option nearest the current value into view when it
+opens, which matters at `minuteStep={5}` where there are 288 of them.
+
+## Strings, no dropdown, sizes
+
+`value` also accepts a string, parsed the same way as typed input.
+
+<Preview>
+  <Demo2 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full max-w-xs space-y-4">
+  <TimeInput label="From a string" value="9:00 AM" onChange={() => {}} />
+  <TimeInput label="Typed only" value="17:45" format="24h" onChange={() => {}} withDropdown={false} />
+  <TimeInput size="xs" value="8:00 AM" onChange={() => {}} />
+  <TimeInput size="sm" value="8:00 AM" onChange={() => {}} />
+  <TimeInput size="lg" value="8:00 AM" onChange={() => {}} />
+  <TimeInput label="Invalid" value="8:00 AM" onChange={() => {}} error="Outside opening hours." />
+  <TimeInput label="Disabled" value="8:00 AM" onChange={() => {}} disabled />
+</div>
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | `Date \| string \| null` | — |
+| `onChange` | `(date: Date) => void` | — |
+| `format` | `12h` `24h` | `"12h"` |
+| `minuteStep` | `number` | `30` |
+| `withDropdown` | `boolean` | `true` |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `xs` `sm` `md` `lg` | `md` |
+| `disabled`, `name`, `placeholder` | | |
+
+`formatTime(date, format)` and `toTimeDate(value)` are exported, so you can render
+the same string outside the field.

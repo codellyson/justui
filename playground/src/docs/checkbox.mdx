@@ -1,0 +1,84 @@
+export const title = "Checkbox";
+export const group = "Forms";
+
+# Checkbox
+
+Takes `label` and `description` as props and wires the id itself. `onChange`
+receives the next state, not an event.
+
+```jsx live
+<div className="space-y-3">
+  <Checkbox label="Email me about releases" defaultChecked />
+  <Checkbox label="Email me about incidents" description="At most one message per incident." />
+  <Checkbox label="Unavailable on this plan" disabled />
+  <Checkbox label="Required" error="You must accept to continue." />
+</div>
+```
+
+The box centres against a single-line label, and only top-aligns once there's a
+description below it — where the label can wrap.
+
+## Sizes
+
+```jsx live
+<div className="flex items-center gap-6">
+  <Checkbox size="sm" label="Small" defaultChecked />
+  <Checkbox size="md" label="Medium" defaultChecked />
+  <Checkbox size="lg" label="Large" defaultChecked />
+</div>
+```
+
+## Controlled and indeterminate
+
+`onChange` can emit `"indeterminate"` as well as a boolean — pass
+`checked="indeterminate"` for a partially-selected parent.
+
+```jsx live noInline
+function Demo() {
+  const [items, setItems] = useState([true, false, false]);
+  const all = items.every(Boolean);
+  const some = items.some(Boolean) && !all;
+  return (
+    <div className="space-y-3">
+      <Checkbox
+        label="Select all"
+        checked={all ? true : some ? 'indeterminate' : false}
+        onChange={() => setItems(items.map(() => !all))}
+      />
+      <div className="ml-6 space-y-2">
+        {items.map((checked, i) => (
+          <Checkbox
+            key={i}
+            label={`Item ${i + 1}`}
+            checked={checked}
+            onChange={(next) => setItems(items.map((v, j) => (j === i ? next === true : v)))}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Bare control
+
+Omit `label` and `description` for the box alone, with no wrapper.
+
+```jsx live
+<div className="flex items-center gap-3">
+  <Checkbox defaultChecked aria-label="Select row" />
+  <span className="text-sm text-secondary">Row with its own label elsewhere</span>
+</div>
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `checked` / `defaultChecked` | `boolean \| "indeterminate"` | — |
+| `onChange` | `(checked: boolean \| "indeterminate") => void` | — |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `sm` `md` `lg` | `sm` |
+| `disabled` | `boolean` | `false` |

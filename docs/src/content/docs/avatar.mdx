@@ -1,0 +1,120 @@
+---
+title: "Avatar"
+description: "A picture of a person or thing, with initials when there's no picture and no layout shift while one loads."
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/avatar/0";
+import Demo1 from "../../components/demos/avatar/1";
+import Demo2 from "../../components/demos/avatar/2";
+import Demo3 from "../../components/demos/avatar/3";
+import Demo4 from "../../components/demos/avatar/4";
+
+A picture of a person or thing, with initials when there's no picture and no
+layout shift while one loads.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+const face = (hue) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect width="100%" height="100%" fill="hsl(${hue} 45% 45%)"/><circle cx="48" cy="38" r="16" fill="rgba(255,255,255,.85)"/><ellipse cx="48" cy="86" rx="28" ry="24" fill="rgba(255,255,255,.85)"/></svg>`
+  )}`;
+```
+
+Left to right: an image, initials from a two-word name, a single initial, an empty
+placeholder, and `radius="md"` for a squared avatar. `name` does double duty —
+initials *and* the image's `alt` — so a decorative avatar needs no extra prop.
+
+A broken or slow `src` falls back to the initials rather than an empty box:
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+<div className="flex items-center gap-4">
+  <Avatar src="https://example.invalid/nope.png" name="Ada Lovelace" />
+  <Avatar src="https://example.invalid/nope.png" name="Bo Nguyen" fallback="?" />
+</div>
+```
+
+## Sizes
+
+<Preview>
+  <Demo2 client:visible />
+</Preview>
+
+```jsx
+const face = (hue) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect width="100%" height="100%" fill="hsl(${hue} 45% 45%)"/><circle cx="48" cy="38" r="16" fill="rgba(255,255,255,.85)"/><ellipse cx="48" cy="86" rx="28" ry="24" fill="rgba(255,255,255,.85)"/></svg>`
+  )}`;
+```
+
+Initials scale with the box, so `xs` stays legible instead of overflowing.
+
+## Groups
+
+`AvatarGroup` overlaps its children and collapses the tail past `max`.
+
+<Preview>
+  <Demo3 client:visible />
+</Preview>
+
+```jsx
+const face = (hue) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect width="100%" height="100%" fill="hsl(${hue} 45% 45%)"/><circle cx="48" cy="38" r="16" fill="rgba(255,255,255,.85)"/><ellipse cx="48" cy="86" rx="28" ry="24" fill="rgba(255,255,255,.85)"/></svg>`
+  )}`;
+
+const people = [
+  { name: 'Ada Lovelace', hue: 210 },
+  { name: 'Bo Nguyen', hue: 150 },
+  { name: 'Cy Park', hue: 20 },
+  { name: 'Di Alvarez', hue: 265 },
+  { name: 'Eve Okafor', hue: 320 },
+];
+```
+
+The overflow avatar reads `+N` and carries an `aria-label`. Pass the same `size`
+to the group so it matches its children.
+
+## With a presence badge
+
+`WithBadge` positions a `Badge` on any child, so presence composes rather than
+being another avatar prop. An empty `badge` with a squared-off `badgeClassName`
+gives you a presence dot.
+
+<Preview>
+  <Demo4 client:visible />
+</Preview>
+
+```jsx
+const face = (hue) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect width="100%" height="100%" fill="hsl(${hue} 45% 45%)"/><circle cx="48" cy="38" r="16" fill="rgba(255,255,255,.85)"/><ellipse cx="48" cy="86" rx="28" ry="24" fill="rgba(255,255,255,.85)"/></svg>`
+  )}`;
+```
+
+## Props
+
+### Avatar
+
+| Prop | Type | Default |
+|---|---|---|
+| `src` | `string` | — |
+| `name` | `string` | — (initials + `alt`) |
+| `alt` | `string` | `name` |
+| `fallback` | `ReactNode` | initials from `name` |
+| `size` | `xs` `sm` `md` `lg` `xl` | `md` |
+| `radius` | `full` `md` | `full` |
+| `delayMs` | `number` | — |
+
+`delayMs` holds the fallback back briefly so a fast image doesn't flash initials
+first.
+
+### AvatarGroup
+
+`max`, `size`, `spacing` (`sm` `md`), plus the native div props.

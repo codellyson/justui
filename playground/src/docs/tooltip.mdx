@@ -1,0 +1,87 @@
+export const title = "Tooltip";
+export const group = "Overlays";
+
+# Tooltip
+
+Monolithic on purpose: a tooltip is one label attached to one target, so the
+trigger/content split bought nothing. Pass the body as `label` and the target as
+children.
+
+```jsx live
+<TooltipProvider>
+  <div className="flex items-center gap-2">
+    <Tooltip label="Bold — ⌘B">
+      <Button size="xs" variant="outline" aria-label="Bold">B</Button>
+    </Tooltip>
+    <Tooltip label="Italic — ⌘I">
+      <Button size="xs" variant="outline" aria-label="Italic">I</Button>
+    </Tooltip>
+    <Tooltip label="Insert link — ⌘K">
+      <Button size="xs" variant="outline" aria-label="Insert link">↗</Button>
+    </Tooltip>
+  </div>
+</TooltipProvider>
+```
+
+Wrap a subtree in a single `TooltipProvider` — it owns the shared open/close
+delay, so moving between neighbouring triggers doesn't re-wait.
+
+## Position and arrow
+
+```jsx live
+<TooltipProvider delayDuration={100}>
+  <div className="flex flex-wrap gap-3">
+    {['top', 'right', 'bottom', 'left'].map((p) => (
+      <Tooltip key={p} label={`Appears on the ${p}`} position={p} withArrow>
+        <Button size="xs" variant="secondary">{p}</Button>
+      </Tooltip>
+    ))}
+  </div>
+</TooltipProvider>
+```
+
+## Disabled
+
+`disabled` renders the target with no tooltip attached at all — no listeners, no
+portal. Useful when the hint only applies conditionally.
+
+```jsx live noInline
+function Demo() {
+  const [on, setOn] = useState(true);
+  return (
+    <TooltipProvider>
+      <div className="flex items-center gap-4">
+        <Switch label="Tooltip enabled" checked={on} onChange={setOn} />
+        <Tooltip label="Only when enabled" disabled={!on}>
+          <Button size="xs" variant="outline">Hover me</Button>
+        </Tooltip>
+      </div>
+    </TooltipProvider>
+  );
+}
+
+render(<Demo />);
+```
+
+## Accessibility
+
+A tooltip is supplementary — never put information there that isn't available
+some other way, and never attach one to a control with no accessible name. The
+icon buttons above each carry `aria-label`; the tooltip repeats it for sighted
+users rather than replacing it.
+
+Tooltips don't open on touch. For anything a touch user must read, use inline text
+or a [menu](/menu).
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `label` | `ReactNode` | required |
+| `position` | `top` `right` `bottom` `left` | `top` |
+| `opened` / `defaultOpened` | `boolean` | — |
+| `onChange` | `(opened: boolean) => void` | — |
+| `disabled` | `boolean` | `false` |
+| `withArrow` | `boolean` | `false` |
+| `offset` | `number` | `4` |
+| `openDelay` | `number` | from the provider |

@@ -1,0 +1,24 @@
+@import "../../src/styles/tailwind.css";
+
+/* The gallery's own chrome is scanned alongside the package's classes. */
+@source "./";
+
+@layer base {
+  body {
+    @apply bg-bg text-primary antialiased;
+  }
+}
+
+/* The live editor is a plain textarea over a highlighted <pre>; both need to
+   sit on the same grid or the caret drifts from the glyphs. */
+.live-editor textarea,
+.live-editor pre {
+  font-family: theme("fontFamily.mono");
+  font-size: 12.5px !important;
+  line-height: 20px !important;
+  tab-size: 2;
+}
+
+.live-editor textarea:focus {
+  outline: none;
+}

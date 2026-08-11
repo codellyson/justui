@@ -1,0 +1,120 @@
+---
+title: "Dialog"
+description: "The low-level composition: portal, overlay, focus trap, scroll lock, escape-to-close, click-outside. Reach for Modal when you'd rather drive it from an…"
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/dialog/0";
+import Demo1 from "../../components/demos/dialog/1";
+import Demo2 from "../../components/demos/dialog/2";
+
+The low-level composition: portal, overlay, focus trap, scroll lock,
+escape-to-close, click-outside. Reach for [Modal](/modal) when you'd rather drive
+it from an `opened` boolean than a target.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+<Dialog>
+  <Dialog.Target asChild>
+    <Button>Invite a teammate</Button>
+  </Dialog.Target>
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>Invite a teammate</Dialog.Title>
+      <Dialog.Description>
+        They'll get an email with a link that expires in 7 days.
+      </Dialog.Description>
+    </Dialog.Header>
+    <Input label="Email" placeholder="teammate@example.com" />
+    <Dialog.Footer>
+      <Dialog.Close asChild>
+        <Button variant="ghost" color="gray">Cancel</Button>
+      </Dialog.Close>
+      <Button>Send invite</Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog>
+```
+
+## Controlled
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [opened, setOpened] = useState(false);
+  return (
+    <div className="flex items-center gap-3">
+      <Button variant="outline" onClick={() => setOpened(true)}>Open</Button>
+      <span className="text-xs text-muted">opened: {String(opened)}</span>
+      <Dialog open={opened} onOpenChange={setOpened}>
+        <Dialog.Content className="max-w-sm">
+          <Dialog.Header>
+            <Dialog.Title>Delete project</Dialog.Title>
+            <Dialog.Description>This cannot be undone.</Dialog.Description>
+          </Dialog.Header>
+          <Dialog.Footer>
+            <Button variant="ghost" color="gray" onClick={() => setOpened(false)}>Cancel</Button>
+            <Button variant="danger" onClick={() => setOpened(false)}>Delete</Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog>
+    </div>
+  );
+}
+```
+
+## Without the close button
+
+`withCloseButton={false}` when the footer already provides the exit, and
+`overlayClassName` to restyle the backdrop.
+
+<Preview>
+  <Demo2 client:visible />
+</Preview>
+
+```jsx
+<Dialog>
+  <Dialog.Target asChild>
+    <Button variant="outline">Blurred backdrop, no ✕</Button>
+  </Dialog.Target>
+  <Dialog.Content withCloseButton={false} overlayClassName="bg-bg/70 backdrop-blur-md" className="max-w-sm">
+    <Dialog.Header>
+      <Dialog.Title>Confirm</Dialog.Title>
+      <Dialog.Description>Escape and click-outside still close it.</Dialog.Description>
+    </Dialog.Header>
+    <Dialog.Footer>
+      <Dialog.Close asChild><Button>Got it</Button></Dialog.Close>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog>
+```
+
+## Accessibility
+
+Always render a `Dialog.Title` — Radix wires it to `aria-labelledby` and warns in
+development when it's missing. If it shouldn't be visible, keep it and add
+`className="sr-only"`. Same for `Dialog.Description`: include one, or pass
+`aria-describedby={undefined}` on `Dialog.Content` to opt out cleanly.
+
+While a dialog is open the rest of the page is `aria-hidden`, so nothing behind it
+is reachable by a screen reader or the tab key.
+
+## Parts
+
+| Part | Notes |
+|---|---|
+| `Dialog` / `Dialog.Root` | `open` / `defaultOpen` / `onOpenChange` / `modal` |
+| `Dialog.Target` | Use `asChild` to keep your own button |
+| `Dialog.Content` | Portalled. `withCloseButton`, `overlayClassName` |
+| `Dialog.Header` / `Dialog.Footer` | Layout only |
+| `Dialog.Title` / `Dialog.Description` | Wired to the ARIA attributes |
+| `Dialog.Close` | Closes from anywhere inside |
+| `Dialog.Portal` / `Dialog.Overlay` | For custom compositions |
+
+Note this one keeps Radix's `open` / `onOpenChange`, because it *is* the Radix
+layer. `Modal` is where the `opened` / `onClose` house style lives.

@@ -1,0 +1,62 @@
+export const title = "Accordion";
+export const group = "Display";
+
+# Accordion
+
+Compound, because the items repeat: `Accordion.Item` wraps a `Control` and a
+`Panel`. One open at a time by default, and the open one can be closed again.
+
+```jsx live
+<Accordion defaultValue="build" className="w-full max-w-lg">
+  <Accordion.Item value="build">
+    <Accordion.Control>Why did my build fail?</Accordion.Control>
+    <Accordion.Panel>
+      Check the logs tab — the most common cause is a missing environment variable.
+    </Accordion.Panel>
+  </Accordion.Item>
+  <Accordion.Item value="deploy">
+    <Accordion.Control>How do I roll back?</Accordion.Control>
+    <Accordion.Panel>
+      Every deploy is immutable, so promoting an older one is a rollback.
+    </Accordion.Panel>
+  </Accordion.Item>
+  <Accordion.Item value="quota">
+    <Accordion.Control>What counts toward my quota?</Accordion.Control>
+    <Accordion.Panel>Build minutes and outbound bandwidth.</Accordion.Panel>
+  </Accordion.Item>
+</Accordion>
+```
+
+## Multiple open at once
+
+`multiple` switches `value` from a string to an array.
+
+```jsx live noInline
+function Demo() {
+  const [open, setOpen] = useState(['a']);
+  return (
+    <div className="w-full max-w-lg space-y-3">
+      <Accordion multiple value={open} onChange={setOpen}>
+        {['a', 'b', 'c'].map((v) => (
+          <Accordion.Item key={v} value={v}>
+            <Accordion.Control leftSection={<ChevronRightIcon />}>Section {v.toUpperCase()}</Accordion.Control>
+            <Accordion.Panel>Body of section {v}.</Accordion.Panel>
+          </Accordion.Item>
+        ))}
+      </Accordion>
+      <p className="text-xs text-muted">open: <code>{open.join(', ') || 'none'}</code></p>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+| Prop | Type | Default |
+|---|---|---|
+| `multiple` | `boolean` | `false` |
+| `value` / `defaultValue` | `string \| string[]` | — |
+| `onChange` | `(value) => void` | — |
+| `disabled` | `boolean` | — |
+
+`Accordion.Control` takes `leftSection` and `chevron` (to replace the default one).

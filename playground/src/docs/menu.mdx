@@ -1,0 +1,115 @@
+export const title = "Menu";
+export const group = "Overlays";
+
+# Menu
+
+Compound, because the items genuinely repeat: `Menu.Target` and `Menu.Dropdown`,
+then `Menu.Item` / `Menu.Label` / `Menu.Divider` inside. Portalled, keyboard
+navigable, typeahead, closes on select.
+
+```jsx live
+<Menu>
+  <Menu.Target asChild>
+    <Button variant="outline">Actions</Button>
+  </Menu.Target>
+  <Menu.Dropdown align="start" width={220}>
+    <Menu.Label>Project</Menu.Label>
+    <Menu.Item rightSection="⌘R">Rename</Menu.Item>
+    <Menu.Item rightSection="⌘D">Duplicate</Menu.Item>
+    <Menu.Divider />
+    <Menu.Item disabled>Transfer ownership</Menu.Item>
+    <Menu.Item color="red">Delete</Menu.Item>
+  </Menu.Dropdown>
+</Menu>
+```
+
+## Sections
+
+`leftSection` and `rightSection` are the adornment slots — same names as on
+`Tabs.Tab`.
+
+```jsx live
+<Menu>
+  <Menu.Target asChild>
+    <Button variant="outline">Insert</Button>
+  </Menu.Target>
+  <Menu.Dropdown align="start" width={240}>
+    <Menu.Item leftSection={<DocumentTextIcon />} rightSection="⌘1">Paragraph</Menu.Item>
+    <Menu.Item leftSection={<HashtagIcon />} rightSection="⌘2">Heading</Menu.Item>
+    <Menu.Item leftSection={<CodeBracketIcon />} rightSection="⌘3">Code block</Menu.Item>
+    <Menu.Divider />
+    <Menu.Item leftSection={<ArrowUpRightIcon />} color="red">Embed (beta)</Menu.Item>
+  </Menu.Dropdown>
+</Menu>
+```
+
+## Checkbox and radio items
+
+```jsx live noInline
+function Demo() {
+  const [wrap, setWrap] = useState(true);
+  const [minimap, setMinimap] = useState(false);
+  const [density, setDensity] = useState('cosy');
+  return (
+    <div className="flex items-center gap-3">
+      <Menu>
+        <Menu.Target asChild>
+          <Button variant="outline">View</Button>
+        </Menu.Target>
+        <Menu.Dropdown align="start" width={224}>
+          <Menu.Label>Editor</Menu.Label>
+          <Menu.CheckboxItem checked={wrap} onCheckedChange={setWrap}>Word wrap</Menu.CheckboxItem>
+          <Menu.CheckboxItem checked={minimap} onCheckedChange={setMinimap}>Minimap</Menu.CheckboxItem>
+          <Menu.Divider />
+          <Menu.Label>Density</Menu.Label>
+          <Menu.RadioGroup value={density} onValueChange={setDensity}>
+            <Menu.RadioItem value="compact">Compact</Menu.RadioItem>
+            <Menu.RadioItem value="cosy">Cosy</Menu.RadioItem>
+            <Menu.RadioItem value="roomy">Roomy</Menu.RadioItem>
+          </Menu.RadioGroup>
+        </Menu.Dropdown>
+      </Menu>
+      <span className="text-xs text-muted">
+        wrap: {String(wrap)} · minimap: {String(minimap)} · {density}
+      </span>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Placement
+
+`Menu.Dropdown` forwards Radix's positioning props — `side`, `align`,
+`sideOffset` (defaults to `4`), `alignOffset`, `collisionPadding`.
+
+```jsx live
+<div className="flex flex-wrap gap-3">
+  {['top', 'right', 'bottom', 'left'].map((side) => (
+    <Menu key={side}>
+      <Menu.Target asChild>
+        <Button size="xs" variant="secondary">{side}</Button>
+      </Menu.Target>
+      <Menu.Dropdown side={side}>
+        <Menu.Item>Opens {side}</Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  ))}
+</div>
+```
+
+## Parts
+
+| Part | Notes |
+|---|---|
+| `Menu` / `Menu.Root` | `open` / `onOpenChange` / `modal` |
+| `Menu.Target` | Use `asChild` to keep your own button |
+| `Menu.Dropdown` | Portalled. `side`, `align`, `sideOffset`, `width` |
+| `Menu.Item` | `leftSection`, `rightSection`, `color` (`default` \| `red`), `disabled`, `onSelect` |
+| `Menu.CheckboxItem` | `checked` + `onCheckedChange` |
+| `Menu.RadioGroup` + `Menu.RadioItem` | `value` + `onValueChange` |
+| `Menu.Label` / `Menu.Divider` | Section heading / rule |
+
+Every part is also exported flat — `MenuTarget`, `MenuDropdown`, `MenuItem`, … —
+if you'd rather import them individually.

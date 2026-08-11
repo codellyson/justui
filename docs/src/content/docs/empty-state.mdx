@@ -1,0 +1,51 @@
+---
+title: "EmptyState"
+description: "Actions are data, not children — the layout of the button row is the component's business, not the caller's."
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/empty-state/0";
+import Demo1 from "../../components/demos/empty-state/1";
+
+Actions are data, not children — the layout of the button row is the component's
+business, not the caller's.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+<EmptyState
+  icon={<ArchiveBoxIcon className="h-10 w-10" />}
+  title="No projects yet"
+  description="Create one to get a deploy URL, logs and a preview branch."
+  primaryAction={{ label: 'Create project', onClick: () => {} }}
+  secondaryAction={{ label: 'Import from Git', onClick: () => {} }}
+/>
+```
+
+## Inside a surface
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+<Card withBorder className="w-full">
+  <EmptyState title="No results" description="Try a different search term." />
+</Card>
+```
+
+Title alone is fine — drop the description and the actions when the state is
+self-explanatory.
+
+## Props
+
+| Prop | Type |
+|---|---|
+| `title` | `ReactNode` |
+| `description` | `ReactNode` |
+| `icon` | `ReactNode` |
+| `primaryAction` / `secondaryAction` | `{ label, onClick, variant?, leftIcon? }` |
+
+Children render between the description and the buttons, if you need something the
+props don't cover.

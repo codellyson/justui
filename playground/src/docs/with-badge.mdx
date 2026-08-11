@@ -1,0 +1,58 @@
+export const title = "WithBadge";
+export const group = "Foundations";
+
+# WithBadge
+
+Anchors a [badge](/badge) to a corner of whatever it wraps. The wrapper is
+`inline-flex`, so it takes the child's size rather than the line box.
+
+```jsx live
+<div className="flex flex-wrap items-center gap-8">
+  <WithBadge badge="9">
+    <Button variant="outline">Inbox</Button>
+  </WithBadge>
+  <WithBadge badge="!" color="orange" position="top-left">
+    <Button variant="outline">Alerts</Button>
+  </WithBadge>
+  <WithBadge badge="12" color="green" variant="light" position="bottom-right">
+    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border text-sm">A</div>
+  </WithBadge>
+</div>
+```
+
+## Hiding without unmounting
+
+`hidden` keeps the wrapper but drops the badge — for a zero count you don't want to
+render but don't want to reflow around either.
+
+```jsx live noInline
+function Demo() {
+  const [count, setCount] = useState(0);
+  return (
+    <div className="flex items-center gap-4">
+      <WithBadge badge={count} hidden={count === 0}>
+        <Button variant="outline">Notifications</Button>
+      </WithBadge>
+      <Button size="xs" onClick={() => setCount((c) => c + 1)}>Add</Button>
+      <Button size="xs" variant="ghost" color="gray" onClick={() => setCount(0)}>Clear</Button>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `badge` | `ReactNode` | required |
+| `position` | `top-right` `top-left` `bottom-right` `bottom-left` | `top-right` |
+| `variant` | `light` `solid` `outline` | `solid` |
+| `color` | Badge's palette | `red` |
+| `size` | `sm` `md` `lg` | `sm` |
+| `hidden` | `boolean` | `false` |
+| `badgeClassName` | `string` | — |
+
+A count badge is decorative to a screen reader here — put the number in the
+control's accessible name too if it matters.

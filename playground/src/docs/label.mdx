@@ -1,0 +1,30 @@
+export const title = "Label";
+export const group = "Forms";
+
+# Label
+
+A bare `<label>`. `Input`, `Textarea`, `Select`, `Checkbox` and `Switch` all render
+their own from a `label` prop, so you only need this when building a control the
+library doesn't cover — wire it yourself with `htmlFor` and a matching `id`.
+
+```jsx live
+<div className="w-full max-w-sm space-y-2">
+  <Label htmlFor="custom">Custom control</Label>
+  <input
+    id="custom"
+    className="h-9 w-full rounded-md border border-border bg-bg-secondary px-3 text-sm text-primary"
+  />
+</div>
+```
+
+It carries `peer-disabled:` styling, so a sibling `peer` control that goes
+disabled dims its label too.
+
+```jsx live
+<div className="w-full max-w-sm space-y-2">
+  <input id="off" disabled className="peer h-9 w-full rounded-md border border-border bg-bg-secondary px-3 text-sm" />
+  <Label htmlFor="off">Dims when the peer is disabled</Label>
+</div>
+```
+
+Takes every native `<label>` attribute and forwards a ref.

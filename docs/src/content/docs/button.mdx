@@ -1,0 +1,148 @@
+---
+title: "Button"
+description: "variant picks the shape, color picks the palette. They're separate props — only primary, outline and ghost read color; secondary, danger and transparent…"
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/button/0";
+import Demo1 from "../../components/demos/button/1";
+import Demo2 from "../../components/demos/button/2";
+import Demo3 from "../../components/demos/button/3";
+import Demo4 from "../../components/demos/button/4";
+import Demo5 from "../../components/demos/button/5";
+
+`variant` picks the shape, `color` picks the palette. They're separate props —
+only `primary`, `outline` and `ghost` read `color`; `secondary`, `danger` and
+`transparent` have fixed styling.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+<div className="flex flex-wrap items-center gap-3">
+  <Button>Primary</Button>
+  <Button variant="secondary">Secondary</Button>
+  <Button variant="outline">Outline</Button>
+  <Button variant="ghost">Ghost</Button>
+  <Button variant="danger">Danger</Button>
+  <Button variant="transparent">Transparent</Button>
+</div>
+```
+
+## Colours
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+<div className="space-y-3">
+  <div className="flex flex-wrap items-center gap-3">
+    {['primary', 'gray', 'red', 'blue', 'green'].map((c) => (
+      <Button key={c} color={c}>{c}</Button>
+    ))}
+  </div>
+  <div className="flex flex-wrap items-center gap-3">
+    {['primary', 'gray', 'red', 'blue', 'green'].map((c) => (
+      <Button key={c} variant="outline" color={c}>{c}</Button>
+    ))}
+  </div>
+  <div className="flex flex-wrap items-center gap-3">
+    {['primary', 'gray', 'red', 'blue', 'green'].map((c) => (
+      <Button key={c} variant="ghost" color={c}>{c}</Button>
+    ))}
+  </div>
+</div>
+```
+
+## Sizes
+
+<Preview>
+  <Demo2 client:visible />
+</Preview>
+
+```jsx
+<div className="flex flex-wrap items-center gap-3">
+  <Button size="xs">Extra small</Button>
+  <Button size="sm">Small</Button>
+  <Button size="md">Medium</Button>
+  <Button size="lg">Large</Button>
+</div>
+```
+
+### One scale across every control
+
+`size` maps to the same height on `Button`, `Input` and `Select` — 28, 32, 36 and
+44px — so they line up in a row without per-call nudging.
+
+<Preview>
+  <Demo3 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full space-y-3">
+  {["xs", "sm", "md", "lg"].map((s) => (
+    <div key={s} className="flex items-end gap-3">
+      <Button size={s}>Save</Button>
+      <Input size={s} placeholder={s} containerClassName="flex-1" />
+      <Select size={s} placeholder={s} containerClassName="w-32"
+        options={[{ label: "One", value: "1" }]} />
+    </div>
+  ))}
+</div>
+```
+
+## Loading, icons, full width
+
+`loading` swaps in a `Loader`, hides the icons, sets `aria-busy` and disables the
+button — so a double-submit isn't possible while a request is in flight.
+
+<Preview>
+  <Demo4 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full max-w-sm space-y-3">
+  <div className="flex flex-wrap items-center gap-3">
+    <Button loading>Saving</Button>
+    <Button variant="outline" loading>Saving</Button>
+    <Button disabled>Disabled</Button>
+  </div>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button leftIcon={<ArrowPathIcon />}>Redeploy</Button>
+    <Button variant="outline" rightIcon={<ArrowUpRightIcon />}>Open logs</Button>
+  </div>
+  <Button fullWidth>Full width</Button>
+</div>
+```
+
+## asChild
+
+Merges the styling onto the child instead of rendering a `<button>` — the way to
+get a styled link without nesting interactive elements.
+
+<Preview>
+  <Demo5 client:visible />
+</Preview>
+
+```jsx
+<Button asChild>
+  <a href="/badge">I'm an anchor</a>
+</Button>
+```
+
+## Props
+
+| Prop | Type | Default | Notes |
+|---|---|---|---|
+| `variant` | `primary` `secondary` `outline` `ghost` `transparent` `danger` | `primary` | |
+| `color` | `primary` `gray` `red` `blue` `green` | `primary` | Read by `primary`, `outline`, `ghost` only |
+| `size` | `xs` `sm` `md` `lg` | `sm` | 28 / 32 / 36 / 44px — shared with Input and Select |
+| `loading` | `boolean` | `false` | Shows a `Loader`, hides icons, disables the button |
+| `leftIcon` / `rightIcon` | `ReactNode` | — | Hidden while loading |
+| `fullWidth` | `boolean` | `false` | |
+| `asChild` | `boolean` | `false` | Render the child instead of a `<button>` |
+| `type` | `string` | `"button"` | So it can't accidentally submit a form |
+
+Forwards a ref and every native `<button>` attribute. `buttonVariants` is
+exported for the size/width recipe.

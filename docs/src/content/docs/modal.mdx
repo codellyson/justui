@@ -1,0 +1,230 @@
+---
+title: "Modal"
+description: "Adaptive. A centred dialog on wide screens, a bottom sheet on narrow ones — and the sheet can be dragged down to dismiss. Built on Radix's Dialog, so th…"
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/modal/0";
+import Demo1 from "../../components/demos/modal/1";
+import Demo2 from "../../components/demos/modal/2";
+import Demo3 from "../../components/demos/modal/3";
+import Demo4 from "../../components/demos/modal/4";
+import Demo5 from "../../components/demos/modal/5";
+
+**Adaptive.** A centred dialog on wide screens, a bottom sheet on narrow ones —
+and the sheet can be dragged down to dismiss. Built on Radix's Dialog, so the
+portal, focus trap, scroll lock and ARIA wiring come from there.
+
+Narrow the window past 768px (or drag the browser narrow) and the same modal
+becomes a sheet. Nothing about the call site changes.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [opened, setOpened] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpened(true)}>Rename note</Button>
+      <Modal
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Rename"
+        description="Pick something you'll recognise later."
+      >
+        <div className="space-y-3">
+          <Input defaultValue="untitled" autoFocus />
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" color="gray" onClick={() => setOpened(false)}>Cancel</Button>
+            <Button onClick={() => setOpened(false)}>Save</Button>
+          </div>
+        </div>
+      </Modal>
+    </>
+  );
+}
+```
+
+## The two layouts
+
+`data-layout` is `"sheet"` or `"centered"`, so you can hook styles onto whichever
+is active. `centered` forces the centred layout at every width — for a small
+confirm that would look odd as a full-width sheet.
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [mode, setMode] = useState(null);
+  return (
+    <>
+      <div className="flex flex-wrap gap-3">
+        <Button variant="outline" onClick={() => setMode('adaptive')}>Adaptive (default)</Button>
+        <Button variant="outline" onClick={() => setMode('centered')}>Always centered</Button>
+        <Button variant="outline" onClick={() => setMode('wide')}>Wide</Button>
+      </div>
+      <Modal
+        opened={mode !== null}
+        onClose={() => setMode(null)}
+        centered={mode === 'centered'}
+        width={mode === 'wide' ? 'min(720px, 92vw)' : undefined}
+        title={mode ?? ''}
+        description="Resize the window to see the layout switch."
+      >
+        <p className="text-sm text-secondary">
+          Below 768px this is a sheet unless <code>centered</code> is set.
+        </p>
+      </Modal>
+    </>
+  );
+}
+```
+
+## Drag to dismiss
+
+On the sheet layout, the grab handle is draggable: release past ~96px, or flick
+fast, and it closes; anything less springs back. `withDragHandle={false}` hides the
+pill and moves the gesture to the header, `swipeToClose={false}` turns the gesture
+off entirely.
+
+<Preview>
+  <Demo2 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [opened, setOpened] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpened(true)}>Open sheet (narrow window first)</Button>
+      <Modal opened={opened} onClose={() => setOpened(false)} title="Drag me down">
+        <p className="text-sm text-secondary">
+          Grab the pill at the top and pull down.
+        </p>
+      </Modal>
+    </>
+  );
+}
+```
+
+## Full-screen sheet
+
+`height="100vh"` squares the corners and fills the viewport — for a sheet that's
+really a page.
+
+<Preview>
+  <Demo3 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [opened, setOpened] = useState(false);
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpened(true)}>Full height</Button>
+      <Modal opened={opened} onClose={() => setOpened(false)} height="100vh" title="Everything">
+        <div className="space-y-3">
+          {Array.from({ length: 20 }, (_, i) => (
+            <div key={i} className="rounded-md border border-border px-3 py-2 text-sm text-secondary">
+              Row {i + 1}
+            </div>
+          ))}
+        </div>
+      </Modal>
+    </>
+  );
+}
+```
+
+The body scrolls on its own — the page behind stays locked. On iOS the body adds
+`env(safe-area-inset-bottom)` padding so the last row clears the home indicator.
+
+## Forcing a decision
+
+`closeOnClickOutside={false}` and `closeOnEscape={false}` remove the casual exits,
+so the only way out is a control you provide. Use sparingly — a modal with no
+escape is a trap.
+
+<Preview>
+  <Demo4 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [opened, setOpened] = useState(false);
+  return (
+    <>
+      <Button variant="danger" onClick={() => setOpened(true)}>Delete project</Button>
+      <Modal
+        opened={opened}
+        onClose={() => setOpened(false)}
+        centered
+        title="Delete project"
+        description="This cannot be undone."
+        closeOnClickOutside={false}
+        closeOnEscape={false}
+        withCloseButton={false}
+      >
+        <div className="flex justify-end gap-2">
+          <Button variant="ghost" color="gray" onClick={() => setOpened(false)}>Keep it</Button>
+          <Button variant="danger" onClick={() => setOpened(false)}>Delete</Button>
+        </div>
+      </Modal>
+    </>
+  );
+}
+```
+
+## It escapes clipping ancestors
+
+Because it portals to the end of `<body>`, an `overflow: hidden` parent or a
+transformed ancestor can't clip it. The box below has both.
+
+<Preview>
+  <Demo5 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [opened, setOpened] = useState(false);
+  return (
+    <div
+      className="w-full rounded-md border border-dashed border-border p-3"
+      style={{ overflow: 'hidden', height: 110, transform: 'translateZ(0)' }}
+    >
+      <p className="mb-2 text-xs text-muted">overflow: hidden · transform: translateZ(0)</p>
+      <Button size="xs" onClick={() => setOpened(true)}>Open from inside</Button>
+      <Modal opened={opened} onClose={() => setOpened(false)} title="Not clipped">
+        <p className="text-sm text-secondary">Rendered at the end of body.</p>
+      </Modal>
+    </div>
+  );
+}
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `opened` | `boolean` | required |
+| `onClose` | `() => void` | required |
+| `title` / `description` | `ReactNode` | — |
+| `centered` | `boolean` | `false` |
+| `mobileBreakpoint` | `number` | `768` |
+| `width` | `number \| string` | `min(420px, 92vw)` |
+| `height` | `number \| string` | `auto` |
+| `radius` | `number` | `16` |
+| `withCloseButton` | `boolean` | `true` |
+| `withDragHandle` | `boolean` | `true` |
+| `swipeToClose` | `boolean` | `true` |
+| `closeOnClickOutside` / `closeOnEscape` | `boolean` | `true` |
+| `contentScrollable` | `boolean` | `true` |
+| `className` / `overlayClassName` / `contentClassName` | `string` | — |
+
+`width` applies to the centred layout only — the sheet is always full-width.
+
+Reach for [Dialog](/dialog) when you want target/content composition or a
+non-adaptive overlay, and [Drawer](/drawer) for a panel anchored to the side.

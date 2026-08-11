@@ -1,0 +1,97 @@
+export const title = "ColorPicker";
+export const group = "Forms";
+
+# ColorPicker
+
+The same hex field as [ColorInput](/color-input), with the presets behind a
+popover instead of laid out under the field. Reach for it when the palette is
+large enough that an inline row would dominate the form.
+
+```jsx live noInline
+function Demo() {
+  const [color, setColor] = useState('#3b82f6');
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <ColorPicker label="Brand" value={color} onChange={setColor} />
+      <div className="flex items-center gap-2 text-xs text-muted">
+        value: <code>{color || '(empty)'}</code>
+        <span className="h-4 w-4 rounded border border-border" style={{ background: color }} />
+      </div>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Three ways in: type a hex, click the left swatch for the OS picker, or open the
+grid on the right. Picking a preset closes the dropdown; the OS picker and the
+text field leave it alone.
+
+## Grid shape
+
+`presetColors` and `columns` are independent, so a short brand palette can sit on
+one row.
+
+```jsx live noInline
+function Demo() {
+  const [a, setA] = useState('#22c55e');
+  const [b, setB] = useState('');
+  return (
+    <div className="w-full max-w-sm space-y-4">
+      <ColorPicker
+        label="Brand palette"
+        value={a}
+        onChange={setA}
+        columns={4}
+        presetColors={['#0f172a', '#3b82f6', '#22c55e', '#f97316']}
+        presetsLabel="Brand"
+      />
+      <ColorPicker
+        label="No presets — field only"
+        value={b}
+        onChange={setB}
+        presetColors={[]}
+      />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+With `presetColors={[]}` the trigger disappears entirely rather than opening an
+empty popover.
+
+## Validation and sizes
+
+```jsx live
+<div className="w-full max-w-sm space-y-4">
+  <ColorPicker size="xs" value="#eab308" onChange={() => {}} />
+  <ColorPicker size="sm" value="#14b8a6" onChange={() => {}} />
+  <ColorPicker size="lg" value="#8b5cf6" onChange={() => {}} />
+  <ColorPicker label="Invalid" value="not-a-colour" onChange={() => {}} />
+  <ColorPicker label="Your own message" value="zzz" onChange={() => {}} error="Pick from the brand palette." />
+  <ColorPicker label="Disabled" value="#64748b" onChange={() => {}} disabled />
+</div>
+```
+
+`size` scales the field and the preset swatches together, so the grid stays in
+proportion to the control it belongs to.
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | `string` | uncontrolled |
+| `onChange` | `(value: string) => void` | — |
+| `presetColors` | `string[]` | `DEFAULT_PRESET_COLORS` |
+| `columns` | `number` | `6` |
+| `presetsLabel` | `ReactNode` | `"Presets"` |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `xs` `sm` `md` `lg` | `md` |
+| `disabled`, `name`, `placeholder` | | |
+
+`DEFAULT_PRESET_COLORS` is exported — 24 colours across a grey ramp and the hue
+wheel. `isHex` and `normaliseHex` are exported too, if you need the same
+validation elsewhere.

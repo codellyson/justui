@@ -1,0 +1,81 @@
+export const title = "ColorInput";
+export const group = "Forms";
+
+# ColorInput
+
+A hex field, a native colour picker in the swatch, and an optional preset row.
+The value is always the hex string.
+
+```jsx live noInline
+function Demo() {
+  const [color, setColor] = useState('#3b82f6');
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <ColorInput label="Brand" value={color} onChange={setColor} />
+      <div className="flex items-center gap-2 text-xs text-muted">
+        value: <code>{color || '(empty)'}</code>
+        <span className="h-4 w-4 rounded border border-border" style={{ background: color }} />
+      </div>
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+Clicking the swatch opens the OS colour picker. Typing a hex updates the swatch
+live, and `#abc` expands to `#aabbcc` on blur — the native input only accepts the
+long form.
+
+## Validation
+
+Anything that isn't a 3- or 6-digit hex is flagged without you wiring it up.
+
+```jsx live
+<div className="w-full max-w-sm space-y-4">
+  <ColorInput label="Valid" value="#22c55e" onChange={() => {}} />
+  <ColorInput label="Invalid" value="not-a-colour" onChange={() => {}} />
+  <ColorInput label="Your own message" value="zzz" onChange={() => {}} error="Pick from the brand palette." />
+</div>
+```
+
+## Presets and sizes
+
+```jsx live noInline
+function Demo() {
+  const [a, setA] = useState('#ec4899');
+  const [b, setB] = useState('');
+  return (
+    <div className="w-full max-w-sm space-y-4">
+      <ColorInput
+        label="Brand palette only"
+        value={a}
+        onChange={setA}
+        swatches={['#0f172a', '#3b82f6', '#ec4899']}
+      />
+      <ColorInput label="No presets" value={b} onChange={setB} swatches={[]} />
+      <ColorInput size="sm" value="#eab308" onChange={() => {}} swatches={[]} />
+      <ColorInput size="lg" value="#14b8a6" onChange={() => {}} swatches={[]} />
+      <ColorInput label="Disabled" value="#64748b" onChange={() => {}} disabled swatches={[]} />
+    </div>
+  );
+}
+
+render(<Demo />);
+```
+
+The active preset takes an accent border and `aria-pressed`, so it reads as a
+toggle set rather than decoration.
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | `string` | uncontrolled |
+| `onChange` | `(value: string) => void` | — |
+| `swatches` | `string[]` | `DEFAULT_SWATCHES` |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `xs` `sm` `md` `lg` | `md` |
+| `disabled`, `name`, `placeholder` | | |
+
+`DEFAULT_SWATCHES` is exported — ten colours. Pass `swatches={[]}` to hide the row.

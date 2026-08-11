@@ -1,0 +1,106 @@
+export const title = "Breadcrumb";
+export const group = "Display";
+
+# Breadcrumb
+
+Where you are in a hierarchy. Compound, because the trail is a repeated list you
+author — and the last crumb is the page you're on, not a link.
+
+```jsx live
+<Breadcrumb>
+  <Breadcrumb.Item href="/breadcrumb">Projects</Breadcrumb.Item>
+  <Breadcrumb.Item href="/breadcrumb">justui</Breadcrumb.Item>
+  <Breadcrumb.Item href="/breadcrumb">Settings</Breadcrumb.Item>
+  <Breadcrumb.Item current>Deploy keys</Breadcrumb.Item>
+</Breadcrumb>
+```
+
+The `current` crumb renders as a `<span>` with `aria-current="page"` rather than a
+link, and an item with no `href` does the same — so you can't accidentally ship a
+link to the page you're already on. Separators are `aria-hidden`, and the whole
+thing is a `<nav aria-label="Breadcrumb">` wrapping an ordered list.
+
+## Collapsing a long trail
+
+`maxItems` keeps the first crumb and the last few, replacing the middle with an
+ellipsis that announces itself to screen readers.
+
+```jsx live
+<div className="space-y-4">
+  <Breadcrumb maxItems={3}>
+    <Breadcrumb.Item href="/breadcrumb">Org</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">Team</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">Project</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">Environment</Breadcrumb.Item>
+    <Breadcrumb.Item current>Variables</Breadcrumb.Item>
+  </Breadcrumb>
+
+  <Breadcrumb maxItems={3}>
+    <Breadcrumb.Item href="/breadcrumb">Org</Breadcrumb.Item>
+    <Breadcrumb.Item current>Team</Breadcrumb.Item>
+  </Breadcrumb>
+</div>
+```
+
+The second trail is under the limit, so nothing collapses.
+
+## Separators
+
+```jsx live
+<div className="space-y-4">
+  <Breadcrumb separator="/">
+    <Breadcrumb.Item href="/breadcrumb">src</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">react</Breadcrumb.Item>
+    <Breadcrumb.Item current>ui</Breadcrumb.Item>
+  </Breadcrumb>
+
+  <Breadcrumb separator={<ChevronDoubleRightIcon className="h-3 w-3" />}>
+    <Breadcrumb.Item href="/breadcrumb">Docs</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">Components</Breadcrumb.Item>
+    <Breadcrumb.Item current>Breadcrumb</Breadcrumb.Item>
+  </Breadcrumb>
+</div>
+```
+
+A separator is a character or a node — `/` is fine here because it's punctuation
+between labels rather than an icon standing in for meaning.
+
+## With an icon and an avatar
+
+Crumbs take any children, so a root icon or an org avatar composes in.
+
+```jsx live
+<Breadcrumb>
+  <Breadcrumb.Item href="/breadcrumb" className="inline-flex items-center gap-1.5">
+    <HomeIcon className="h-3.5 w-3.5" />
+    Home
+  </Breadcrumb.Item>
+  <Breadcrumb.Item href="/breadcrumb" className="inline-flex items-center gap-1.5">
+    <Avatar size="xs" name="Khaime" radius="md" />
+    Khaime
+  </Breadcrumb.Item>
+  <Breadcrumb.Item current>Billing</Breadcrumb.Item>
+</Breadcrumb>
+```
+
+## Props
+
+### Breadcrumb
+
+| Prop | Type | Default |
+|---|---|---|
+| `separator` | `ReactNode` | a chevron |
+| `maxItems` | `number` | — (no collapsing) |
+
+Plus the native `nav` props. `className` lands on the inner `<ol>`, so alignment
+and gap utilities apply where the crumbs actually are.
+
+### Breadcrumb.Item
+
+| Prop | Type | Default |
+|---|---|---|
+| `href` | `string` | — |
+| `current` | `boolean` | `false` |
+
+Plus the native anchor props. `Breadcrumb.Ellipsis` is exported too, if you want
+to place the gap yourself instead of using `maxItems`.

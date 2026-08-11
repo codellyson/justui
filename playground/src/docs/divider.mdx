@@ -1,0 +1,52 @@
+export const title = "Divider";
+export const group = "Foundations";
+
+# Divider
+
+A 1px rule in the border token, with `role="separator"` and `aria-orientation` so
+it reads as a divider rather than decoration.
+
+```jsx live
+<div className="w-full max-w-sm">
+  <div className="text-sm text-primary">Account</div>
+  <Divider className="my-3" />
+  <div className="text-sm text-secondary">Billing</div>
+  <Divider className="my-3" />
+  <div className="text-sm text-secondary">Members</div>
+</div>
+```
+
+## Labelled
+
+```jsx live
+<div className="w-full max-w-sm space-y-6">
+  <Divider label="or" />
+  <Divider label="Danger zone" labelPosition="left" />
+  <Divider label="2024" labelPosition="right" />
+</div>
+```
+
+## Vertical
+
+Vertical dividers use `self-stretch`, so the row needs a height — usually from
+`items-center` on a flex parent plus an explicit `h-*`.
+
+```jsx live
+<div className="flex h-6 items-center gap-3 text-sm text-secondary">
+  <span>Draft</span>
+  <Divider orientation="vertical" />
+  <span>Edited 2m ago</span>
+  <Divider orientation="vertical" />
+  <span>3 comments</span>
+</div>
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `orientation` | `horizontal` `vertical` | `horizontal` |
+| `label` | `ReactNode` | — |
+| `labelPosition` | `left` `center` `right` | `center` |
+
+`labelPosition` only applies to a horizontal divider with a `label`.

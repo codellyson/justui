@@ -1,0 +1,113 @@
+---
+title: "Slider"
+description: "Single-thumb. Radix takes an array of values; that's wrapped here so the API is a plain number, which is the case you actually want 95% of the time."
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/slider/0";
+import Demo1 from "../../components/demos/slider/1";
+import Demo2 from "../../components/demos/slider/2";
+import Demo3 from "../../components/demos/slider/3";
+
+Single-thumb. Radix takes an array of values; that's wrapped here so the API is a
+plain number, which is the case you actually want 95% of the time.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [v, setV] = useState(35);
+  return (
+    <div className="w-full max-w-sm space-y-4">
+      <Slider value={v} onChange={setV} label={(n) => `${n}%`} />
+      <p className="text-xs text-muted">value: <code>{v}</code></p>
+    </div>
+  );
+}
+```
+
+The `label` shows on hover, focus and while dragging. Pass a function to format
+it, or a node for something static.
+
+## Marks and step
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full max-w-sm space-y-10">
+  <Slider
+    defaultValue={50}
+    step={25}
+    marks={[
+      { value: 0, label: '0%' },
+      { value: 25, label: '25%' },
+      { value: 50, label: '50%' },
+      { value: 75, label: '75%' },
+      { value: 100, label: '100%' },
+    ]}
+  />
+  <Slider defaultValue={2} min={1} max={5} step={1} label={(n) => `${n}×`}
+    marks={[{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }]} />
+</div>
+```
+
+A mark's `label` defaults to its `value`. Marks past the current value render
+muted, so the row doubles as a scale.
+
+## Sizes and disabled
+
+<Preview>
+  <Demo2 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full max-w-sm space-y-6">
+  <Slider defaultValue={30} size="sm" />
+  <Slider defaultValue={50} size="md" />
+  <Slider defaultValue={70} size="lg" />
+  <Slider defaultValue={40} disabled />
+</div>
+```
+
+## onChangeEnd
+
+`onChange` fires on every step; `onChangeEnd` fires once on release. Use the
+latter when each change costs something — a request, a re-render of a big canvas.
+
+<Preview>
+  <Demo3 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [live, setLive] = useState(50);
+  const [committed, setCommitted] = useState(50);
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <Slider defaultValue={50} onChange={setLive} onChangeEnd={setCommitted} />
+      <p className="text-xs text-muted">
+        onChange: <code>{live}</code> · onChangeEnd: <code>{committed}</code>
+      </p>
+    </div>
+  );
+}
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` / `defaultValue` | `number` | `0` |
+| `onChange` | `(value: number) => void` | — |
+| `onChangeEnd` | `(value: number) => void` | — |
+| `min` / `max` / `step` | `number` | `0` / `100` / `1` |
+| `marks` | `{ value, label? }[]` | — |
+| `size` | `sm` `md` `lg` | `md` |
+| `label` | `ReactNode \| (value) => ReactNode` | — |
+| `disabled`, `name` | | |
+
+Keyboard: arrows step, Home/End jump to the ends, Page Up/Down move by a larger
+increment — all from Radix.

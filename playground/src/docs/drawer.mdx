@@ -1,0 +1,107 @@
+export const title = "Drawer";
+export const group = "Overlays";
+
+# Drawer
+
+An edge-anchored panel. Built on the same Radix Dialog as [Modal](/modal), so it
+gets the identical portal, focus trap and scroll lock — only the placement and the
+slide differ.
+
+```jsx live noInline
+function Demo() {
+  const [opened, setOpened] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpened(true)}>Open filters</Button>
+      <Drawer opened={opened} onClose={() => setOpened(false)} title="Filters">
+        <div className="space-y-4">
+          <Select label="Status" placeholder="Any" options={[
+            { label: 'Live', value: 'live' },
+            { label: 'Draft', value: 'draft' },
+          ]} />
+          <Checkbox label="Only mine" />
+          <Slider label={(v) => `${v} days`} defaultValue={30} max={90} />
+          <Button fullWidth onClick={() => setOpened(false)}>Apply</Button>
+        </div>
+      </Drawer>
+    </>
+  );
+}
+
+render(<Demo />);
+```
+
+## Position and size
+
+`size` is the width for `left`/`right` and the height for `top`/`bottom`.
+
+```jsx live noInline
+function Demo() {
+  const [position, setPosition] = useState(null);
+  return (
+    <>
+      <div className="flex flex-wrap gap-3">
+        {['left', 'right', 'top', 'bottom'].map((p) => (
+          <Button key={p} size="xs" variant="outline" onClick={() => setPosition(p)}>{p}</Button>
+        ))}
+      </div>
+      <Drawer
+        opened={position !== null}
+        onClose={() => setPosition(null)}
+        position={position ?? 'right'}
+        size={position === 'top' || position === 'bottom' ? 220 : 380}
+        title={`position="${position ?? ''}"`}
+      >
+        <p className="text-sm text-secondary">Escape or a click outside closes this.</p>
+      </Drawer>
+    </>
+  );
+}
+
+render(<Demo />);
+```
+
+## No chrome
+
+Drop `title` and `withCloseButton` for a bare panel, and `padding={false}` when the
+body manages its own spacing — a full-bleed list, say.
+
+```jsx live noInline
+function Demo() {
+  const [opened, setOpened] = useState(false);
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpened(true)}>Bare drawer</Button>
+      <Drawer opened={opened} onClose={() => setOpened(false)} withCloseButton={false} padding={false} size={320}>
+        <div className="divide-y divide-border">
+          {['Overview', 'Logs', 'Settings', 'Members'].map((row) => (
+            <button key={row} type="button" className="block w-full px-4 py-3 text-left text-sm text-primary hover:bg-bg-secondary" onClick={() => setOpened(false)}>
+              {row}
+            </button>
+          ))}
+        </div>
+      </Drawer>
+    </>
+  );
+}
+
+render(<Demo />);
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `opened` | `boolean` | required |
+| `onClose` | `() => void` | required |
+| `title` | `ReactNode` | — |
+| `position` | `left` `right` `top` `bottom` | `right` |
+| `size` | `number \| string` | `380` |
+| `withCloseButton` | `boolean` | `true` |
+| `closeOnClickOutside` / `closeOnEscape` | `boolean` | `true` |
+| `padding` | `boolean` | `true` |
+| `className` / `overlayClassName` / `bodyClassName` | `string` | — |
+
+Without a `title` the accessible name falls back to a visually hidden one, so
+screen readers still announce a dialog. The body scrolls independently — the page
+behind stays locked.

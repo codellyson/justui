@@ -1,0 +1,173 @@
+---
+title: "DateInput"
+description: "A typeable MM/DD/YYYY field with a calendar behind it. DatePickerPanel is the bare calendar if you want it inline, and MultiDatePickerPanel selects a set."
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/date-input/0";
+import Demo1 from "../../components/demos/date-input/1";
+import Demo2 from "../../components/demos/date-input/2";
+import Demo3 from "../../components/demos/date-input/3";
+import Demo4 from "../../components/demos/date-input/4";
+
+A typeable `MM/DD/YYYY` field with a calendar behind it. `DatePickerPanel` is the
+bare calendar if you want it inline, and `MultiDatePickerPanel` selects a set.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [date, setDate] = useState(new Date(2026, 7, 14));
+  return (
+    <div className="w-full max-w-xs space-y-3">
+      <DateInput label="Publish on" value={date} onChange={setDate} />
+      <p className="text-xs text-muted">
+        Date: <code>{date ? date.toDateString() : '(none)'}</code>
+      </p>
+    </div>
+  );
+}
+```
+
+Typing commits only on a complete, real date — `02/31/2026` is rejected rather
+than rolled into March. The field reformats on blur, so a partial entry reverts.
+
+Month and year in the header are buttons: they swap the grid for a picker, which
+beats clicking the arrow 40 times to reach a birth year.
+
+## Bounds and blocked days
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const today = new Date();
+  const inTwoWeeks = new Date();
+  inTwoWeeks.setDate(inTwoWeeks.getDate() + 14);
+  const [a, setA] = useState(null);
+  const [b, setB] = useState(null);
+  return (
+    <div className="w-full max-w-xs space-y-4">
+      <DateInput
+        label="Next two weeks only"
+        value={a}
+        onChange={setA}
+        minDate={today}
+        maxDate={inTwoWeeks}
+        description="Anything outside the window is unclickable."
+      />
+      <DateInput
+        label="Weekdays only"
+        value={b}
+        onChange={setB}
+        isDateBlocked={(d) => d.getDay() === 0 || d.getDay() === 6}
+      />
+    </div>
+  );
+}
+```
+
+`minDate`, `maxDate` and `isDateBlocked` gate typing as well as clicking — a
+blocked date typed by hand never reaches `onChange`.
+
+## Inline panel
+
+<Preview>
+  <Demo2 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [date, setDate] = useState(new Date());
+  return (
+    <div className="space-y-3">
+      <div className="inline-block rounded-lg border border-border">
+        <DatePickerPanel value={date} onChange={setDate} size="md" />
+      </div>
+      <p className="text-xs text-muted">Selected: <code>{date.toDateString()}</code></p>
+    </div>
+  );
+}
+```
+
+The panel takes `sm` `md` `lg` — that's the calendar's own scale, separate from the
+field's `size`. `DateInput` exposes it as `calendarSize`.
+
+## Multiple dates
+
+<Preview>
+  <Demo3 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [dates, setDates] = useState([]);
+  return (
+    <div className="space-y-3">
+      <div className="inline-block rounded-lg border border-border">
+        <MultiDatePickerPanel value={dates} onChange={setDates} maxSelections={5} />
+      </div>
+      <p className="text-xs text-muted">
+        {dates.length === 0
+          ? 'Nothing selected'
+          : dates.map((d) => d.toLocaleDateString()).join(', ')}
+      </p>
+    </div>
+  );
+}
+```
+
+Clicking a selected day removes it, and the array stays sorted whatever order you
+pick in. Navigation is clamped to the window: without a `maxDate` it stops six
+months out.
+
+## Sizes
+
+<Preview>
+  <Demo4 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full max-w-xs space-y-4">
+  <DateInput size="xs" value="2026-08-14" onChange={() => {}} />
+  <DateInput size="sm" value="2026-08-14" onChange={() => {}} />
+  <DateInput size="lg" value="2026-08-14" onChange={() => {}} calendarSize="md" />
+  <DateInput label="Invalid" value="2026-08-14" onChange={() => {}} error="Pick a date after launch." />
+  <DateInput label="Disabled" value="2026-08-14" onChange={() => {}} disabled />
+</div>
+```
+
+A `yyyy-mm-dd` string is parsed as **local** time. `new Date('2026-08-14')` is UTC
+midnight, which renders as the 13th anywhere west of UTC — `toDate` handles that
+case explicitly.
+
+## Props
+
+### DateInput
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | `Date \| string \| null` | — |
+| `onChange` | `(date: Date) => void` | — |
+| `minDate` / `maxDate` | `Date` | — |
+| `isDateBlocked` | `(date: Date) => boolean` | — |
+| `calendarSize` | `sm` `md` `lg` | `sm` |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `xs` `sm` `md` `lg` | `md` |
+| `disabled`, `name`, `placeholder` | | |
+
+### DatePickerPanel
+
+`value`, `onChange`, `minDate`, `maxDate`, `isDateBlocked`, `highlightToday`,
+`size`, `className`.
+
+### MultiDatePickerPanel
+
+`value: Date[]`, `onChange: (dates: Date[]) => void`, `minDate`, `maxDate`,
+`maxSelections`, `disabled`, `highlightToday`, `size`, `className`.
+
+`toDate(value)` and `formatDate(date)` are exported for the same parse and format
+outside the field.
