@@ -38,18 +38,20 @@ One import chain gives you the tokens, the design config and Tailwind itself:
 
 ```css
 /* src/styles/global.css */
-@import "@codellyson/justui/tokens.css";
-
-@import "tailwindcss";
 @import "@codellyson/justui/tailwind.css";
 ```
 
-`tailwind.css` carries the tokens as `@theme` colours, the px type scale, the radii,
-the keyframes and the `shell-*` container variants, and it declares its own
-`@source` — so the package's own classes are scanned without you writing a glob for
-`node_modules`. That glob is worth not writing by hand anyway: under pnpm the
-package is a symlink into the store, and a hand-written glob silently matches
-nothing, leaving an unstyled UI with no error.
+That one line pulls in the token fallback, Tailwind itself, and the design config —
+the tokens as `@theme` colours, the px type scale, the radii, the keyframes and the
+`shell-*` container variants. It also declares its own `@source`, so the package's
+classes are scanned without you writing a glob for `node_modules`. That glob is
+worth not writing by hand anyway: under pnpm the package is a symlink into the
+store, and a hand-written glob silently matches nothing, leaving an unstyled UI with
+no error.
+
+Import `tailwindcss` yourself first if you need to configure it — say
+`@import "tailwindcss" source(none)`. Doing both is harmless; the duplicate costs
+about 240 bytes.
 
 Tailwind v4 is required. There is no JS preset — see CHANGELOG.md if you are coming
 from 0.4.0.

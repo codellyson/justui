@@ -22,7 +22,7 @@ export default defineConfig({
     starlight({
       title: "JustUI",
       description: "Design system for the just* app family.",
-      customCss: ["./src/styles/tokens.css", "./src/styles/theme.css"],
+      customCss: ["./src/styles/theme.css"],
       sidebar,
       components: { Head: "./src/components/Head.astro" },
     }),

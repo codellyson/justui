@@ -6,10 +6,8 @@
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/geist-mono";
 
-@import "tailwindcss";
-
-/* The design config ships with the package; a consumer on Tailwind v4 writes
-   @import "@codellyson/justui/tailwind.css" here instead of this relative path. */
+/* One import: tokens, Tailwind and the design config. A consumer writes
+   @import "@codellyson/justui/tailwind.css" instead of this relative path. */
 @import "../../../src/styles/tailwind.css";
 
 /* Starlight owns the theme toggle and reports it as data-theme, so the tokens

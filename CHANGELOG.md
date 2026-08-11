@@ -13,12 +13,13 @@ around fifty React components, and the Tailwind story moved to v4.
   tokens, px type scale, radii, keyframes and container variants:
 
   ```css
-  @import "tailwindcss";
   @import "@codellyson/justui/tailwind.css";
   ```
 
-  It declares its own `@source`, so the package's classes are scanned for you and
-  the old `content` glob is unnecessary.
+  That single line pulls in the tokens, Tailwind and the design config, and declares
+  its own `@source`, so the package's classes are scanned for you and the old
+  `content` glob is unnecessary. `tokens.css` stays exported for apps that use the
+  tokens without Tailwind.
 - **`outline-none` is now `outline-hidden`** and **`shadow-sm` is now `shadow-xs`**
   across the components, following v4's renames. Only relevant if you were
   overriding those classes.
