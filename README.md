@@ -1,6 +1,6 @@
 # @codellyson/justui
 
-Shared design system for the `just*` app family — theme tokens, six built-in themes (GitHub, Espresso, Catppuccin Mocha, Gruvbox, Nord, Solarized), a no-flash boot script, ready-made Astro components, and a Tailwind preset.
+Shared design system for the `just*` app family — theme tokens, twelve themes, a no-flash boot script, around fifty React components on Radix, Astro adapters, and a Tailwind v4 design config.
 
 See [STYLE_GUIDE.md](https://github.com/codellyson/justrunjs/blob/master/STYLE_GUIDE.md) for the full design spec.
 
@@ -32,58 +32,32 @@ the `leftIcon` / `icon` props expect icon components rather than characters.
 
 ## Quick start (Astro + Tailwind)
 
-### 1. Tailwind preset
+### 1. Styles
 
-```js
-// tailwind.config.cjs
-const { withJustUI } = require('@codellyson/justui/tailwind-preset');
-
-module.exports = withJustUI({
-  content: ['./src/**/*.{astro,html,js,ts,jsx,tsx,md,mdx}'],
-});
-```
-
-`withJustUI` applies the preset **and** prepends the globs for the package's own
-shipped components, so their classes are generated. Don't write that glob by
-hand: Tailwind v3 replaces `content` across presets rather than merging it, and
-`./node_modules/@codellyson/justui/**` matches nothing under pnpm — the package
-is a symlink into the store and Tailwind's globber won't traverse it. Either
-mistake gives you an unstyled UI with no error.
-
-If you'd rather keep your own config shape, spread the globs instead:
-
-```js
-const preset = require('@codellyson/justui/tailwind-preset');
-
-module.exports = {
-  presets: [preset],
-  content: [...preset.content, './src/**/*.{astro,ts,tsx}'],
-};
-```
-
-On Tailwind v4 the JS config isn't read. Import the stylesheet the package ships
-instead — it carries the same tokens, the px type scale, the radii, the keyframes
-and the `shell-*` container variants as `@theme` and `@custom-variant`, and it
-declares its own `@source`, so the package's classes are scanned for you:
-
-```css
-@import "tailwindcss";
-@import "@codellyson/justui/tailwind.css";
-```
-
-Both entry points describe the same design. `tailwind-preset` is for v3,
-`tailwind.css` for v4 — pick the one matching your Tailwind major.
-
-### 2. Token fallback + Tailwind directives
+One import chain gives you the tokens, the design config and Tailwind itself:
 
 ```css
 /* src/styles/global.css */
 @import "@codellyson/justui/tokens.css";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "@codellyson/justui/tailwind.css";
 ```
+
+`tailwind.css` carries the tokens as `@theme` colours, the px type scale, the radii,
+the keyframes and the `shell-*` container variants, and it declares its own
+`@source` — so the package's own classes are scanned without you writing a glob for
+`node_modules`. That glob is worth not writing by hand anyway: under pnpm the
+package is a symlink into the store, and a hand-written glob silently matches
+nothing, leaving an unstyled UI with no error.
+
+Tailwind v4 is required. There is no JS preset — see CHANGELOG.md if you are coming
+from 0.4.0.
+
+### 2. Dark mode
+
+The boot script below sets a `dark` class; Starlight and next-themes report the mode
+as `data-theme`. The `dark:` variant matches either, so nothing extra is needed.
 
 ### 3. Boot the theme before first paint
 
@@ -116,7 +90,7 @@ import ThemeToggle from '@codellyson/justui/astro/ThemeToggle.astro';
 <ThemeToggle />
 ```
 
-The floating button at bottom-right opens a panel with a mode toggle (light/dark) + all six themes. State persists to `myapp.theme.id` / `myapp.theme.mode`.
+The floating button at bottom-right opens a panel with a mode toggle (light/dark) and every theme. State persists to `myapp.theme.id` / `myapp.theme.mode`.
 
 ## What's in the package
 
@@ -126,7 +100,7 @@ The floating button at bottom-right opens a panel with a mode toggle (light/dark
 | `@codellyson/justui/boot` | Just `bootTheme` — small import if you only want this |
 | `@codellyson/justui/themes` | Just the theme catalog |
 | `@codellyson/justui/tokens.css` | `:root` fallback (Espresso dark) |
-| `@codellyson/justui/tailwind-preset` | Tailwind config preset |
+| `@codellyson/justui/tailwind.css` | Design config for Tailwind v4 (`@theme`, variants, keyframes) |
 | `@codellyson/justui/astro/Button.astro` | Primary / secondary button |
 | `@codellyson/justui/astro/ThemeToggle.astro` | Floating theme picker |
 | `@codellyson/justui/react` | React component kit (Radix under the hood), `useTheme`, `cn` |

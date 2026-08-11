@@ -1,7 +1,7 @@
 {
   "name": "@codellyson/justui",
-  "version": "0.18.0",
-  "description": "Shared design system for the just* app family — theme tokens, six dev + six consumer themes, a no-flash boot script, and a token-themed React component kit (shadcn/Radix under the hood) plus Astro adapters.",
+  "version": "1.0.0",
+  "description": "Design system for the just* app family — theme tokens, twelve themes, a no-flash boot script, ~50 React components on Radix, Astro adapters, and a Tailwind v4 design config.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -46,7 +46,8 @@
     "dist",
     "src/styles",
     "src/astro",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "publishConfig": {
     "access": "public"
