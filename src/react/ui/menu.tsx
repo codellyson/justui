@@ -11,8 +11,11 @@ import {
 import { cn } from "../lib/cn.js";
 import { CheckIcon, DotIcon } from "../lib/icons.js";
 
-const MenuRoot = (props: ComponentProps<typeof MenuPrimitive.Root>) => (
-  <MenuPrimitive.Root {...props} />
+// Radix defaults this to modal, which locks page scroll and takes the scrollbar
+// with it — opening a menu shifts everything sized against the viewport. Popover
+// already defaults to non-modal here; a menu should match.
+const MenuRoot = ({ modal = false, ...props }: ComponentProps<typeof MenuPrimitive.Root>) => (
+  <MenuPrimitive.Root modal={modal} {...props} />
 );
 MenuRoot.displayName = "Menu";
 
