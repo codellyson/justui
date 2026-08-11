@@ -1,0 +1,370 @@
+---
+title: "AppShell"
+description: "The frame an application sits in — header, footer, left navbar, right aside, and a main area offset from all of them. Sizes go on the root as config and…"
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/app-shell/0";
+import Demo1 from "../../components/demos/app-shell/1";
+import Demo2 from "../../components/demos/app-shell/2";
+import Demo3 from "../../components/demos/app-shell/3";
+import Demo4 from "../../components/demos/app-shell/4";
+
+The frame an application sits in — header, footer, left navbar, right aside, and a
+main area offset from all of them. Sizes go on the root as config and reach the
+parts through CSS variables, so nothing is repeated.
+
+Every region is optional. Leave one out and no space is reserved for it.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [active, setActive] = useState('Deployments');
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    // A transformed ancestor makes `fixed` resolve against this box instead of the
+    // viewport, so the shell can be demoed inline. In an app it wraps the page.
+    <div
+      className="relative h-[460px] overflow-hidden rounded-lg border border-border"
+      style={{ transform: 'translate(0)' }}
+    >
+      <AppShell
+        header={{ height: 52 }}
+        footer={{ height: 32 }}
+        navbar={{ width: 210, collapsedWidth: 56, collapsed }}
+        aside={{ width: 200, breakpoint: 'sm' }}
+        padding="md"
+        className="min-h-full"
+        layout="alt"
+      >
+        <AppShell.Header className="gap-2 px-3">
+          <Button
+            size="xs"
+            variant="ghost"
+            aria-label="Toggle navbar"
+            onClick={() => setCollapsed((c) => !c)}
+            leftIcon={<Bars3Icon className="h-4 w-4" />}
+          />
+          <span className="font-semibold">justdeploy</span>
+          <span className="ml-auto flex items-center gap-2">
+            <Badge variant="light" color="green">Live</Badge>
+            <Avatar size="sm" name="Ada Lovelace" />
+          </span>
+        </AppShell.Header>
+
+        <AppShell.Navbar className="p-2">
+          <AppShell.Section grow className="flex flex-col gap-1">
+            <NavLink
+              label="Overview"
+              icon={<HomeIcon className="h-4 w-4" />}
+              active={active === 'Overview'}
+              onClick={() => setActive('Overview')}
+            />
+            <NavLink
+              label="Deployments"
+              icon={<ArrowPathIcon className="h-4 w-4" />}
+              rightSection={<Badge variant="light">3</Badge>}
+              active={active === 'Deployments'}
+              onClick={() => setActive('Deployments')}
+            />
+            <NavLink label="Settings" icon={<Cog6ToothIcon className="h-4 w-4" />} nested="panel">
+              <NavLink
+                label="General"
+                active={active === 'General'}
+                onClick={() => setActive('General')}
+              />
+              <NavLink
+                label="Members"
+                active={active === 'Members'}
+                onClick={() => setActive('Members')}
+              />
+            </NavLink>
+          </AppShell.Section>
+
+          <AppShell.Section className="-mx-2 mt-2 border-t border-border px-2 pt-2">
+            <NavLink label="Ada Lovelace" icon={<Avatar size="xs" name="Ada Lovelace" />} />
+          </AppShell.Section>
+        </AppShell.Navbar>
+
+        <AppShell.Aside className="gap-2 p-3">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted">Activity</p>
+          <p className="text-sm text-secondary">Deploy #2140 succeeded.</p>
+          <p className="text-sm text-secondary">Deploy #2139 failed.</p>
+        </AppShell.Aside>
+
+        <AppShell.Footer className="px-3 text-xs text-muted">
+          eu-west-2 · v0.15.0
+        </AppShell.Footer>
+
+        <AppShell.Main>
+          <Breadcrumb className="mb-3">
+            <Breadcrumb.Item href="/app-shell">Projects</Breadcrumb.Item>
+            <Breadcrumb.Item current>{active}</Breadcrumb.Item>
+          </Breadcrumb>
+          <h3 className="mb-2 text-lg font-semibold">{active}</h3>
+          <div className="space-y-2">
+            {Array.from({ length: 8 }, (_, i) => (
+              <div key={i} className="rounded-md border border-border p-3 text-sm">
+                Row {i + 1}
+              </div>
+            ))}
+          </div>
+        </AppShell.Main>
+      </AppShell>
+    </div>
+  );
+}
+```
+
+Press the burger to collapse the navbar to a rail: `collapsedWidth` narrows it and
+every `NavLink` drops to its icon with the label moving into a tooltip. Main's left
+offset follows, because the width is one variable.
+
+## Navbar sections
+
+`AppShell.Section` divides the navbar. Exactly one section takes `grow` — it
+absorbs the leftover height and scrolls, which pins whatever sits above and below
+it. That's how a long link list keeps the account row visible at the bottom.
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  return (
+    <div
+      className="relative h-[300px] overflow-hidden rounded-lg border border-border"
+      style={{ transform: 'translate(0)' }}
+    >
+      <AppShell navbar={{ width: 200, breakpoint: 'sm' }} padding="sm" className="min-h-full">
+        <AppShell.Navbar className="p-2">
+          <AppShell.Section className="pb-2 text-xs font-medium uppercase tracking-wider text-muted">
+            Pinned top
+          </AppShell.Section>
+          <AppShell.Section grow className="flex flex-col gap-1">
+            {Array.from({ length: 14 }, (_, i) => (
+              <NavLink key={i} label={`Project ${i + 1}`} active={i === 1} />
+            ))}
+          </AppShell.Section>
+          <AppShell.Section className="-mx-2 mt-2 border-t border-border px-2 pt-2 text-xs text-muted">
+            Pinned bottom
+          </AppShell.Section>
+        </AppShell.Navbar>
+        <AppShell.Main>
+          <p className="text-sm text-secondary">Scroll the navbar — the ends stay put.</p>
+        </AppShell.Main>
+      </AppShell>
+    </div>
+  );
+}
+```
+
+## Layouts
+
+`layout="alt"` runs the navbar the full height of the shell and starts the header
+beside it. `default` keeps the header across the top.
+
+<Preview>
+  <Demo2 client:visible />
+</Preview>
+
+```jsx
+const shell = (layout) => (
+  <div
+    className="relative h-52 overflow-hidden rounded-lg border border-border"
+    style={{ transform: 'translate(0)' }}
+  >
+    <AppShell
+      layout={layout}
+      header={{ height: 40 }}
+      navbar={{ width: 96, breakpoint: 'sm' }}
+      padding="sm"
+      className="min-h-full"
+    >
+      <AppShell.Header className="px-3 text-xs font-semibold">header</AppShell.Header>
+      <AppShell.Navbar className="p-2 text-xs text-muted">navbar</AppShell.Navbar>
+      <AppShell.Main>
+        <p className="font-mono text-xs text-secondary">layout="{layout}"</p>
+      </AppShell.Main>
+    </AppShell>
+  </div>
+);
+```
+
+## Collapsing on small screens
+
+Navbar and aside each hide below their own breakpoint — `md` and `lg` by default.
+Below it, `opened` brings the region in over the content with an overlay that
+dismisses on click or Escape.
+
+A breakpoint is measured against **the shell's own width**, not the viewport's, so
+a shell in a narrow column collapses even on a wide screen. The demo below asks for
+`breakpoint="xl"` and the shell is nowhere near 1280px wide, so both regions are
+already collapsed — press the buttons and they come in over the content.
+
+<Preview>
+  <Demo3 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [nav, setNav] = useState(false);
+  const [aside, setAside] = useState(false);
+  return (
+    <div
+      className="relative h-[300px] overflow-hidden rounded-lg border border-border"
+      style={{ transform: 'translate(0)' }}
+    >
+      <AppShell
+        header={{ height: 48 }}
+        navbar={{ width: 180, breakpoint: 'xl', opened: nav, onClose: () => setNav(false) }}
+        aside={{ width: 180, breakpoint: 'xl', opened: aside, onClose: () => setAside(false) }}
+        className="min-h-full"
+      >
+        <AppShell.Header className="gap-2 px-2">
+          <Button size="xs" variant="ghost" onClick={() => setNav((o) => !o)}>Nav</Button>
+          <Button size="xs" variant="ghost" className="ml-auto" onClick={() => setAside((o) => !o)}>
+            Aside
+          </Button>
+        </AppShell.Header>
+        <AppShell.Navbar className="p-2">
+          <NavLink label="Overview" onClick={() => setNav(false)} />
+          <NavLink label="Logs" onClick={() => setNav(false)} />
+        </AppShell.Navbar>
+        <AppShell.Aside className="p-3 text-sm text-secondary">Aside panel</AppShell.Aside>
+        <AppShell.Main>
+          <p className="text-sm text-secondary">
+            nav: <code>{String(nav)}</code> · aside: <code>{String(aside)}</code>
+          </p>
+        </AppShell.Main>
+      </AppShell>
+    </div>
+  );
+}
+```
+
+## Docking instead of floating
+
+Below the breakpoint, `opened` floats the region over the content behind a scrim.
+`mode="dock"` makes it take its space instead: `Main` insets around it, there's no
+scrim, and it stays put until you close it — so a region can be a persistent part
+of a narrow layout rather than a drawer you dismiss.
+
+Both regions ask for `breakpoint="xl"`, which this shell is far short of, so they're
+collapsed and `mode` is in play. Open one and flip the switch: `overlay` covers the
+content, `dock` narrows it.
+
+<Preview>
+  <Demo4 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [mode, setMode] = useState('overlay');
+  const [nav, setNav] = useState(false);
+  const [aside, setAside] = useState(false);
+
+  return (
+    <div className="space-y-3">
+      <SegmentedControl
+        label="Mode"
+        value={mode}
+        onChange={setMode}
+        data={[{ value: 'overlay', label: 'overlay' }, { value: 'dock', label: 'dock' }]}
+      />
+      <div
+        className="relative h-[320px] overflow-hidden rounded-lg border border-border"
+        style={{ transform: 'translate(0)' }}
+      >
+        <AppShell
+          header={{ height: 48 }}
+          navbar={{ width: 160, breakpoint: 'xl', mode, opened: nav, onClose: () => setNav(false) }}
+          aside={{ width: 160, breakpoint: 'xl', mode, opened: aside, onClose: () => setAside(false) }}
+          padding="sm"
+          className="min-h-full"
+        >
+          <AppShell.Header className="gap-2 px-2">
+            <Button size="xs" variant="ghost" onClick={() => setNav((o) => !o)}>Nav</Button>
+            <Button size="xs" variant="ghost" className="ml-auto" onClick={() => setAside((o) => !o)}>
+              Aside
+            </Button>
+          </AppShell.Header>
+          <AppShell.Navbar className="p-2 text-sm text-secondary">Navbar</AppShell.Navbar>
+          <AppShell.Aside className="p-2 text-sm text-secondary">Aside</AppShell.Aside>
+          <AppShell.Main>
+            <p className="text-sm text-secondary">
+              Main content. In <code>dock</code> it gets narrower; in <code>overlay</code> it stays
+              put and the panel covers it.
+            </p>
+          </AppShell.Main>
+        </AppShell>
+      </div>
+    </div>
+  );
+}
+```
+
+A docked region carries `data-mode="dock"`. `onClose` is still worth passing — it's
+what your own toggle calls — but nothing dismisses a docked region for you, which
+is the point: no scrim to click, and Escape is left alone so it can't yank a region
+out of the layout from under the user.
+
+### Where the room runs out
+
+A region that reserves space is capped at `50cqw - 80px`, so it can never squeeze
+`Main` below 160px however narrow the shell gets. Two 160px regions in an 830px
+shell keep their full width and leave 510px; at 360px they shrink to 99px each and
+`Main` still gets its 160px. The cap moves the region and the inset together, so
+they can't drift apart and overlap.
+
+| shell | navbar | aside | Main |
+|---|---|---|---|
+| 830px | 160 | 160 | 510 |
+| 498px | 160 | 160 | 178 |
+| 418px | 129 | 129 | 160 |
+| 298px | 69 | 69 | 160 |
+
+An `overlay` region is never capped — it floats over the content instead of taking
+its space, so a 160px drawer stays 160px at any width. The cap is only about not
+starving what's underneath.
+
+## Props
+
+### AppShell
+
+| Prop | Type | Default |
+|---|---|---|
+| `header` | `{ height }` | — |
+| `footer` | `{ height }` | — |
+| `navbar` | `{ width, collapsedWidth?, collapsed?, breakpoint?, opened?, onClose?, mode? }` | — |
+| `aside` | `{ width, breakpoint?, opened?, onClose?, mode? }` | — |
+| `layout` | `default` `alt` | `default` |
+| `padding` | `none` `xs` `sm` `md` `lg` `xl` | `md` |
+
+Sizes take a number (px) or any CSS length. `navbar.breakpoint` defaults to `md`,
+`aside.breakpoint` to `lg`. `collapsed` is inert unless `collapsedWidth` is set.
+`mode` is `overlay` or `dock`, described above.
+
+Breakpoints are container queries against the shell itself — `sm` 640, `md` 768,
+`lg` 1024, `xl` 1280, the same numbers as Tailwind's screens. A shell that fills the
+page behaves exactly as viewport breakpoints would; one in a split pane or a preview
+card responds to the room it actually has. The root carries
+`container-type: inline-size` to make that work, which does not affect the `fixed`
+regions.
+
+### Parts
+
+`AppShell.Header` · `.Footer` · `.Navbar` · `.Aside` · `.Section` · `.Main` — each
+takes its element's native props. `Section` takes `grow`. A part used outside an
+`AppShell` throws rather than rendering something subtly wrong.
+
+`useAppShellNavbar()` returns `{ collapsed, opened }`, which is how `NavLink`
+knows to go icon-only. Use it for your own navbar content.
+
+The regions are `fixed`, which is what keeps them still while main scrolls. To
+contain the shell in a box rather than the viewport — as this page does — give the
+wrapper a `transform`, making it the containing block for fixed descendants.

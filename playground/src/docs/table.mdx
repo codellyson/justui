@@ -7,7 +7,7 @@ Renders rows and nothing else — columns are
 [TanStack Table](https://tanstack.com/table) v8 `ColumnDef`s, so custom cells,
 column sizes and grouped headers all work unchanged. Paging, sorting and
 filtering stay yours: slice the `data` you pass in and compose
-[Pagination](#pagination) beside it.
+[Pagination](/pagination) beside it.
 
 ```jsx live noInline
 const rows = [
@@ -584,7 +584,7 @@ sorting 1000 rows costs the same whether row selection is on or off — so the f
 is always to render fewer rows, never to shave the per-row work.
 
 **Paginate first.** A 25–50 row page keeps every interaction comfortable, and
-[Pagination](#pagination) composes with `Table` without either knowing about the
+[Pagination](/pagination) composes with `Table` without either knowing about the
 other. This covers almost every table in an application.
 
 **Virtualize when the list genuinely can't be paged** — an audit log you scroll,

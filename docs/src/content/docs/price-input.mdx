@@ -1,0 +1,107 @@
+---
+title: "PriceInput"
+description: "A currency picker and an amount. Thousands separators appear as you type, the fraction is capped at the currency's decimals, and onChange gives you the…"
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/price-input/0";
+import Demo1 from "../../components/demos/price-input/1";
+import Demo2 from "../../components/demos/price-input/2";
+
+A currency picker and an amount. Thousands separators appear as you type, the
+fraction is capped at the currency's decimals, and `onChange` gives you the parsed
+number — `null` while the field is empty, so you can tell "zero" from "nothing
+entered".
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [amount, setAmount] = useState(1500);
+  const [currency, setCurrency] = useState('NGN');
+  return (
+    <div className="w-full max-w-sm space-y-3">
+      <PriceInput
+        label="Price"
+        value={amount}
+        onChange={setAmount}
+        currency={currency}
+        onCurrencyChange={setCurrency}
+      />
+      <p className="text-xs text-muted">
+        {currency} · <code>{amount === null ? 'null' : String(amount)}</code>
+      </p>
+    </div>
+  );
+}
+```
+
+Switching currency keeps the amount — only the symbol and the decimal cap change.
+
+## Fixed currency
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full max-w-sm space-y-4">
+  <PriceInput label="USD only" currency="USD" withCurrencySelect={false} />
+  <PriceInput label="Payout" currency="GBP" currencies={['GBP', 'EUR', 'USD']} />
+</div>
+```
+
+`currencies` restricts what the picker offers; `withCurrencySelect={false}` drops
+the picker and shows the symbol alone.
+
+## Sizes and clamping
+
+<Preview>
+  <Demo2 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full max-w-sm space-y-3">
+  <PriceInput size="xs" currency="USD" />
+  <PriceInput size="sm" currency="USD" />
+  <PriceInput size="md" currency="USD" />
+  <PriceInput size="lg" currency="USD" />
+  <PriceInput label="Between 0 and 100" currency="USD" min={0} max={100} error="Out of range." />
+</div>
+```
+
+`min` / `max` clamp the emitted number as you type.
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | `number \| string` | — |
+| `onChange` | `(value: number \| null) => void` | — |
+| `currency` | `CurrencyCode` | `"USD"` |
+| `onCurrencyChange` | `(currency: CurrencyCode) => void` | — |
+| `currencies` | `CurrencyCode[]` | all nine |
+| `withCurrencySelect` | `boolean` | `true` |
+| `min` / `max` | `number` | — |
+| `label` / `description` / `error` | `ReactNode` | — |
+| `size` | `xs` `sm` `md` `lg` | `md` |
+
+Codes: `USD` `NGN` `GBP` `EUR` `CAD` `AUD` `GHS` `KES` `ZAR`. `CURRENCIES` is
+exported if you need a symbol, decimal count or country elsewhere.
+
+## Flags
+
+Flags come from [flagcdn.com](https://flagcdn.com) at 20×15, with 2x and 3x in
+`srcSet`. `EUR` maps to the EU flag. They're `alt=""` — the code beside them
+already names the currency, so a screen reader shouldn't read it twice.
+
+That's a third-party CDN, which you may not want in production. Two ways out:
+
+```jsx
+<PriceInput withFlags={false} />
+<PriceInput renderFlag={(country) => <MyFlag code={country} />} />
+```
+
+`Flag` and `flagUrl` are exported if you'd rather build on them —
+`flagUrl('ng', '40x30')` gives you the URL to self-host or preload.

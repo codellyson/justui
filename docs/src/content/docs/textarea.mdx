@@ -1,0 +1,61 @@
+---
+title: "Textarea"
+description: "Same label / description / error props as Input, and the same value-not-event onChange."
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/textarea/0";
+import Demo1 from "../../components/demos/textarea/1";
+
+Same label / description / error props as [Input](/input), and the same
+value-not-event `onChange`.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full max-w-sm space-y-4">
+  <Textarea label="Release notes" placeholder="What changed?" description="Markdown is supported." />
+  <Textarea label="Summary" error="Required." />
+  <Textarea label="Disabled" placeholder="Read-only" disabled />
+</div>
+```
+
+## Controlled
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [notes, setNotes] = useState('');
+  const tooLong = notes.length > 80;
+  return (
+    <div className="w-full max-w-sm space-y-2">
+      <Textarea
+        label="Notes"
+        value={notes}
+        onChange={setNotes}
+        rows={4}
+        error={tooLong && 'Keep it under 80 characters.'}
+        description={`${notes.length}/80`}
+      />
+    </div>
+  );
+}
+```
+
+`rows` and every other native `<textarea>` attribute pass through. Minimum height
+is 80px; grow it with `className="min-h-[…]"` or let `rows` do the work.
+
+## Props
+
+| Prop | Type | Notes |
+|---|---|---|
+| `label` / `description` / `error` | `ReactNode` | `error` supersedes `description` |
+| `onChange` | `(value: string) => void` | The value, not the event |
+| `onChangeEvent` | `ChangeEventHandler` | The native event |
+| `containerClassName` / `labelClassName` / `className` | `string` | Wrapper / label / control |
+
+Forwards a ref to the `<textarea>`.

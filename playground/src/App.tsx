@@ -4,6 +4,7 @@ import { MDXProvider } from "@mdx-js/react";
 import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
 import { mdxComponents } from "./mdx-components.js";
+import { useLinkInterceptor, useRoute } from "./router.js";
 
 interface Page {
   slug: string;
@@ -48,19 +49,61 @@ const groups = GROUP_ORDER.filter((g) => pages.some((p) => p.group === g)).map(
   }),
 );
 
-function useHashRoute(): string {
-  const [hash, setHash] = useState(
-    () => window.location.hash.slice(1) || pages[0]?.slug || "",
-  );
+function Toc({ slug }: { slug: string }) {
+  const [items, setItems] = useState<{ id: string; text: string }[]>([]);
+  const [active, setActive] = useState("");
+
   useEffect(() => {
-    const onHash = () => {
-      setHash(window.location.hash.slice(1) || pages[0]?.slug || "");
-      window.scrollTo(0, 0);
-    };
-    window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
-  }, []);
-  return hash;
+    const headings = [...document.querySelectorAll<HTMLHeadingElement>("main h2[id]")];
+    setItems(headings.map((h) => ({ id: h.id, text: h.textContent ?? "" })));
+    setActive("");
+  }, [slug]);
+
+  useEffect(() => {
+    if (!items.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (first) setActive(first.target.id);
+      },
+      { rootMargin: "-72px 0px -68% 0px" },
+    );
+    items.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [items]);
+
+  if (items.length < 2) return null;
+
+  return (
+    <aside className="sticky top-[61px] hidden h-[calc(100vh-61px)] w-56 shrink-0 overflow-y-auto py-8 xl:block">
+      <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.08em] text-muted">
+        on this page
+      </div>
+      <ul className="space-y-0.5 border-l border-border">
+        {items.map((item) => (
+          <li key={item.id}>
+            <a
+              href={`#${item.id}`}
+              aria-current={item.id === active ? "true" : undefined}
+              className={
+                "-ml-px block border-l py-1 pl-3 text-sm transition-colors " +
+                (item.id === active
+                  ? "border-accent font-medium text-primary"
+                  : "border-transparent text-secondary hover:border-border hover:text-primary")
+              }
+            >
+              {item.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  );
 }
 
 function ThemeBar() {
@@ -142,8 +185,20 @@ function ThemeBar() {
 }
 
 export function App() {
-  const slug = useHashRoute();
+  const slug = useRoute(pages[0]?.slug ?? "");
   const page = pages.find((p) => p.slug === slug) ?? pages[0];
+  useLinkInterceptor();
+
+  // A section link can be followed before its page has mounted, so the scroll has
+  // to happen after the content exists rather than on navigation.
+  useEffect(() => {
+    const { hash } = window.location;
+    if (!hash) {
+      window.scrollTo(0, 0);
+      return;
+    }
+    document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView();
+  }, [slug]);
 
   // Name the browser tab after the page, so several gallery tabs stay tellable
   // apart. Leading with the component name because tab titles truncate.
@@ -156,7 +211,7 @@ export function App() {
   return (
     <div className="min-h-screen">
       <ThemeBar />
-      <div className="mx-auto flex max-w-[1180px] gap-10 px-6">
+      <div className="mx-auto flex max-w-[1180px] gap-10 px-6 xl:max-w-[1440px]">
         <nav className="sticky top-[57px] hidden h-[calc(100vh-57px)] w-52 shrink-0 overflow-y-auto py-8 md:block">
           {groups.map((g) => (
             <div key={g.name} className="mb-6">
@@ -167,7 +222,7 @@ export function App() {
                 {g.items.map((p) => (
                   <li key={p.slug}>
                     <a
-                      href={`#${p.slug}`}
+                      href={`/${p.slug}`}
                       aria-current={p.slug === page?.slug ? "page" : undefined}
                       className={
                         "block rounded px-2 py-1 text-sm transition-colors " +
@@ -190,6 +245,8 @@ export function App() {
             {page && <page.Content />}
           </MDXProvider>
         </main>
+
+        <Toc slug={slug} />
       </div>
     </div>
   );

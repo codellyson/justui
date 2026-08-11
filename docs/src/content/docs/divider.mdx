@@ -1,0 +1,68 @@
+---
+title: "Divider"
+description: "A 1px rule in the border token, with role=\"separator\" and aria-orientation so it reads as a divider rather than decoration."
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/divider/0";
+import Demo1 from "../../components/demos/divider/1";
+import Demo2 from "../../components/demos/divider/2";
+
+A 1px rule in the border token, with `role="separator"` and `aria-orientation` so
+it reads as a divider rather than decoration.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full max-w-sm">
+  <div className="text-sm text-primary">Account</div>
+  <Divider className="my-3" />
+  <div className="text-sm text-secondary">Billing</div>
+  <Divider className="my-3" />
+  <div className="text-sm text-secondary">Members</div>
+</div>
+```
+
+## Labelled
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+<div className="w-full max-w-sm space-y-6">
+  <Divider label="or" />
+  <Divider label="Danger zone" labelPosition="left" />
+  <Divider label="2024" labelPosition="right" />
+</div>
+```
+
+## Vertical
+
+Vertical dividers use `self-stretch`, so the row needs a height — usually from
+`items-center` on a flex parent plus an explicit `h-*`.
+
+<Preview>
+  <Demo2 client:visible />
+</Preview>
+
+```jsx
+<div className="flex h-6 items-center gap-3 text-sm text-secondary">
+  <span>Draft</span>
+  <Divider orientation="vertical" />
+  <span>Edited 2m ago</span>
+  <Divider orientation="vertical" />
+  <span>3 comments</span>
+</div>
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `orientation` | `horizontal` `vertical` | `horizontal` |
+| `label` | `ReactNode` | — |
+| `labelPosition` | `left` `center` `right` | `center` |
+
+`labelPosition` only applies to a horizontal divider with a `label`.

@@ -8,9 +8,9 @@ author — and the last crumb is the page you're on, not a link.
 
 ```jsx live
 <Breadcrumb>
-  <Breadcrumb.Item href="#breadcrumb">Projects</Breadcrumb.Item>
-  <Breadcrumb.Item href="#breadcrumb">justui</Breadcrumb.Item>
-  <Breadcrumb.Item href="#breadcrumb">Settings</Breadcrumb.Item>
+  <Breadcrumb.Item href="/breadcrumb">Projects</Breadcrumb.Item>
+  <Breadcrumb.Item href="/breadcrumb">justui</Breadcrumb.Item>
+  <Breadcrumb.Item href="/breadcrumb">Settings</Breadcrumb.Item>
   <Breadcrumb.Item current>Deploy keys</Breadcrumb.Item>
 </Breadcrumb>
 ```
@@ -28,15 +28,15 @@ ellipsis that announces itself to screen readers.
 ```jsx live
 <div className="space-y-4">
   <Breadcrumb maxItems={3}>
-    <Breadcrumb.Item href="#breadcrumb">Org</Breadcrumb.Item>
-    <Breadcrumb.Item href="#breadcrumb">Team</Breadcrumb.Item>
-    <Breadcrumb.Item href="#breadcrumb">Project</Breadcrumb.Item>
-    <Breadcrumb.Item href="#breadcrumb">Environment</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">Org</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">Team</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">Project</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">Environment</Breadcrumb.Item>
     <Breadcrumb.Item current>Variables</Breadcrumb.Item>
   </Breadcrumb>
 
   <Breadcrumb maxItems={3}>
-    <Breadcrumb.Item href="#breadcrumb">Org</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">Org</Breadcrumb.Item>
     <Breadcrumb.Item current>Team</Breadcrumb.Item>
   </Breadcrumb>
 </div>
@@ -49,14 +49,14 @@ The second trail is under the limit, so nothing collapses.
 ```jsx live
 <div className="space-y-4">
   <Breadcrumb separator="/">
-    <Breadcrumb.Item href="#breadcrumb">src</Breadcrumb.Item>
-    <Breadcrumb.Item href="#breadcrumb">react</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">src</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">react</Breadcrumb.Item>
     <Breadcrumb.Item current>ui</Breadcrumb.Item>
   </Breadcrumb>
 
   <Breadcrumb separator={<ChevronDoubleRightIcon className="h-3 w-3" />}>
-    <Breadcrumb.Item href="#breadcrumb">Docs</Breadcrumb.Item>
-    <Breadcrumb.Item href="#breadcrumb">Components</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">Docs</Breadcrumb.Item>
+    <Breadcrumb.Item href="/breadcrumb">Components</Breadcrumb.Item>
     <Breadcrumb.Item current>Breadcrumb</Breadcrumb.Item>
   </Breadcrumb>
 </div>
@@ -71,11 +71,11 @@ Crumbs take any children, so a root icon or an org avatar composes in.
 
 ```jsx live
 <Breadcrumb>
-  <Breadcrumb.Item href="#breadcrumb" className="inline-flex items-center gap-1.5">
+  <Breadcrumb.Item href="/breadcrumb" className="inline-flex items-center gap-1.5">
     <HomeIcon className="h-3.5 w-3.5" />
     Home
   </Breadcrumb.Item>
-  <Breadcrumb.Item href="#breadcrumb" className="inline-flex items-center gap-1.5">
+  <Breadcrumb.Item href="/breadcrumb" className="inline-flex items-center gap-1.5">
     <Avatar size="xs" name="Khaime" radius="md" />
     Khaime
   </Breadcrumb.Item>

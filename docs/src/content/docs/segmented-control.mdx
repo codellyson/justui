@@ -1,0 +1,91 @@
+---
+title: "SegmentedControl"
+description: "Items are data. Exactly one is always selected — pressing the active item again does nothing, rather than clearing the selection."
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/segmented-control/0";
+import Demo1 from "../../components/demos/segmented-control/1";
+
+Items are data. Exactly one is always selected — pressing the active item again
+does nothing, rather than clearing the selection.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [view, setView] = useState('card');
+  return (
+    <div className="space-y-3">
+      <SegmentedControl
+        value={view}
+        onChange={setView}
+        label="View mode"
+        data={[
+          { value: 'card', label: 'Card' },
+          { value: 'compact', label: 'Compact' },
+          { value: 'table', label: 'Table' },
+        ]}
+      />
+      <p className="text-xs text-muted">view: <code>{view}</code></p>
+    </div>
+  );
+}
+```
+
+Pass `label` — it becomes the group's accessible name. Radix renders this as a
+radiogroup, so without one a screen reader announces an unnamed set of radios.
+
+## Sections, sizes, full width
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+function Demo() {
+  const [a, setA] = useState('grid');
+  const [b, setB] = useState('all');
+  return (
+    <div className="w-full max-w-md space-y-4">
+      <SegmentedControl
+        value={a}
+        onChange={setA}
+        size="md"
+        label="Layout"
+        data={[
+          { value: 'grid', label: 'Grid', leftSection: <Squares2X2Icon /> },
+          { value: 'list', label: 'List', leftSection: <Bars3Icon /> },
+        ]}
+      />
+      <SegmentedControl
+        value={b}
+        onChange={setB}
+        fullWidth
+        label="Filter"
+        data={[
+          { value: 'all', label: 'All' },
+          { value: 'live', label: 'Live' },
+          { value: 'draft', label: 'Draft' },
+          { value: 'archived', label: 'Archived', disabled: true },
+        ]}
+      />
+    </div>
+  );
+}
+```
+
+## Props
+
+| Prop | Type | Default |
+|---|---|---|
+| `value` | `string` | required |
+| `onChange` | `(value: string) => void` | required |
+| `data` | `{ value, label, leftSection?, disabled? }[]` | required |
+| `label` | `string` | — |
+| `size` | `sm` `md` | `sm` |
+| `fullWidth` | `boolean` | `false` |
+| `disabled` | `boolean` | — |
+
+Keyboard: arrow keys move between segments, same as a radio group.

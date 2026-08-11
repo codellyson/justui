@@ -1,0 +1,133 @@
+---
+title: "Tokens"
+description: "Every colour is a CSS custom property holding a space-separated RGB triplet, so it composes with Tailwind's <alpha-value>: bg-accent/10 works, and swapp…"
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/tokens/0";
+import Demo1 from "../../components/demos/tokens/1";
+import Demo2 from "../../components/demos/tokens/2";
+import Demo3 from "../../components/demos/tokens/3";
+
+Every colour is a CSS custom property holding a space-separated RGB triplet, so
+it composes with Tailwind's `<alpha-value>`: `bg-accent/10` works, and swapping a
+theme is just rewriting the variables on `<html>`.
+
+## Colours
+
+Switch themes in the top bar — these swatches are the live values.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+<div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-3">
+  {[
+    ['bg', 'bg-bg'],
+    ['bg-secondary', 'bg-bg-secondary'],
+    ['border', 'bg-border'],
+    ['accent', 'bg-accent'],
+    ['accent-hover', 'bg-accent-hover'],
+    ['danger', 'bg-danger'],
+    ['success', 'bg-success'],
+    ['warning', 'bg-warning'],
+  ].map(([name, cls]) => (
+    <div key={name} className="flex items-center gap-2">
+      <div className={`h-8 w-8 rounded-md border border-border ${cls}`} />
+      <code className="font-mono text-xs text-secondary">{name}</code>
+    </div>
+  ))}
+</div>
+```
+
+## Text
+
+<Preview>
+  <Demo1 client:visible />
+</Preview>
+
+```jsx
+<div className="space-y-1">
+  <p className="text-primary">text-primary — body copy</p>
+  <p className="text-secondary">text-secondary — supporting copy</p>
+  <p className="text-muted">text-muted — labels and hints</p>
+</div>
+```
+
+## Type scale
+
+The scale is pinned in **px**, not rem. A host that sets `html { font-size: 15px }`
+would otherwise render every control ~7% small. Change **host root** in the top
+bar — the paragraph above the samples reflows, the samples don't move.
+
+<Preview>
+  <Demo2 client:visible />
+</Preview>
+
+```jsx
+<div className="space-y-2">
+  {[
+    ['text-xs', 'text-xs'],
+    ['text-sm', 'text-sm'],
+    ['text-base', 'text-base'],
+    ['text-lg', 'text-lg'],
+    ['text-xl', 'text-xl'],
+    ['text-2xl', 'text-2xl'],
+  ].map(([name, cls]) => (
+    <div key={name} className="flex items-baseline gap-4">
+      <code className="w-16 shrink-0 font-mono text-xs text-muted">{name}</code>
+      <span className={`${cls} text-primary`}>The quick brown fox</span>
+    </div>
+  ))}
+</div>
+```
+
+| Token | Size | Line height |
+|---|---|---|
+| `text-xs` | 12px | 16px |
+| `text-sm` | 14px | 20px |
+| `text-base` | 16px | 24px |
+| `text-lg` | 18px | 28px |
+| `text-xl` | 20px | 28px |
+| `text-2xl` | 24px | 32px |
+
+## Radii
+
+<Preview>
+  <Demo3 client:visible />
+</Preview>
+
+```jsx
+<div className="flex flex-wrap items-end gap-4">
+  {[
+    ['rounded-sm', 'rounded-sm'],
+    ['rounded-md', 'rounded-md'],
+    ['rounded-lg', 'rounded-lg'],
+    ['rounded-xl', 'rounded-xl'],
+  ].map(([name, cls]) => (
+    <div key={name} className="text-center">
+      <div className={`h-14 w-14 border border-border bg-bg-secondary ${cls}`} />
+      <code className="mt-1 block font-mono text-xs text-muted">{name}</code>
+    </div>
+  ))}
+</div>
+```
+
+## The full variable list
+
+| Variable | Tailwind class |
+|---|---|
+| `--bg` | `bg-bg` |
+| `--bg-secondary` | `bg-bg-secondary` |
+| `--border` | `border-border` |
+| `--text-primary` | `text-primary` |
+| `--text-secondary` | `text-secondary` |
+| `--text-muted` | `text-muted` |
+| `--accent` | `bg-accent` / `text-accent` |
+| `--accent-hover` | `bg-accent-hover` |
+| `--danger` | `text-danger` |
+| `--success` | `text-success` |
+| `--warning` | `text-warning` |
+
+`@codellyson/justui/tokens.css` declares a `:root` fallback (Espresso dark) so
+anything rendered before `bootTheme()` still has colours.

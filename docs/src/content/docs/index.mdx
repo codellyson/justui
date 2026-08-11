@@ -1,0 +1,97 @@
+---
+title: "Overview"
+description: "The shared design system for the just app family: theme tokens, twelve themes, a no-flash boot script, and a React component kit built on Radix."
+---
+import Preview from "../../components/Preview.astro";
+import Demo0 from "../../components/demos/index/0";
+
+The shared design system for the `just*` app family: theme tokens, twelve themes,
+a no-flash boot script, and a React component kit built on Radix.
+
+Every preview on these pages is **live** — edit the code and it re-renders. Use the
+swatches in the top bar to reskin the whole gallery, and the **root font size**
+control to prove that a host's `html { font-size }` doesn't rescale the components.
+
+<Preview>
+  <Demo0 client:visible />
+</Preview>
+
+```jsx
+<div className="flex items-center gap-3">
+  <Button>Primary</Button>
+  <Button variant="outline" color="red">Danger-ish</Button>
+  <Badge color="green">New</Badge>
+</div>
+```
+
+## Conventions
+
+The API follows the house style of `@khaime-dev/ui`, so names and code transfer
+between the two:
+
+- **`variant` and `color` are separate.** `variant` picks the shape, `color` picks
+  the palette — `<Button variant="outline" color="red">`, not a `destructive`
+  variant.
+- **Sizes are `xs` `sm` `md` `lg`.**
+- **Form controls own their label.** `label`, `description` and `error` are props
+  on `Input` / `Select` / `Checkbox` — there's no separate wrapper component.
+- **`onChange` gives you the value**, not the event. `onChangeEvent` is there when
+  you need the event.
+- **Overlays use `opened` + `onClose`**, plus `withCloseButton` and
+  `closeOnClickOutside`.
+- **Compound only where children repeat** — `Menu.Target`/`.Dropdown`/`.Item`,
+  `Tabs.List`/`.Tab`/`.Panel`, `Dialog.Target`/`.Content`. Everything else is
+  prop-driven.
+
+## Install
+
+```bash
+pnpm add @codellyson/justui react react-dom tailwindcss
+```
+
+## Tailwind
+
+`withJustUI` applies the preset **and** adds the globs for the package's own
+shipped files, so its classes actually get generated:
+
+```js
+// tailwind.config.cjs
+const { withJustUI } = require('@codellyson/justui/tailwind-preset');
+
+module.exports = withJustUI({
+  content: ['./src/**/*.{ts,tsx}'],
+});
+```
+
+Don't write that glob by hand. Tailwind v3 *replaces* `content` across presets
+rather than merging it, and `./node_modules/@codellyson/justui/**` matches nothing
+under pnpm — the package is a symlink into the store and Tailwind's globber won't
+follow it. Either mistake gives you an unstyled UI with no error.
+
+## Boot the theme
+
+Run `bootTheme()` before first paint so the saved theme applies without a flash:
+
+```tsx
+// main.tsx
+import { bootTheme, ALL_THEMES } from '@codellyson/justui';
+import '@codellyson/justui/tokens.css';
+
+bootTheme({ themes: ALL_THEMES });
+createRoot(document.getElementById('root')!).render(<App />);
+```
+
+## Server components
+
+Every React export ships with a `"use client"` directive, so importing them from a
+Next.js App Router **server** component works with no wrapper file. `cn` is the
+exception and stays server-safe.
+
+```tsx
+// app/page.tsx — a server component, no "use client" needed here
+import { Button } from '@codellyson/justui/react';
+
+export default function Page() {
+  return <Button>Works</Button>;
+}
+```
