@@ -89,7 +89,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="-mr-1 -mt-1 shrink-0 self-start rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="-mr-1 -mt-1 shrink-0 self-start rounded p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent"
         >
           <XIcon className="h-4 w-4" />
         </button>

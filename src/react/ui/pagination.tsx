@@ -74,7 +74,7 @@ export function Pagination({
   };
 
   const control =
-    "inline-flex items-center gap-1.5 rounded-md px-2 text-secondary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:text-muted disabled:hover:text-muted";
+    "inline-flex items-center gap-1.5 rounded-md px-2 text-secondary hover:text-primary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:text-muted disabled:hover:text-muted";
 
   return (
     <nav
@@ -109,7 +109,7 @@ export function Pagination({
               disabled={disabled}
               onClick={() => goTo(entry)}
               className={cn(
-                "rounded-md px-2 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:opacity-50",
+                "rounded-md px-2 font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:opacity-50",
                 sizes[size],
                 entry === page
                   ? "bg-accent text-bg"

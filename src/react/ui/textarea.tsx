@@ -57,7 +57,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             onChangeEvent?.(e);
           }}
           className={cn(
-            "min-h-[80px] w-full rounded-md border bg-bg-secondary px-3 py-2 text-sm text-primary placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
+            "min-h-[80px] w-full rounded-md border bg-bg-secondary px-3 py-2 text-sm text-primary placeholder:text-muted focus-visible:outline-hidden focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
             hasError
               ? "border-danger focus-visible:ring-danger"
               : "border-border focus-visible:ring-accent",

@@ -119,7 +119,7 @@ export const ColorInput = forwardRef<HTMLInputElement, ColorInputProps>(
             aria-describedby={message ? messageId : undefined}
             onChange={(e) => commit(e.target.value)}
             onBlur={() => valid && commit(normalise(text))}
-            className="min-w-0 flex-1 bg-transparent px-3 font-mono text-primary placeholder:text-muted focus-visible:outline-none disabled:cursor-not-allowed"
+            className="min-w-0 flex-1 bg-transparent px-3 font-mono text-primary placeholder:text-muted focus-visible:outline-hidden disabled:cursor-not-allowed"
           />
         </div>
 
@@ -136,7 +136,7 @@ export const ColorInput = forwardRef<HTMLInputElement, ColorInputProps>(
                 onClick={() => commit(normalise(swatch))}
                 style={{ backgroundColor: swatch }}
                 className={cn(
-                  "h-5 w-5 rounded border transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none",
+                  "h-5 w-5 rounded border transition-transform hover:scale-110 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none",
                   valid && normalise(text) === normalise(swatch) ? "border-accent" : "border-border",
                 )}
               />

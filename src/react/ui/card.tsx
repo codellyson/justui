@@ -25,7 +25,7 @@ const radii = { sm: "rounded-sm", md: "rounded-md", lg: "rounded-lg", xl: "round
 
 const shadows = {
   xs: "shadow-xs",
-  sm: "shadow-sm",
+  sm: "shadow-xs",
   md: "shadow-md",
   lg: "shadow-lg",
   xl: "shadow-xl",

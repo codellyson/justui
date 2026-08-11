@@ -136,7 +136,7 @@ function TableHead({ className, children, sortDirection, onSort, ...props }: Tab
           type="button"
           onClick={onSort}
           className={cn(
-            "-mx-1 inline-flex items-center gap-1 rounded px-1 uppercase tracking-wider hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+            "-mx-1 inline-flex items-center gap-1 rounded px-1 uppercase tracking-wider hover:text-primary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent",
             sortDirection && "text-primary",
           )}
         >

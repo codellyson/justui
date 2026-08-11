@@ -1,0 +1,150 @@
+/* The component classes live in the built package, not in this app. */
+@source "../../dist";
+
+/* Both conventions: the boot script sets .dark, while Starlight and next-themes
+   report the mode as data-theme. */
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
+@custom-variant shell-sm (@container (min-width: 640px));
+@custom-variant shell-md (@container (min-width: 768px));
+@custom-variant shell-lg (@container (min-width: 1024px));
+@custom-variant shell-xl (@container (min-width: 1280px));
+
+@theme {
+  --color-bg: rgb(var(--bg));
+  --color-bg-secondary: rgb(var(--bg-secondary));
+  --color-border: rgb(var(--border));
+  --color-primary: rgb(var(--text-primary));
+  --color-secondary: rgb(var(--text-secondary));
+  --color-muted: rgb(var(--text-muted));
+  --color-accent: rgb(var(--accent));
+  --color-accent-hover: rgb(var(--accent-hover));
+  --color-danger: rgb(var(--danger));
+  --color-success: rgb(var(--success));
+  --color-warning: rgb(var(--warning));
+
+  --font-sans: "Geist Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* px, not rem: a host's `html { font-size }` must not rescale the controls. */
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 14px;
+  --text-sm--line-height: 20px;
+  --text-base: 16px;
+  --text-base--line-height: 24px;
+  --text-lg: 18px;
+  --text-lg--line-height: 28px;
+  --text-xl: 20px;
+  --text-xl--line-height: 28px;
+  --text-2xl: 24px;
+  --text-2xl--line-height: 32px;
+  --text-3xl: 30px;
+  --text-3xl--line-height: 36px;
+  --text-4xl: 36px;
+  --text-4xl--line-height: 40px;
+  --text-5xl: 48px;
+  --text-5xl--line-height: 1;
+  --text-6xl: 60px;
+  --text-6xl--line-height: 1;
+  --text-7xl: 72px;
+  --text-7xl--line-height: 1;
+  --text-8xl: 96px;
+  --text-8xl--line-height: 1;
+  --text-9xl: 128px;
+  --text-9xl--line-height: 1;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+
+  --animate-justui-stripe: justui-stripe 1s linear infinite;
+  --animate-justui-expand: justui-expand 200ms ease-out;
+  --animate-justui-collapse: justui-collapse 200ms ease-out;
+  --animate-justui-expand-collapsible: justui-expand-collapsible 200ms ease-out;
+  --animate-justui-collapse-collapsible: justui-collapse-collapsible 200ms ease-out;
+  --animate-justui-slide-in-right: justui-slide-in-right 220ms ease-out;
+  --animate-justui-slide-out-right: justui-slide-out-right 180ms ease-in;
+  --animate-justui-slide-in-left: justui-slide-in-left 220ms ease-out;
+  --animate-justui-slide-out-left: justui-slide-out-left 180ms ease-in;
+  --animate-justui-slide-in-top: justui-slide-in-top 220ms ease-out;
+  --animate-justui-slide-out-top: justui-slide-out-top 180ms ease-in;
+  --animate-justui-slide-in-bottom: justui-slide-in-bottom 220ms ease-out;
+  --animate-justui-slide-out-bottom: justui-slide-out-bottom 180ms ease-in;
+  --animate-justui-zoom-in: justui-zoom-in 180ms ease-out;
+  --animate-justui-zoom-out: justui-zoom-out 150ms ease-in;
+  --animate-justui-fade-in: justui-fade-in 180ms ease-out;
+  --animate-justui-fade-out: justui-fade-out 150ms ease-in;
+}
+
+@keyframes justui-stripe {
+  0% { background-position: 0 0; }
+  100% { background-position: 0.6rem 0; }
+}
+@keyframes justui-expand {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+@keyframes justui-collapse {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+@keyframes justui-expand-collapsible {
+  from { height: 0; }
+  to { height: var(--radix-collapsible-content-height); }
+}
+@keyframes justui-collapse-collapsible {
+  from { height: var(--radix-collapsible-content-height); }
+  to { height: 0; }
+}
+@keyframes justui-slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes justui-slide-out-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+@keyframes justui-slide-in-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+@keyframes justui-slide-out-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+@keyframes justui-slide-in-top {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+@keyframes justui-slide-out-top {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100%); }
+}
+@keyframes justui-slide-in-bottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes justui-slide-out-bottom {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+@keyframes justui-zoom-in {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes justui-zoom-out {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+}
+@keyframes justui-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes justui-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}

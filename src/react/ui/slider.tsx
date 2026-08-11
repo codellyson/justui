@@ -80,7 +80,7 @@ export const Slider = forwardRef<ElementRef<typeof SliderPrimitive.Root>, Slider
           </SliderPrimitive.Track>
           <SliderPrimitive.Thumb
             className={cn(
-              "group block rounded-full border-2 border-accent bg-bg shadow transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none",
+              "group block rounded-full border-2 border-accent bg-bg shadow transition-transform focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none",
               thumbSizes[size],
             )}
             aria-label={typeof labelNode === "string" ? labelNode : undefined}

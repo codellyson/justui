@@ -5,11 +5,11 @@
 
 /** Field-like controls with their own border: inputs, triggers, standalone buttons. */
 export const focusRing =
-  "outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg";
+  "outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg";
 
 /** Rows in a list or sidebar. Inset, so it hugs the row instead of boxing it. */
 export const focusRingInset =
-  "outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent";
+  "outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent";
 
 /** Inline text links, where a ring would box the words. */
-export const focusLink = "outline-none focus-visible:underline focus-visible:text-primary";
+export const focusLink = "outline-hidden focus-visible:underline focus-visible:text-primary";

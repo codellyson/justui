@@ -149,7 +149,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                 type="button"
                 disabled={disabled}
                 aria-label={`Country code: ${active.name} ${active.dial}`}
-                className="flex shrink-0 items-center gap-1 border-r border-border px-2.5 font-medium text-secondary transition-colors hover:text-primary focus-visible:outline-none disabled:cursor-not-allowed"
+                className="flex shrink-0 items-center gap-1 border-r border-border px-2.5 font-medium text-secondary transition-colors hover:text-primary focus-visible:outline-hidden disabled:cursor-not-allowed"
               >
                 {flag(active.code)}
                 <span className="tabular-nums">{active.dial}</span>
@@ -183,7 +183,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
             aria-invalid={hasError || undefined}
             aria-describedby={message ? messageId : undefined}
             onChange={(e) => emit(e.target.value.replace(/\D/g, ""), active)}
-            className="min-w-0 flex-1 bg-transparent px-3 tabular-nums text-primary placeholder:text-muted focus-visible:outline-none disabled:cursor-not-allowed"
+            className="min-w-0 flex-1 bg-transparent px-3 tabular-nums text-primary placeholder:text-muted focus-visible:outline-hidden disabled:cursor-not-allowed"
           />
         </div>
 

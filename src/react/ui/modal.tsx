@@ -109,7 +109,7 @@ export function Modal({
           data-justui="modal"
           data-layout={asSheet ? "sheet" : "centered"}
           className={cn(
-            "fixed z-50 flex flex-col overflow-hidden border-border bg-bg focus-visible:outline-none",
+            "fixed z-50 flex flex-col overflow-hidden border-border bg-bg focus-visible:outline-hidden",
             asSheet
               ? "bottom-0 left-0 w-full max-h-[90vh] border-t data-[state=open]:animate-justui-slide-in-bottom data-[state=closed]:animate-justui-slide-out-bottom"
               : "left-1/2 top-1/2 max-h-[90vh] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 border shadow-lg data-[state=open]:animate-justui-zoom-in data-[state=closed]:animate-justui-zoom-out",
@@ -170,7 +170,7 @@ export function Modal({
               {withCloseButton && (
                 <DialogPrimitive.Close
                   aria-label="Close"
-                  className="-mr-1 shrink-0 rounded-full p-1 text-muted transition-colors hover:bg-bg-secondary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="-mr-1 shrink-0 rounded-full p-1 text-muted transition-colors hover:bg-bg-secondary hover:text-primary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent"
                 >
                   <XIcon className="h-4 w-4" />
                 </DialogPrimitive.Close>

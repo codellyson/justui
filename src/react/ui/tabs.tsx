@@ -45,7 +45,7 @@ export const Tab = forwardRef<ElementRef<typeof TabsPrimitive.Trigger>, TabProps
       ref={ref}
       data-justui="tab"
       className={cn(
-        "-mb-px inline-flex items-center gap-2 whitespace-nowrap border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-secondary transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-accent data-[state=active]:text-accent",
+        "-mb-px inline-flex items-center gap-2 whitespace-nowrap border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-secondary transition-colors hover:text-primary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-accent data-[state=active]:text-accent",
         className,
       )}
       {...props}
@@ -66,7 +66,7 @@ export const TabsPanel = forwardRef<
     ref={ref}
     data-justui="tabs-panel"
     className={cn(
-      "mt-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+      "mt-2 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent",
       className,
     )}
     {...props}

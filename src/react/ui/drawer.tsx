@@ -72,7 +72,7 @@ export const Drawer = forwardRef<ElementRef<typeof DialogPrimitive.Content>, Dra
             data-justui="drawer"
             style={horizontal ? { width: size, maxWidth: "100vw" } : { height: size, maxHeight: "100vh" }}
             className={cn(
-              "fixed z-50 flex flex-col border-border bg-bg shadow-lg focus-visible:outline-none",
+              "fixed z-50 flex flex-col border-border bg-bg shadow-lg focus-visible:outline-hidden",
               edges[position],
               slides[position],
               className,
@@ -100,7 +100,7 @@ export const Drawer = forwardRef<ElementRef<typeof DialogPrimitive.Content>, Dra
               {withCloseButton && (
                 <DialogPrimitive.Close
                   aria-label="Close"
-                  className="shrink-0 rounded-sm text-muted opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="shrink-0 rounded-sm text-muted opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent"
                 >
                   <XIcon className="h-4 w-4" />
                 </DialogPrimitive.Close>

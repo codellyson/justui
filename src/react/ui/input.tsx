@@ -166,7 +166,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
             onChangeEvent?.(e);
           }}
           className={cn(
-            "w-full rounded-md border bg-bg-secondary px-3 py-2 text-primary placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
+            "w-full rounded-md border bg-bg-secondary px-3 py-2 text-primary placeholder:text-muted focus-visible:outline-hidden focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
             // Chrome's own spinners would sit on top of ours.
             numeric && "[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
             controlSizes[size],

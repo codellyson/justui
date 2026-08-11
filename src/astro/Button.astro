@@ -12,7 +12,7 @@ interface Props {
 
 const { variant = 'primary', href, external = false, class: className = '', id, ...rest } = Astro.props;
 
-const base = 'inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-bg';
+const base = 'inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-colors focus:outline-hidden focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-bg';
 const variants: Record<Variant, string> = {
   primary: 'bg-accent hover:bg-accent-hover text-bg',
   secondary: 'border border-border text-primary hover:bg-bg-secondary',

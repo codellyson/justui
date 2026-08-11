@@ -82,7 +82,7 @@ export const PopoverDropdown = forwardRef<
       sideOffset={offset}
       style={width == null ? style : { width, ...style }}
       className={cn(
-        "z-50 rounded-lg border border-border bg-bg p-4 text-sm text-primary shadow-md focus-visible:outline-none",
+        "z-50 rounded-lg border border-border bg-bg p-4 text-sm text-primary shadow-md focus-visible:outline-hidden",
         className,
       )}
       {...props}

@@ -1,5 +1,6 @@
 import mdx from "@mdx-js/rollup";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import remarkGfm from "remark-gfm";
@@ -21,6 +22,7 @@ export default defineConfig({
       }),
     },
     react({ include: /\.(jsx|tsx|mdx)$/ }),
+    tailwindcss(),
   ],
   resolve: {
     alias: {

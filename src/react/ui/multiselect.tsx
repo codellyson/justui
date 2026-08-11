@@ -120,7 +120,7 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
               aria-invalid={hasError || undefined}
               aria-describedby={message ? messageId : undefined}
               className={cn(
-                "flex w-full items-center justify-between gap-2 rounded-md border bg-bg-secondary px-2 py-1 text-left text-primary focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
+                "flex w-full items-center justify-between gap-2 rounded-md border bg-bg-secondary px-2 py-1 text-left text-primary focus-visible:outline-hidden focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
                 triggerSizes[size],
                 hasError
                   ? "border-danger focus-visible:ring-danger"
@@ -159,7 +159,7 @@ export const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={searchPlaceholder}
                   aria-label={searchPlaceholder}
-                  className="h-9 w-full bg-transparent pl-9 pr-8 text-sm text-primary placeholder:text-muted focus-visible:outline-none"
+                  className="h-9 w-full bg-transparent pl-9 pr-8 text-sm text-primary placeholder:text-muted focus-visible:outline-hidden"
                 />
                 {query && (
                   <button

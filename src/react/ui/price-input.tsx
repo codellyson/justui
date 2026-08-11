@@ -152,7 +152,7 @@ export const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
                   type="button"
                   disabled={disabled}
                   aria-label={`Currency: ${meta.label}`}
-                  className="flex shrink-0 items-center gap-1 border-r border-border px-2.5 font-medium text-secondary transition-colors hover:text-primary focus-visible:outline-none disabled:cursor-not-allowed"
+                  className="flex shrink-0 items-center gap-1 border-r border-border px-2.5 font-medium text-secondary transition-colors hover:text-primary focus-visible:outline-hidden disabled:cursor-not-allowed"
                 >
                   {flag(meta.country)}
                   <span className="text-xs text-muted">{currency}</span>
@@ -197,7 +197,7 @@ export const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
             aria-invalid={hasError || undefined}
             aria-describedby={message ? messageId : undefined}
             onChange={(e) => write(e.target.value)}
-            className="min-w-0 flex-1 bg-transparent px-3 text-right tabular-nums text-primary placeholder:text-muted focus-visible:outline-none disabled:cursor-not-allowed"
+            className="min-w-0 flex-1 bg-transparent px-3 text-right tabular-nums text-primary placeholder:text-muted focus-visible:outline-hidden disabled:cursor-not-allowed"
           />
         </div>
 

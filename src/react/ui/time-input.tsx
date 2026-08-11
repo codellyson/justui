@@ -196,7 +196,7 @@ export const TimeInput = forwardRef<HTMLInputElement, TimeInputProps>(
                 aria-describedby={message ? messageId : undefined}
                 onChange={(e) => handleText(e.target.value)}
                 onBlur={() => setText(formatTime(toTimeDate(value), format))}
-                className="min-w-0 flex-1 bg-transparent px-3 text-primary placeholder:text-muted focus-visible:outline-none disabled:cursor-not-allowed"
+                className="min-w-0 flex-1 bg-transparent px-3 text-primary placeholder:text-muted focus-visible:outline-hidden disabled:cursor-not-allowed"
               />
 
               {withDropdown && (
@@ -206,7 +206,7 @@ export const TimeInput = forwardRef<HTMLInputElement, TimeInputProps>(
                     tabIndex={-1}
                     disabled={disabled}
                     aria-label="Open time options"
-                    className="flex w-9 shrink-0 items-center justify-center text-muted hover:text-primary focus-visible:outline-none disabled:cursor-not-allowed"
+                    className="flex w-9 shrink-0 items-center justify-center text-muted hover:text-primary focus-visible:outline-hidden disabled:cursor-not-allowed"
                   >
                     <ClockIcon className="h-4 w-4" />
                   </button>

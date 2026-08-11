@@ -148,7 +148,7 @@ export const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProps>(
                 aria-describedby={message ? messageId : undefined}
                 onChange={(e) => commit(e.target.value)}
                 onBlur={() => valid && commit(normaliseHex(text))}
-                className="min-w-0 flex-1 bg-transparent px-3 font-mono text-primary placeholder:text-muted focus-visible:outline-none disabled:cursor-not-allowed"
+                className="min-w-0 flex-1 bg-transparent px-3 font-mono text-primary placeholder:text-muted focus-visible:outline-hidden disabled:cursor-not-allowed"
               />
 
               {presetColors.length > 0 && (
@@ -157,7 +157,7 @@ export const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProps>(
                     type="button"
                     disabled={disabled}
                     aria-label={opened ? "Close presets" : "Open presets"}
-                    className="flex w-9 shrink-0 items-center justify-center border-l border-border text-muted hover:text-primary focus-visible:outline-none disabled:cursor-not-allowed"
+                    className="flex w-9 shrink-0 items-center justify-center border-l border-border text-muted hover:text-primary focus-visible:outline-hidden disabled:cursor-not-allowed"
                   >
                     <SwatchIcon className="h-4 w-4" />
                   </button>
@@ -191,7 +191,7 @@ export const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProps>(
                     }}
                     style={{ backgroundColor: color }}
                     className={cn(
-                      "rounded border transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                      "rounded border transition-transform hover:scale-110 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent",
                       swatchSizes[size],
                       active ? "border-accent ring-2 ring-accent/40" : "border-border",
                     )}

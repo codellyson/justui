@@ -39,7 +39,7 @@ export const Radio = forwardRef<
       data-justui="radio"
       aria-describedby={description ? descriptionId : undefined}
       className={cn(
-        "peer shrink-0 rounded-full border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-accent data-[state=checked]:text-accent",
+        "peer shrink-0 rounded-full border border-border focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-accent data-[state=checked]:text-accent",
         boxSizes[size],
         className,
       )}

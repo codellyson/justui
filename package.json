@@ -1,7 +1,7 @@
 {
   "name": "@codellyson/justui",
-  "version": "0.16.0",
-  "description": "Shared design system for the just* app family — theme tokens, six dev + six consumer themes, a no-flash boot script, and a token-themed React component kit (shadcn/Radix under the hood) plus Astro adapters.",
+  "version": "0.18.0",
+  "description": "Shared design system for the just* app family \u2014 theme tokens, six dev + six consumer themes, a no-flash boot script, and a token-themed React component kit (shadcn/Radix under the hood) plus Astro adapters.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -33,24 +33,19 @@
       "default": "./dist/theme-plugins.js"
     },
     "./tokens.css": "./src/styles/tokens.css",
-    "./tailwind-preset": {
-      "types": "./src/tailwind-preset.d.cts",
-      "default": "./src/tailwind-preset.cjs"
-    },
     "./astro/Button.astro": "./src/astro/Button.astro",
     "./astro/ThemeToggle.astro": "./src/astro/ThemeToggle.astro",
     "./react": {
       "types": "./dist/react/index.d.ts",
       "default": "./dist/react/index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./tailwind.css": "./src/styles/tailwind.css"
   },
   "files": [
     "dist",
     "src/styles",
     "src/astro",
-    "src/tailwind-preset.cjs",
-    "src/tailwind-preset.d.cts",
     "README.md"
   ],
   "publishConfig": {
@@ -83,7 +78,7 @@
     "astro": "^5.0.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
-    "tailwindcss": "^3.4.0 || ^4.0.0"
+    "tailwindcss": "^4.0.0"
   },
   "peerDependenciesMeta": {
     "astro": {
@@ -99,6 +94,7 @@
     "@heroicons/react": "^2.2.0",
     "@mdx-js/react": "^3.1.1",
     "@mdx-js/rollup": "^3.1.1",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/mdx": "^2.0.14",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.2.4",
@@ -109,7 +105,7 @@
     "react-dom": "19.2.8",
     "react-live": "^4.1.8",
     "remark-gfm": "^4.0.1",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.7.2",
     "unist-util-visit": "^5.1.0",
     "vite": "^8.2.1"

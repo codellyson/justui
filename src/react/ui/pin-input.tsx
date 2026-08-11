@@ -129,7 +129,7 @@ export function PinInput({
             onPaste={(e) => onPaste(index, e)}
             onFocus={(e) => e.currentTarget.select()}
             className={cn(
-              "rounded-md border bg-bg-secondary text-center font-medium text-primary caret-accent focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
+              "rounded-md border bg-bg-secondary text-center font-medium text-primary caret-accent focus-visible:outline-hidden focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
               boxSizes[size],
               hasError
                 ? "border-danger focus-visible:ring-danger"

@@ -278,7 +278,7 @@ function AssetUploaderItemTile({
           type="button"
           onClick={onRemove}
           aria-label="Remove"
-          className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-danger text-bg ring-2 ring-bg transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-accent"
+          className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-danger text-bg ring-2 ring-bg transition-opacity hover:opacity-90 focus-visible:outline-hidden focus-visible:ring-accent"
         >
           <XIcon className="h-3.5 w-3.5" />
         </button>
@@ -319,7 +319,7 @@ function AssetUploaderAdd({
       data-justui="asset-uploader-add"
       style={box.style}
       className={cn(
-        "flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-accent text-secondary hover:bg-accent/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:opacity-60",
+        "flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-accent text-secondary hover:bg-accent/20 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:opacity-60",
         isDragActive ? "bg-accent/25" : "bg-accent/10",
         box.className,
         tileClassName,

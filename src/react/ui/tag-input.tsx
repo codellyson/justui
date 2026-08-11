@@ -160,7 +160,7 @@ export const TagInput = forwardRef<HTMLInputElement, TagInputProps>(
             onChange={(e) => write(e.target.value)}
             onKeyDown={onKeyDown}
             onBlur={() => add(draft) && setDraft("")}
-            className="min-w-[8ch] flex-1 bg-transparent text-primary placeholder:text-muted focus-visible:outline-none disabled:cursor-not-allowed"
+            className="min-w-[8ch] flex-1 bg-transparent text-primary placeholder:text-muted focus-visible:outline-hidden disabled:cursor-not-allowed"
           />
         </div>
 

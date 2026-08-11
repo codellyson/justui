@@ -70,7 +70,7 @@ export const Collapsible = forwardRef<HTMLDivElement, CollapsibleProps>(
       <CollapsiblePrimitive.Trigger
         data-justui="collapsible-control"
         className={cn(
-          "group flex w-full items-center gap-3 text-left font-medium text-primary transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-50",
+          "group flex w-full items-center gap-3 text-left font-medium text-primary transition-colors hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-50",
           headerSizes[size],
           headerClassName,
         )}

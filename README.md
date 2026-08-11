@@ -61,12 +61,18 @@ module.exports = {
 };
 ```
 
-On Tailwind v4 the JS config isn't read; point at the package from CSS instead:
+On Tailwind v4 the JS config isn't read. Import the stylesheet the package ships
+instead — it carries the same tokens, the px type scale, the radii, the keyframes
+and the `shell-*` container variants as `@theme` and `@custom-variant`, and it
+declares its own `@source`, so the package's classes are scanned for you:
 
 ```css
 @import "tailwindcss";
-@source "../node_modules/@codellyson/justui/dist";
+@import "@codellyson/justui/tailwind.css";
 ```
+
+Both entry points describe the same design. `tailwind-preset` is for v3,
+`tailwind.css` for v4 — pick the one matching your Tailwind major.
 
 ### 2. Token fallback + Tailwind directives
 

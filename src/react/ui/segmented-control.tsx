@@ -58,7 +58,7 @@ export const SegmentedControl = forwardRef<
           disabled={item.disabled}
           data-justui="segmented-control-item"
           className={cn(
-            "inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium text-secondary transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-bg data-[state=on]:text-primary data-[state=on]:shadow",
+            "inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium text-secondary transition-colors hover:text-primary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-bg data-[state=on]:text-primary data-[state=on]:shadow",
             sizes[size],
             fullWidth && "flex-1",
             itemClassName,

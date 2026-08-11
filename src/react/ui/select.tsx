@@ -77,7 +77,7 @@ function Option({
       value={String(option.value)}
       disabled={option.disabled}
       data-justui="select-option"
-      className="relative flex w-full cursor-default select-none items-center gap-2 rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-bg-secondary focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+      className="relative flex w-full cursor-default select-none items-center gap-2 rounded-sm py-1.5 pl-8 pr-2 text-sm outline-hidden focus:bg-bg-secondary focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
     >
       <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
@@ -197,7 +197,7 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(
             aria-invalid={hasError || undefined}
             aria-describedby={message ? messageId : undefined}
             className={cn(
-              "flex w-full items-center justify-between gap-2 rounded-md border bg-bg-secondary px-3 py-2 text-primary focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+              "flex w-full items-center justify-between gap-2 rounded-md border bg-bg-secondary px-3 py-2 text-primary focus-visible:outline-hidden focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
               triggerSizes[size],
               hasError
                 ? "border-danger focus-visible:ring-danger"
@@ -409,7 +409,7 @@ const SearchableSelect = forwardRef<HTMLButtonElement, SearchableSelectProps>(
               aria-invalid={hasError || undefined}
               aria-describedby={message ? messageId : undefined}
               className={cn(
-                "flex w-full items-center justify-between gap-2 rounded-md border bg-bg-secondary px-3 text-left text-primary focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
+                "flex w-full items-center justify-between gap-2 rounded-md border bg-bg-secondary px-3 text-left text-primary focus-visible:outline-hidden focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
                 triggerSizes[size],
                 hasError
                   ? "border-danger focus-visible:ring-danger"
@@ -440,7 +440,7 @@ const SearchableSelect = forwardRef<HTMLButtonElement, SearchableSelectProps>(
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={searchPlaceholder}
                 aria-label={searchPlaceholder}
-                className="h-9 w-full bg-transparent pl-9 pr-8 text-sm text-primary placeholder:text-muted focus-visible:outline-none"
+                className="h-9 w-full bg-transparent pl-9 pr-8 text-sm text-primary placeholder:text-muted focus-visible:outline-hidden"
               />
               {query && (
                 <button

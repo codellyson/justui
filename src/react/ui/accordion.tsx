@@ -77,7 +77,7 @@ export const AccordionControl = forwardRef<
       ref={ref}
       data-justui="accordion-control"
       className={cn(
-        "group flex flex-1 items-center gap-3 py-3 text-left text-sm font-medium text-primary transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-50",
+        "group flex flex-1 items-center gap-3 py-3 text-left text-sm font-medium text-primary transition-colors hover:text-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-50",
         className,
       )}
       {...props}

@@ -98,9 +98,9 @@ const parseDate = (input: string): Date | undefined => {
 const stripTime = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
 const navButton =
-  "flex shrink-0 items-center justify-center rounded-md p-1.5 text-secondary hover:bg-bg-secondary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-40";
+  "flex shrink-0 items-center justify-center rounded-md p-1.5 text-secondary hover:bg-bg-secondary hover:text-primary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-40";
 
-const dayCell = "rounded-md font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent";
+const dayCell = "rounded-md font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent";
 
 const outsideDay = (size: PanelSize) =>
   cn(panelSizes[size].dayButton, dayCell, "cursor-default text-muted/50");
@@ -256,14 +256,14 @@ export function DatePickerPanel({
           <button
             type="button"
             onClick={() => setPicker(picker === "month" ? "none" : "month")}
-            className="rounded px-2 py-1 hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="rounded px-2 py-1 hover:bg-bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent"
           >
             {MONTHS[month]}
           </button>
           <button
             type="button"
             onClick={() => setPicker(picker === "year" ? "none" : "year")}
-            className="rounded px-2 py-1 hover:bg-bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="rounded px-2 py-1 hover:bg-bg-secondary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent"
           >
             {year}
           </button>
@@ -292,7 +292,7 @@ export function DatePickerPanel({
                   }}
                   className={cn(
                     sizes.pickerButton,
-                    "rounded-md font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                    "rounded-md font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent",
                     y === year ? "bg-accent text-bg" : "text-secondary hover:bg-bg-secondary",
                   )}
                 >
@@ -315,7 +315,7 @@ export function DatePickerPanel({
                   }}
                   className={cn(
                     sizes.pickerButton,
-                    "rounded-md font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                    "rounded-md font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent",
                     i === month ? "bg-accent text-bg" : "text-secondary hover:bg-bg-secondary",
                   )}
                 >
@@ -619,7 +619,7 @@ export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
                 aria-describedby={message ? messageId : undefined}
                 onChange={(e) => handleText(e.target.value)}
                 onBlur={() => setText(formatDate(toDate(value)))}
-                className="min-w-0 flex-1 bg-transparent px-3 text-primary placeholder:text-muted focus-visible:outline-none disabled:cursor-not-allowed"
+                className="min-w-0 flex-1 bg-transparent px-3 text-primary placeholder:text-muted focus-visible:outline-hidden disabled:cursor-not-allowed"
               />
 
               <Popover.Target asChild>
@@ -628,7 +628,7 @@ export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
                   tabIndex={-1}
                   disabled={disabled}
                   aria-label="Open calendar"
-                  className="flex w-9 shrink-0 items-center justify-center text-muted hover:text-primary focus-visible:outline-none disabled:cursor-not-allowed"
+                  className="flex w-9 shrink-0 items-center justify-center text-muted hover:text-primary focus-visible:outline-hidden disabled:cursor-not-allowed"
                 >
                   <CalendarIcon className="h-4 w-4" />
                 </button>
