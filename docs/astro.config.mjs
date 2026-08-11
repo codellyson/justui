@@ -8,7 +8,16 @@ import { sidebar } from "./sidebar.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
+// Canonical URLs, og:url and the sitemap all need an absolute origin. Left unset
+// none of them are emitted, which is the honest default — a canonical pointing at
+// the wrong host is worse than none. Set DOCS_SITE (and DOCS_BASE for a subpath)
+// when deploying: DOCS_SITE=https://example.com pnpm --filter justui-docs build
+const site = process.env.DOCS_SITE;
+const base = process.env.DOCS_BASE;
+
 export default defineConfig({
+  ...(site ? { site } : {}),
+  ...(base ? { base } : {}),
   integrations: [
     starlight({
       title: "JustUI",
