@@ -55,6 +55,10 @@ around fifty React components, and the Tailwind story moved to v4.
 
 ### Fixed
 
+- Subpath types resolve on legacy `moduleResolution`. `node` and `node10` ignore the
+  `exports` field, so `@codellyson/justui/react` failed with TS2307; a
+  `typesVersions` fallback covers them.
+
 - Every value dropdown is a real listbox. `PhoneInput` and `PriceInput` announced
   their options as `menuitem` — a command role for choosing a country or currency —
   and none of the dropdowns had any keyboard handling, so the ones declaring

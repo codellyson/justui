@@ -117,6 +117,10 @@ Every component ships with a `"use client"` directive, so importing them from a
 Next.js App Router **server** component works — no wrapper file needed. `cn` is
 the exception and stays server-safe.
 
+Subpath types work on any `moduleResolution`. `node` and `node10` ignore the
+`exports` field, so a `typesVersions` fallback maps `/react`, `/boot` and `/themes`
+for them; `node16`, `nodenext` and `bundler` read `exports` directly.
+
 ### Conventions
 
 The API follows the house style of `@khaime-dev/ui`, so names and code transfer
