@@ -1,6 +1,6 @@
 {
   "name": "@codellyson/justui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Design system for the just* app family — theme tokens, twelve themes, a no-flash boot script, ~50 React components on Radix, Astro adapters, and a Tailwind v4 design config.",
   "license": "MIT",
   "type": "module",

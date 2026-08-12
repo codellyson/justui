@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.1
+
+### Fixed
+
+- **Subpath types resolve on legacy `moduleResolution`.** `node` and `node10` ignore
+  the `exports` field, so `import { Button } from "@codellyson/justui/react"` failed
+  with TS2307 — the bare `@codellyson/justui` import was unaffected, since it goes
+  through `main`/`types`. A `typesVersions` fallback maps `/react`, `/boot` and
+  `/themes` for classic resolution. Runtime was never affected; bundlers honour
+  `exports` regardless.
+- **`Select` no longer reserves an empty gutter beside every option.** Options had
+  32px of left padding holding a check drawn at `left-2`, present whether or not
+  anything was selected, which put labels 24px right of the trigger text they drop
+  beneath. The tick moves to the trailing edge; labels now align with the trigger.
+
 ## 1.0.0
 
 First stable release. The component kit grew from a handful of Astro pieces to
@@ -54,10 +69,6 @@ around fifty React components, and the Tailwind story moved to v4.
 - A documentation site on Astro Starlight, and a component gallery.
 
 ### Fixed
-
-- Subpath types resolve on legacy `moduleResolution`. `node` and `node10` ignore the
-  `exports` field, so `@codellyson/justui/react` failed with TS2307; a
-  `typesVersions` fallback covers them.
 
 - Every value dropdown is a real listbox. `PhoneInput` and `PriceInput` announced
   their options as `menuitem` — a command role for choosing a country or currency —
