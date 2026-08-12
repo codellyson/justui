@@ -24,6 +24,18 @@ Add `DOCS_BASE` when serving from a subpath, e.g. GitHub Pages at
 DOCS_SITE=https://user.github.io DOCS_BASE=/justui pnpm --filter justui-docs build
 ```
 
+## llms.txt
+
+Two generated endpoints, following [llmstxt.org](https://llmstxt.org):
+
+- `/llms.txt` — the index: setup, then every page grouped as it is in the sidebar,
+  each with its description.
+- `/llms-full.txt` — every page in one file, MDX machinery stripped but prose, prop
+  tables and example code kept.
+
+Both are Astro endpoints reading the content collection, so they cannot drift from
+the pages. Links are absolute when `DOCS_SITE` is set and relative otherwise.
+
 ## Where the content comes from
 
 `playground/src/docs/*.mdx` is the source. `scripts/port-pages.mjs` converts it:
