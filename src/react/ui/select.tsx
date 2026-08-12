@@ -78,13 +78,8 @@ function Option({
       value={String(option.value)}
       disabled={option.disabled}
       data-justui="select-option"
-      className="relative flex w-full cursor-default select-none items-center gap-2 rounded-sm py-1.5 pl-8 pr-2 text-sm outline-hidden focus:bg-bg-secondary focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+      className="relative flex w-full cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden focus:bg-bg-secondary focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
     >
-      <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-        <SelectPrimitive.ItemIndicator>
-          <CheckIcon className="h-4 w-4" />
-        </SelectPrimitive.ItemIndicator>
-      </span>
       {option.icon && <span className="shrink-0">{option.icon}</span>}
       {renderOption ? (
         <SelectPrimitive.ItemText>
@@ -100,6 +95,9 @@ function Option({
           </span>
         </SelectPrimitive.ItemText>
       )}
+      <SelectPrimitive.ItemIndicator className="ml-auto shrink-0 text-accent">
+        <CheckIcon className="h-4 w-4" />
+      </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>
   );
 }
@@ -506,9 +504,6 @@ const SearchableSelect = forwardRef<HTMLButtonElement, SearchableSelectProps>(
                               : "hover:bg-bg-secondary",
                           )}
                         >
-                          <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center">
-                            {active && <CheckIcon className="h-4 w-4" />}
-                          </span>
                           {option.icon && <span className="shrink-0">{option.icon}</span>}
                           {renderOption ? (
                             renderOption(option)
@@ -520,6 +515,7 @@ const SearchableSelect = forwardRef<HTMLButtonElement, SearchableSelectProps>(
                               )}
                             </span>
                           )}
+                          {active && <CheckIcon className="ml-auto h-4 w-4 shrink-0 text-accent" />}
                         </button>
                       );
                     })}
