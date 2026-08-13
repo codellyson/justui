@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "pnpm -w run build && astro dev",
+    "build": "pnpm -w run build && astro build",
     "preview": "astro preview"
   },
   "dependencies": {

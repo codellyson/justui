@@ -7,6 +7,10 @@ pnpm --filter justui-docs dev
 pnpm --filter justui-docs build
 ```
 
+Both build the library first. `dist` is a build artifact and is gitignored, so a
+clean checkout has none, and the docs import the package through the workspace
+link — without that step the build fails to resolve `@codellyson/justui/react`.
+
 ## Deploying
 
 Set `DOCS_SITE` to the absolute origin the site will be served from. Without it
