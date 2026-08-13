@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.2
+
+### Fixed
+
+- **`Modal` opened off-centre and jumped into place.** Tailwind v4 compiles
+  `-translate-x-1/2` to the `translate` property while the zoom keyframes set
+  `transform`, so the centring offset applied twice for the length of the
+  animation — measured at 210px left and 90px up — then snapped back when the
+  animation ended and dropped the `transform`. The keyframes now scale only and
+  leave centring to the utilities. Affects the exit animation too.
+
+### Note
+
+The 1.0.0 notes claimed `Card` was removed. That was wrong — `Card` is exported and
+documented. The line has been dropped rather than left to mislead.
+
 ## 1.0.1
 
 ### Fixed
@@ -41,7 +57,6 @@ around fifty React components, and the Tailwind story moved to v4.
 - **`Menu` defaults to `modal={false}`.** Radix defaults it to modal, which locks
   page scroll and shifts anything sized against the viewport. Pass `modal` to opt
   back in.
-- **`Card` was removed** as too opinionated; compose a bordered surface instead.
 
 ### Added
 

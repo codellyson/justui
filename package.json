@@ -1,7 +1,7 @@
 {
   "name": "@codellyson/justui",
-  "version": "1.0.1",
-  "description": "Design system for the just* app family — theme tokens, twelve themes, a no-flash boot script, ~50 React components on Radix, Astro adapters, and a Tailwind v4 design config.",
+  "version": "1.0.2",
+  "description": "Design system for the just* app family \u2014 theme tokens, twelve themes, a no-flash boot script, ~50 React components on Radix, Astro adapters, and a Tailwind v4 design config.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
