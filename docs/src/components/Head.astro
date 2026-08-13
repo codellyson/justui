@@ -8,3 +8,42 @@ import { ClientRouter } from "astro:transitions";
 
 <Default><slot /></Default>
 <ClientRouter />
+
+<script is:inline>
+  // A swap takes 300ms–1s, almost all of it fetching the next page, and nothing
+  // on screen acknowledges the click in the meantime. This is the acknowledgement.
+  // Listeners go on `document` and the bar on `documentElement`, since both
+  // survive the swap while head and body do not.
+  if (!window.__justuiNav) {
+    window.__justuiNav = true;
+
+    let bar = null;
+    let timer = 0;
+
+    const remove = () => {
+      clearTimeout(timer);
+      if (!bar) return;
+      const el = bar;
+      bar = null;
+      el.style.width = "100%";
+      el.style.opacity = "0";
+      setTimeout(() => el.remove(), 200);
+    };
+
+    document.addEventListener("astro:before-preparation", () => {
+      remove();
+      bar = document.createElement("div");
+      bar.setAttribute("aria-hidden", "true");
+      bar.style.cssText =
+        "position:fixed;top:0;left:0;height:2px;width:0;z-index:9999;" +
+        "background:var(--sl-color-text-accent,#818cf8);opacity:1;" +
+        "transition:width .3s ease-out,opacity .2s ease-in;pointer-events:none";
+      document.documentElement.appendChild(bar);
+      // Creep toward 90% so a slow fetch still looks like progress.
+      requestAnimationFrame(() => bar && (bar.style.width = "70%"));
+      timer = window.setTimeout(() => bar && (bar.style.width = "90%"), 400);
+    });
+
+    document.addEventListener("astro:page-load", remove);
+  }
+</script>

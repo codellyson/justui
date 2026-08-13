@@ -16,6 +16,7 @@ const site = process.env.DOCS_SITE;
 const base = process.env.DOCS_BASE;
 
 export default defineConfig({
+  prefetch: { prefetchAll: true, defaultStrategy: "viewport" },
   ...(site ? { site } : {}),
   ...(base ? { base } : {}),
   integrations: [
