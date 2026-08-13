@@ -28,6 +28,16 @@ Add `DOCS_BASE` when serving from a subpath, e.g. GitHub Pages at
 DOCS_SITE=https://user.github.io DOCS_BASE=/justui pnpm --filter justui-docs build
 ```
 
+## Deploying to Cloudflare
+
+`wrangler.jsonc` declares the site as static assets. It has to exist: without a
+config, `wrangler deploy` tries to auto-configure the project by running
+`astro add cloudflare` through npm, which fails on this package's `workspace:*`
+dependency — and the adapter is unwanted anyway, since the output is static.
+
+`DOCS_SITE` should be set as a build environment variable there, or the deploy
+emits no canonical URLs and no sitemap.
+
 ## llms.txt
 
 Two generated endpoints, following [llmstxt.org](https://llmstxt.org):

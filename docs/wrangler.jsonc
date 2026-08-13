@@ -1,0 +1,11 @@
+{
+  // Present so `wrangler deploy` skips framework auto-configuration. Without it
+  // wrangler runs `astro add cloudflare` through npm, which fails on the
+  // `workspace:*` dependency this package uses — and the adapter is unwanted
+  // anyway, since the site is static and only needs its assets uploaded.
+  "name": "justui",
+  "compatibility_date": "2026-08-13",
+  "assets": {
+    "directory": "./dist"
+  }
+}
