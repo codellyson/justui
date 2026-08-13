@@ -6,9 +6,8 @@ export const group = "Getting started";
 The shared design system for the `just*` app family: theme tokens, twelve themes,
 a no-flash boot script, and a React component kit built on Radix.
 
-Every preview on these pages is **live** — edit the code and it re-renders. Use the
-swatches in the top bar to reskin the whole gallery, and the **root font size**
-control to prove that a host's `html { font-size }` doesn't rescale the components.
+Every preview renders the real component from the built package — what you see is
+what `pnpm add` gives you.
 
 ```jsx live
 <div className="flex items-center gap-3">
@@ -40,27 +39,30 @@ between the two:
 ## Install
 
 ```bash
-pnpm add @codellyson/justui react react-dom tailwindcss
+pnpm add @codellyson/justui react react-dom tailwindcss @heroicons/react
 ```
+
+`@heroicons/react` is a required peer, not a suggestion — the components import
+from it, and `icon` / `leftIcon` props take icon components rather than characters.
 
 ## Tailwind
 
-`withJustUI` applies the preset **and** adds the globs for the package's own
-shipped files, so its classes actually get generated:
+Tailwind **v4** is required. One import gives you the tokens, Tailwind itself and
+the design config — the `@theme` colours, the px type scale, the radii, the
+keyframes and the `shell-*` container variants:
 
-```js
-// tailwind.config.cjs
-const { withJustUI } = require('@codellyson/justui/tailwind-preset');
-
-module.exports = withJustUI({
-  content: ['./src/**/*.{ts,tsx}'],
-});
+```css
+/* src/styles/global.css */
+@import "@codellyson/justui/tailwind.css";
 ```
 
-Don't write that glob by hand. Tailwind v3 *replaces* `content` across presets
-rather than merging it, and `./node_modules/@codellyson/justui/**` matches nothing
-under pnpm — the package is a symlink into the store and Tailwind's globber won't
-follow it. Either mistake gives you an unstyled UI with no error.
+It declares its own `@source`, so the package's classes are scanned without you
+writing a glob for `node_modules`. That glob is worth not writing by hand anyway:
+under pnpm the package is a symlink into the store, and a hand-written glob
+silently matches nothing — an unstyled UI with no error.
+
+There is no JS preset. `withJustUI` and `@codellyson/justui/tailwind-preset` were
+removed in 1.0.0; see the changelog if you're coming from 0.4.0.
 
 ## Boot the theme
 

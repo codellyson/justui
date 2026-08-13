@@ -13,8 +13,9 @@ It imports from `../dist` through the same specifiers a consumer uses
 than the TS sources. That's why `playground` runs `build` first — after editing
 `src/`, rerun the build (or keep `pnpm dev` running in another terminal).
 
-Tailwind is wired through `withJustUI`, so the gallery is also the standing test
-that the preset's content globs resolve.
+Tailwind comes from `src/styles/tailwind.css` — the same stylesheet the package
+ships as `@codellyson/justui/tailwind.css` — so the gallery is also the standing
+test that its `@source` resolves.
 
 ## Adding a page
 
