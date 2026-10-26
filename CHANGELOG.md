@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.3
+
+### Fixed
+
+- **Theme text meets WCAG AA (4.5:1) in every theme.** Muted text failed in 19 of the
+  24 theme variants — as low as 2.1:1 in Mocha, Nord and Solarized light — and a few
+  secondary colours fell short too, plus Solarized light's primary text on
+  `bgSecondary` (3.6:1). The 23 failing values each move toward black (light) or
+  white (dark) by the smallest step that clears 4.5:1 on both `bg` and
+  `bgSecondary`, so every theme keeps its tint. `tokens.css` and the docs site's
+  Espresso fallbacks follow. In some light themes muted and secondary text now sit
+  close together; rely on size and weight, not colour alone, to separate them.
+- A test (`pnpm test`) checks every text token on both backgrounds in every theme.
+
 ## 1.0.2
 
 ### Fixed
